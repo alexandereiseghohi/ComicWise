@@ -1,0 +1,3130 @@
+================================================================================
+COMICWISE - COMPREHENSIVE SETUP & OPTIMIZATION PROMPT
+================================================================================
+Version: 4.0.0
+Updated: 2026-01-19
+Platform: Windows (PowerShell)
+Package Manager: pnpm
+Framework: Next.js 16 + React 19
+Database: PostgreSQL (Drizzle ORM)
+Cache: Redis (Upstash)
+Authentication: NextAuth.js v5
+UI: Tailwind CSS 4 + shadcn/ui
+================================================================================
+
+📋 TABLE OF CONTENTS
+================================================================================
+1. Prerequisites & Permissions
+2. Core Principles & Guidelines
+3. File Handling & Backup Strategy
+4. Environment Setup & Configuration
+5. Authentication System (Generic Forms + Zod + React Hook Form)
+6. Admin Panel System (Generic Forms + CRUD for All Tables)
+7. User Profile Pages
+8. Comic Listing & Details Pages (with Bookmark Functionality)
+9. Chapter Reader Pages (with Image Gallery)
+10. Bookmark Management System
+11. Database Seeding System (Optimized & Validated)
+12. Image Handling & Optimization
+13. Folder Structure Optimization
+14. Refactoring with AST-based Tools (jscodeshift/ts-morph)
+15. Scripts CLI Optimization
+16. VS Code Configuration
+17. Testing Suite (100% Coverage)
+18. Performance Optimization
+19. CI/CD Pipeline
+20. Docker & Deployment
+21. Analytics & Monitoring
+22. Internationalization (i18n)
+23. Documentation Generation
+24. Cleanup & Maintenance
+25. Git Workflow & Version Control
+26. Vercel Deployment
+27. Completion Checklist
+
+================================================================================
+1. PREREQUISITES & PERMISSIONS
+================================================================================
+
+UNDERSTANDING PHASE:
+-------------------
+Read and understand all project files to grasp the complete architecture:
+- @/**/*.ts - All TypeScript source files
+- @/**/*.tsx - All React/Next.js components
+- @/**/*.mjs - Module JavaScript files
+- @/**/*.json - Configuration and data files
+- @/**/*.md - Documentation files
+- @/**/*.txt - Text files and prompts
+- @/**/*.yml - CI/CD workflows
+- @/**/*.ps1 - PowerShell scripts
+- @/**/*.sh - Bash scripts
+- @/**/Dockerfile - Docker configurations
+- @/src - Source code directory
+- @/scripts - Automation scripts
+
+PERMISSION REQUEST:
+------------------
+Request all necessary permissions to:
+✅ Create, modify, and delete files
+✅ Install and uninstall packages
+✅ Run database migrations and seeds
+✅ Execute scripts and commands
+✅ Push to Git repositories
+✅ Deploy to cloud platforms
+✅ Modify CI/CD workflows
+
+CONFIRMATION:
+------------
+⚠️ CONFIRM permissions before proceeding with any tasks
+⚠️ DO NOT create summaries until ALL tasks are completed
+⚠️ Complete tasks in the best recommended way
+
+SYSTEM REQUIREMENTS:
+-------------------
+- Node.js: 18.x or higher
+- Package Manager: pnpm (latest)
+- Operating System: Windows (PowerShell)
+- PostgreSQL: 15.x or higher
+- Redis: Upstash (cloud)
+- Git: Latest version
+
+================================================================================
+2. CORE PRINCIPLES & GUIDELINES
+================================================================================
+
+DEVELOPMENT PRINCIPLES:
+----------------------
+✓ Next.js Best Practices - Follow Next.js 16 latest conventions
+✓ DRY Principles - Do Not Repeat Yourself
+✓ Performance First - Optimize for speed and efficiency
+✓ Type Safety - Use specific types, avoid 'any'
+✓ Comprehensive Logging - Clear, concise logs for operations
+✓ Error Handling - Proper validation and error handling
+✓ Security Best Practices - Protect sensitive data
+✓ Accessibility - WCAG 2.1 AA compliance
+✓ SEO Optimization - Proper meta tags and structure
+✓ Mobile-First - Responsive design approach
+
+CODE QUALITY STANDARDS:
+----------------------
+- TypeScript strict mode enabled
+- ESLint with comprehensive rules
+- Prettier for code formatting
+- Husky for pre-commit hooks
+- Conventional commits
+- 100% type coverage (no 'any')
+- Comprehensive JSDoc comments
+- Unit + Integration + E2E tests
+- Code coverage > 80%
+
+PERFORMANCE TARGETS:
+-------------------
+- First Contentful Paint (FCP): < 1.5s
+- Largest Contentful Paint (LCP): < 2.5s
+- Time to Interactive (TTI): < 3.5s
+- Cumulative Layout Shift (CLS): < 0.1
+- First Input Delay (FID): < 100ms
+- Bundle size: < 200KB (gzipped)
+
+================================================================================
+3. FILE HANDLING & BACKUP STRATEGY
+================================================================================
+
+BACKUP PROCEDURE:
+----------------
+For ALL existing files before modification:
+
+```powershell
+# PowerShell backup command
+Copy-Item "path/to/file.ts" "path/to/file.backup.ts"
+```
+
+CREATION GUIDELINES:
+-------------------
+If file exists:
+  1. Create backup with .backup.ts extension
+  2. Analyze existing implementation
+  3. Create optimized version
+  4. Update all imports/usages across project
+  5. Validate changes with type checking
+
+If file doesn't exist:
+  1. Create new file with optimal structure
+  2. Implement best practices
+  3. Add comprehensive documentation
+  4. Update all relevant imports
+  5. Register in configuration files
+
+UPDATE ALL USAGES:
+-----------------
+After creating/modifying any file:
+✓ Update imports in all consuming files
+✓ Update exports in index files
+✓ Update configuration references
+✓ Update documentation
+✓ Run validation scripts
+
+================================================================================
+4. ENVIRONMENT SETUP & CONFIGURATION
+================================================================================
+
+4.1 ENVIRONMENT VARIABLES (.env.local)
+--------------------------------------
+Create and configure:
+
+```env
+# Database
+DATABASE_URL="postgresql://user:password@host:5432/comicwise"
+DATABASE_DIRECT_URL="postgresql://user:password@host:5432/comicwise"
+
+# Redis (Upstash)
+UPSTASH_REDIS_REST_URL="https://your-redis-url.upstash.io"
+UPSTASH_REDIS_REST_TOKEN="your_token_here"
+
+# NextAuth
+NEXTAUTH_SECRET="generate_secure_random_string_here"
+NEXTAUTH_URL="http://localhost:3000"
+
+# Custom
+CUSTOM_PASSWORD="SecurePassword123!"
+
+# Upload Storage
+NEXT_PUBLIC_UPLOAD_DIR="/uploads"
+UPLOAD_MAX_SIZE="10485760"
+
+# Sentry (Optional)
+SENTRY_DSN="https://your-sentry-dsn"
+SENTRY_ORG="your-org"
+SENTRY_PROJECT="comicwise"
+
+# Image CDN (Optional)
+NEXT_PUBLIC_IMAGE_CDN="https://cdn.example.com"
+
+# Analytics (Optional)
+NEXT_PUBLIC_GA_ID="G-XXXXXXXXXX"
+
+# Email (Optional)
+EMAIL_SERVER_HOST="smtp.gmail.com"
+EMAIL_SERVER_PORT="587"
+EMAIL_SERVER_USER="your-email@gmail.com"
+EMAIL_SERVER_PASSWORD="your-app-password"
+EMAIL_FROM="noreply@comicwise.com"
+```
+
+4.2 ENVIRONMENT VALIDATION (src/lib/env.ts)
+-------------------------------------------
+Create type-safe environment validation:
+
+```typescript
+import { z } from 'zod';
+
+const envSchema = z.object({
+  DATABASE_URL: z.string().url(),
+  DATABASE_DIRECT_URL: z.string().url(),
+  UPSTASH_REDIS_REST_URL: z.string().url(),
+  UPSTASH_REDIS_REST_TOKEN: z.string(),
+  NEXTAUTH_SECRET: z.string().min(32),
+  NEXTAUTH_URL: z.string().url(),
+  CUSTOM_PASSWORD: z.string().min(8),
+  NEXT_PUBLIC_UPLOAD_DIR: z.string(),
+  // Add all other environment variables
+});
+
+export const env = envSchema.parse(process.env);
+```
+
+4.3 APP CONFIGURATION (appConfig.ts)
+------------------------------------
+Centralize all configuration:
+
+```typescript
+import { env } from '@/lib/env';
+
+export const appConfig = {
+  name: 'ComicWise',
+  description: 'Modern Web Comic Platform',
+  url: env.NEXTAUTH_URL,
+  database: {
+    url: env.DATABASE_URL,
+    directUrl: env.DATABASE_DIRECT_URL,
+  },
+  redis: {
+    url: env.UPSTASH_REDIS_REST_URL,
+    token: env.UPSTASH_REDIS_REST_TOKEN,
+  },
+  auth: {
+    secret: env.NEXTAUTH_SECRET,
+    sessionMaxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  upload: {
+    maxSize: Number(env.UPLOAD_MAX_SIZE || 10485760), // 10MB
+    allowedTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/jpg', 'image/gif'],
+    directory: env.NEXT_PUBLIC_UPLOAD_DIR,
+  },
+  // Add all other configurations
+} as const;
+```
+
+Update all usages across project to use appConfig instead of direct env access.
+
+================================================================================
+4.5 STATE MANAGEMENT WITH ZUSTAND
+================================================================================
+
+ZUSTAND STORES - Complete State Management System
+-------------------------------------------------
+Location: src/stores/
+
+IMPLEMENTED STORES:
+1. ✅ authStore.ts - Authentication & user session
+2. ✅ bookmarkStore.ts - Bookmark management
+3. ✅ comicStore.ts - Comics filtering & sorting
+4. ✅ readerStore.ts - Chapter reading preferences
+5. ✅ notificationStore.ts - Notifications & toasts
+6. ✅ uiStore.ts - UI state (sidebar, theme, modals)
+
+STORE 1: AUTH STORE (authStore.ts)
+-----------------------------------
+Purpose: Manage authentication state and user session
+Features:
+- User session management
+- Authentication status tracking
+- User profile data
+- Logout handling
+- Profile updates
+
+State:
+- user: User | null
+- isAuthenticated: boolean
+- isLoading: boolean
+
+Actions:
+- setUser(user: User | null)
+- setLoading(loading: boolean)
+- logout()
+- updateUser(updates: Partial<User>)
+
+Middleware: devtools + persist
+Storage: localStorage
+
+STORE 2: BOOKMARK STORE (bookmarkStore.ts)
+------------------------------------------
+Purpose: Manage user bookmarks and reading progress
+Features:
+- Add/remove bookmarks
+- Track reading progress
+- Bookmark status (Reading, Completed, etc.)
+- Local storage persistence
+- Fast bookmark checks
+
+State:
+- bookmarks: Set<number>
+- readingProgress: Map<number, number>
+
+Actions:
+- addBookmark(comicId: number)
+- removeBookmark(comicId: number)
+- updateProgress(comicId: number, chapterId: number)
+- isBookmarked(comicId: number): boolean
+- getProgress(comicId: number): number | undefined
+- clearAll()
+
+Middleware: persist with JSON storage
+Storage: localStorage (key: 'comicwise-bookmarks')
+
+STORE 3: COMIC STORE (comicStore.ts)
+------------------------------------
+Purpose: Manage comics data, filtering, and sorting
+Features:
+- Comics list management
+- Advanced filtering (search, genres, types, status, rating)
+- Multi-criteria sorting
+- Pagination
+- Recently viewed tracking
+
+State:
+- comics: Comic[]
+- filteredComics: Comic[]
+- filters: ComicFilters
+- sortBy: 'title' | 'rating' | 'views' | 'updated' | 'created'
+- sortOrder: 'asc' | 'desc'
+- currentPage: number
+- itemsPerPage: number
+- totalPages: number
+- recentlyViewed: number[]
+
+Actions:
+- setComics(comics: Comic[])
+- applyFilters(filters: Partial<ComicFilters>)
+- setSorting(sortBy, sortOrder)
+- setPage(page: number)
+- addRecentlyViewed(comicId: number)
+- clearFilters()
+
+Middleware: devtools + persist
+Storage: localStorage (persists preferences only)
+
+STORE 4: READER STORE (readerStore.ts)
+--------------------------------------
+Purpose: Manage chapter reading experience and preferences
+Features:
+- Page navigation
+- Reading mode settings
+- Image quality preferences
+- Auto-scroll configuration
+- Fullscreen control
+- Zoom management
+- Reading history
+
+State:
+- currentPage: number
+- totalPages: number
+- readingMode: 'vertical' | 'horizontal' | 'webtoon'
+- pageLayout: 'single' | 'double'
+- imageQuality: 'original' | 'high' | 'medium' | 'low'
+- autoScroll: boolean
+- autoScrollSpeed: number
+- showPageNumbers: boolean
+- showProgress: boolean
+- fullscreen: boolean
+- zoom: number
+- history: Array<{comicId, chapterId, page}>
+
+Actions:
+- setPage(page: number)
+- setTotalPages(total: number)
+- nextPage()
+- prevPage()
+- setReadingMode(mode)
+- setPageLayout(layout)
+- setImageQuality(quality)
+- setAutoScroll(enabled)
+- setAutoScrollSpeed(speed)
+- togglePageNumbers()
+- toggleProgress()
+- toggleFullscreen()
+- setZoom(zoom)
+- addToHistory(comicId, chapterId, page)
+- clearHistory()
+- reset()
+
+Middleware: devtools + persist
+Storage: localStorage (persists all preferences)
+
+STORE 5: NOTIFICATION STORE (notificationStore.ts)
+--------------------------------------------------
+Purpose: Manage notifications and toast messages
+Features:
+- Toast notifications
+- System notifications
+- Notification history
+- Unread count tracking
+- Auto-dismiss toasts
+- Notification actions
+
+State:
+- notifications: Notification[]
+- toasts: Notification[]
+- unreadCount: number
+
+Actions:
+- addNotification(notification)
+- addToast(toast)
+- removeNotification(id)
+- removeToast(id)
+- markAsRead(id)
+- markAllAsRead()
+- clearAll()
+
+Convenience Methods:
+- success(title, message, duration)
+- error(title, message, duration)
+- warning(title, message, duration)
+- info(title, message, duration)
+
+Middleware: devtools only (no persistence)
+
+STORE 6: UI STORE (uiStore.ts)
+------------------------------
+Purpose: Manage UI state and preferences
+Features:
+- Sidebar toggle
+- Theme management (light/dark/system)
+- Reading mode preferences
+- Modal management
+- Search panel toggle
+
+State:
+- sidebarOpen: boolean
+- theme: 'light' | 'dark' | 'system'
+- readingMode: 'single' | 'double' | 'long-strip'
+- activeModal: string | null
+- searchOpen: boolean
+
+Actions:
+- toggleSidebar()
+- setSidebarOpen(open)
+- setTheme(theme)
+- setReadingMode(mode)
+- openModal(modalId)
+- closeModal()
+- toggleSearch()
+- setSearchOpen(open)
+
+Middleware: devtools + persist
+Storage: localStorage (partialize: theme, readingMode, sidebarOpen)
+
+STORE USAGE EXAMPLES:
+---------------------
+
+```typescript
+// Example 1: Auth Store
+import { useAuthStore } from '@/stores';
+
+function ProfileButton() {
+  const { user, isAuthenticated, logout } = useAuthStore();
+  
+  if (!isAuthenticated) return <LoginButton />;
+  
+  return (
+    <div>
+      <p>Welcome, {user?.name}</p>
+      <button onClick={logout}>Logout</button>
+    </div>
+  );
+}
+
+// Example 2: Bookmark Store
+import { useBookmarkStore } from '@/stores';
+
+function BookmarkButton({ comicId }: { comicId: number }) {
+  const { isBookmarked, addBookmark, removeBookmark } = useBookmarkStore();
+  const bookmarked = isBookmarked(comicId);
+  
+  return (
+    <button
+      onClick={() => bookmarked ? removeBookmark(comicId) : addBookmark(comicId)}
+    >
+      {bookmarked ? 'Remove Bookmark' : 'Add Bookmark'}
+    </button>
+  );
+}
+
+// Example 3: Comic Store with Filters
+import { useComicStore } from '@/stores';
+
+function ComicFilters() {
+  const { filters, applyFilters, clearFilters } = useComicStore();
+  
+  return (
+    <div>
+      <input
+        value={filters.search}
+        onChange={(e) => applyFilters({ search: e.target.value })}
+        placeholder="Search comics..."
+      />
+      <button onClick={clearFilters}>Clear Filters</button>
+    </div>
+  );
+}
+
+// Example 4: Reader Store
+import { useReaderStore } from '@/stores';
+
+function ChapterReader() {
+  const {
+    currentPage,
+    totalPages,
+    readingMode,
+    nextPage,
+    prevPage,
+    setReadingMode
+  } = useReaderStore();
+  
+  return (
+    <div>
+      <p>Page {currentPage} of {totalPages}</p>
+      <select value={readingMode} onChange={(e) => setReadingMode(e.target.value)}>
+        <option value="vertical">Vertical</option>
+        <option value="horizontal">Horizontal</option>
+        <option value="webtoon">Webtoon</option>
+      </select>
+      <button onClick={prevPage}>Previous</button>
+      <button onClick={nextPage}>Next</button>
+    </div>
+  );
+}
+
+// Example 5: Notification Store
+import { useNotificationStore } from '@/stores';
+
+function NotificationExample() {
+  const { success, error, info } = useNotificationStore();
+  
+  const handleSave = async () => {
+    try {
+      await saveData();
+      success('Saved!', 'Your changes have been saved successfully');
+    } catch (err) {
+      error('Error', 'Failed to save changes');
+    }
+  };
+  
+  return <button onClick={handleSave}>Save</button>;
+}
+
+// Example 6: UI Store
+import { useUIStore } from '@/stores';
+
+function Sidebar() {
+  const { sidebarOpen, toggleSidebar, theme, setTheme } = useUIStore();
+  
+  return (
+    <aside className={sidebarOpen ? 'open' : 'closed'}>
+      <button onClick={toggleSidebar}>Toggle</button>
+      <select value={theme} onChange={(e) => setTheme(e.target.value)}>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+        <option value="system">System</option>
+      </select>
+    </aside>
+  );
+}
+```
+
+STORE ARCHITECTURE BENEFITS:
+----------------------------
+✅ Type-safe with TypeScript
+✅ DevTools integration for debugging
+✅ Persistent state across sessions
+✅ Minimal boilerplate
+✅ No context providers needed
+✅ Excellent performance
+✅ Automatic re-renders only when needed
+✅ Middleware support (persist, devtools)
+✅ Small bundle size
+✅ Easy testing
+
+STORE TESTING EXAMPLE:
+---------------------
+
+```typescript
+import { renderHook, act } from '@testing-library/react';
+import { useBookmarkStore } from '@/stores';
+
+describe('Bookmark Store', () => {
+  it('should add bookmark', () => {
+    const { result } = renderHook(() => useBookmarkStore());
+    
+    act(() => {
+      result.current.addBookmark(1);
+    });
+    
+    expect(result.current.isBookmarked(1)).toBe(true);
+  });
+  
+  it('should remove bookmark', () => {
+    const { result } = renderHook(() => useBookmarkStore());
+    
+    act(() => {
+      result.current.addBookmark(1);
+      result.current.removeBookmark(1);
+    });
+    
+    expect(result.current.isBookmarked(1)).toBe(false);
+  });
+});
+```
+
+INTEGRATION WITH EXISTING CODE:
+-------------------------------
+1. Replace Context API usage with Zustand stores where applicable
+2. Migrate React Query cache to Zustand for client-side state
+3. Use stores for form state that needs persistence
+4. Integrate notification store with existing toast system
+5. Connect auth store with NextAuth session
+
+NEXT STEPS:
+----------
+1. ✅ Install zustand if not already: `pnpm add zustand`
+2. ✅ All stores created in src/stores/
+3. ✅ Export all stores from src/stores/index.ts
+4. TODO: Integrate stores with existing components
+5. TODO: Add tests for all stores
+6. TODO: Update documentation with store usage
+
+================================================================================
+5. AUTHENTICATION SYSTEM (Generic Forms + Zod + React Hook Form)
+================================================================================
+
+5.1 GENERIC AUTH FORM COMPONENT
+-------------------------------
+Location: src/components/auth/GenericAuthForm.tsx
+
+Features:
+- Reusable form component for all auth flows
+- Zod schema validation
+- React Hook Form integration
+- Loading states with skeletons
+- Error handling with toast notifications
+- Success feedback
+- Accessibility (ARIA labels, keyboard navigation)
+- Dark mode support
+
+Supported Fields:
+- Email (with validation)
+- Password (with strength indicator)
+- Confirm Password (with match validation)
+- Name (with character limits)
+- Remember Me (checkbox)
+- Terms & Conditions (checkbox with link)
+
+5.2 AUTH PAGES
+--------------
+
+CREATE THE FOLLOWING PAGES:
+
+1. Sign Up Page - src/app/(auth)/sign-up/page.tsx
+   Features:
+   - User registration form
+   - Email validation (RFC 5322)
+   - Password strength meter
+   - Terms acceptance checkbox
+   - Google/GitHub OAuth buttons (optional)
+   - Redirect to sign-in on success
+   - Email verification flow
+
+2. Sign In Page - src/app/(auth)/sign-in/page.tsx
+   Features:
+   - Email/password login
+   - Remember me option
+   - Forgot password link
+   - Social auth buttons
+   - Redirect to home on success
+   - Rate limiting
+
+3. Forgot Password Page - src/app/(auth)/forgot-password/page.tsx
+   Features:
+   - Email submission form
+   - Reset link generation
+   - Success message with countdown
+   - Resend link option
+
+4. Reset Password Page - src/app/(auth)/reset-password/page.tsx
+   Features:
+   - Token validation
+   - New password form
+   - Password strength indicator
+   - Confirmation password field
+   - Redirect to sign-in on success
+
+5. Verify Email Page - src/app/(auth)/verify-email/page.tsx
+   Features:
+   - Email verification via token
+   - Token validation
+   - Success/error states
+   - Resend verification email
+
+5.3 AUTH ZOD SCHEMAS
+-------------------
+Location: src/schemas/authSchemas.ts
+
+Create comprehensive schemas:
+
+```typescript
+import { z } from 'zod';
+
+export const signUpSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters').max(50),
+  email: z.string().email('Invalid email address'),
+  password: z.string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/[A-Z]/, 'Password must contain uppercase letter')
+    .regex(/[a-z]/, 'Password must contain lowercase letter')
+    .regex(/[0-9]/, 'Password must contain number')
+    .regex(/[^A-Za-z0-9]/, 'Password must contain special character'),
+  confirmPassword: z.string(),
+  acceptTerms: z.boolean().refine(val => val === true, 'Must accept terms'),
+}).refine(data => data.password === data.confirmPassword, {
+  message: 'Passwords do not match',
+  path: ['confirmPassword'],
+});
+
+export const signInSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(1, 'Password is required'),
+  rememberMe: z.boolean().optional(),
+});
+
+export const forgotPasswordSchema = z.object({
+  email: z.string().email('Invalid email address'),
+});
+
+export const resetPasswordSchema = z.object({
+  token: z.string(),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  confirmPassword: z.string(),
+}).refine(data => data.password === data.confirmPassword, {
+  message: 'Passwords do not match',
+  path: ['confirmPassword'],
+});
+
+export const verifyEmailSchema = z.object({
+  token: z.string(),
+});
+
+export const updateProfileSchema = z.object({
+  name: z.string().min(2).max(50).optional(),
+  email: z.string().email().optional(),
+  bio: z.string().max(500).optional(),
+  avatar: z.string().url().optional(),
+});
+```
+
+5.4 AUTH SERVER ACTIONS
+-----------------------
+Location: src/lib/actions/auth.ts
+
+Create server actions:
+
+```typescript
+'use server';
+
+import { z } from 'zod';
+import { signUpSchema, signInSchema, resetPasswordSchema } from '@/schemas/authSchemas';
+import { db } from '@/database/client';
+import { users } from '@/database/schema';
+import bcrypt from 'bcryptjs';
+import { signIn } from '@/lib/auth';
+
+export async function signUpAction(values: z.infer<typeof signUpSchema>) {
+  try {
+    const validated = signUpSchema.parse(values);
+
+    // Check if user exists
+    const existingUser = await db.query.users.findFirst({
+      where: eq(users.email, validated.email)
+    });
+
+    if (existingUser) {
+      return { error: 'Email already registered' };
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(validated.password, 10);
+
+    // Create user
+    await db.insert(users).values({
+      name: validated.name,
+      email: validated.email,
+      password: hashedPassword,
+      emailVerified: null,
+    });
+
+    // Send verification email
+    // TODO: Implement email verification
+
+    return { success: true };
+  } catch (error) {
+    return { error: 'Registration failed' };
+  }
+}
+
+export async function signInAction(values: z.infer<typeof signInSchema>) {
+  try {
+    const result = await signIn('credentials', {
+      email: values.email,
+      password: values.password,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      return { error: 'Invalid credentials' };
+    }
+
+    return { success: true };
+  } catch (error) {
+    return { error: 'Sign in failed' };
+  }
+}
+
+// Implement other auth actions...
+```
+
+================================================================================
+6. ADMIN PANEL SYSTEM (Generic Forms + CRUD for All Tables)
+================================================================================
+
+6.1 GENERIC ADMIN FORM COMPONENT
+--------------------------------
+Location: src/components/admin/GenericAdminForm.tsx
+
+Features:
+- Dynamic field rendering based on schema
+- Support for multiple field types:
+  * Text input
+  * Textarea
+  * Number input
+  * Select dropdown
+  * Multi-select
+  * Date picker
+  * File upload (single/multiple)
+  * Rich text editor (TipTap)
+  * Image upload with preview
+  * Relationship fields (foreign keys)
+- Zod validation integration
+- React Hook Form with controlled components
+- Drag & drop for file uploads
+- Image cropping/resizing
+- Inline validation with error messages
+- Loading states
+- Submit/Cancel/Reset actions
+- Unsaved changes warning
+
+6.2 ADMIN PAGES FOR ALL DATABASE TABLES
+---------------------------------------
+
+CREATE ADMIN CRUD PAGES FOR:
+
+1. Users Admin - src/app/admin/users/*
+   Files:
+   - page.tsx (List all users with DataTable)
+   - [id]/page.tsx (View user details)
+   - [id]/edit/page.tsx (Edit user)
+   - new/page.tsx (Create user)
+
+   Features:
+   - User list with sorting, filtering, pagination
+   - Search by name/email
+   - Filter by role (admin/user)
+   - Bulk actions (delete, change role)
+   - User statistics
+   - Activity log
+
+2. Comics Admin - src/app/admin/comics/*
+   Files:
+   - page.tsx (List all comics)
+   - [id]/page.tsx (View comic)
+   - [id]/edit/page.tsx (Edit comic)
+   - new/page.tsx (Create comic)
+
+   Features:
+   - Comic list with covers
+   - Search and filters
+   - Cover image upload with crop
+   - Assign genres (multi-select)
+   - Assign author/artist (select)
+   - Assign type (select)
+   - Status management
+   - SEO fields (meta description, keywords)
+   - Slug auto-generation
+   - Bulk import/export
+
+3. Chapters Admin - src/app/admin/chapters/*
+   Files:
+   - page.tsx (List all chapters)
+   - [id]/page.tsx (View chapter)
+   - [id]/edit/page.tsx (Edit chapter)
+   - new/page.tsx (Create chapter)
+
+   Features:
+   - Chapter list grouped by comic
+   - Bulk upload chapter images
+   - Drag & drop to reorder images
+   - Image optimization
+   - Chapter preview
+   - Publish/unpublish toggle
+
+4. Genres Admin - src/app/admin/genres/*
+   Files:
+   - page.tsx (List/Create/Edit genres)
+
+   Features:
+   - Simple CRUD table
+   - Inline editing
+   - Usage count per genre
+
+5. Authors Admin - src/app/admin/authors/*
+6. Artists Admin - src/app/admin/artists/*
+7. Types Admin - src/app/admin/types/*
+8. Bookmarks Admin - src/app/admin/bookmarks/* (Read-only)
+
+6.3 ADMIN ZOD SCHEMAS
+--------------------
+Location: src/schemas/adminSchemas.ts
+
+```typescript
+import { z } from 'zod';
+
+export const comicSchema = z.object({
+  title: z.string().min(1, 'Title is required').max(200),
+  alternativeTitles: z.array(z.string()).optional(),
+  description: z.string().min(10, 'Description too short').max(5000),
+  slug: z.string().regex(/^[a-z0-9-]+$/, 'Invalid slug format'),
+  coverImage: z.string().url('Invalid image URL'),
+  status: z.enum(['Ongoing', 'Completed', 'Hiatus', 'Cancelled']),
+  releaseYear: z.number().int().min(1900).max(new Date().getFullYear() + 1),
+  authorId: z.number().int().positive(),
+  artistId: z.number().int().positive(),
+  typeId: z.number().int().positive(),
+  genreIds: z.array(z.number().int().positive()).min(1, 'Select at least one genre'),
+  metaDescription: z.string().max(160).optional(),
+  metaKeywords: z.array(z.string()).optional(),
+});
+
+export const chapterSchema = z.object({
+  comicId: z.number().int().positive(),
+  chapterNumber: z.number().positive(),
+  title: z.string().max(200).optional(),
+  slug: z.string().regex(/^[a-z0-9-]+$/),
+  images: z.array(z.object({
+    url: z.string().url(),
+    order: z.number().int().positive(),
+  })).min(1, 'Chapter must have at least one image'),
+  releaseDate: z.date(),
+  published: z.boolean(),
+});
+
+// Add schemas for all other entities...
+```
+
+6.4 ADMIN SERVER ACTIONS
+------------------------
+Location: src/lib/actions/admin/*.ts
+
+Organize by entity:
+- admin/comics.ts
+- admin/chapters.ts
+- admin/users.ts
+- admin/genres.ts
+- etc.
+
+Each file should include:
+- createAction
+- updateAction
+- deleteAction
+- bulkDeleteAction
+- listAction (with pagination, filters)
+
+6.5 ADMIN LAYOUT & NAVIGATION
+-----------------------------
+Location: src/app/admin/layout.tsx
+
+Features:
+- Sidebar with collapsible sections
+- Dashboard overview
+- Quick stats (total users, comics, chapters, etc.)
+- Recent activity feed
+- Search global functionality
+- User profile dropdown
+- Dark mode toggle
+- Responsive mobile menu
+- Breadcrumb navigation
+- Role-based menu items
+
+================================================================================
+7. USER PROFILE PAGES
+================================================================================
+
+CREATE THE FOLLOWING PROFILE PAGES:
+
+7.1 View Profile - src/app/(root)/profile/page.tsx
+   Features:
+   - Display user information (name, email, avatar)
+   - User bio
+   - Join date
+   - Statistics:
+     * Total bookmarks
+     * Comics read
+     * Chapters read
+     * Reading time
+   - Recent activity timeline
+   - Achievement badges (optional)
+   - Social links (optional)
+
+7.2 Edit Profile - src/app/(root)/profile/edit/page.tsx
+   Features:
+   - Form to update name, bio
+   - Avatar upload with crop
+   - Email update (requires verification)
+   - Social links management
+   - Privacy settings
+   - Save/Cancel actions
+
+7.3 Change Password - src/app/(root)/profile/change-password/page.tsx
+   Features:
+   - Current password verification
+   - New password with strength meter
+   - Confirm new password
+   - Validation and error handling
+
+7.4 Settings - src/app/(root)/profile/settings/page.tsx
+   Features:
+   - Notification preferences
+     * Email notifications
+     * New chapter alerts
+     * Comment replies
+   - Privacy settings
+     * Profile visibility
+     * Reading history visibility
+   - Account actions
+     * Export data
+     * Delete account (with confirmation)
+   - Theme preferences
+     * Light/Dark mode
+     * Reading preferences
+
+================================================================================
+8. COMIC LISTING & DETAILS PAGES (with Bookmark Functionality)
+================================================================================
+
+8.1 COMIC LISTING PAGE
+----------------------
+Location: src/app/(root)/comics/page.tsx
+
+Features:
+- Grid layout (responsive: 2-6 columns)
+- Comic cards with:
+  * Cover image (Next/Image optimized)
+  * Title
+  * Rating (stars)
+  * Status badge
+  * Genre badges (first 2-3)
+  * Latest chapter
+  * View count
+  * Bookmark indicator
+- Advanced filters:
+  * Genre (multi-select)
+  * Type (select)
+  * Status (select)
+  * Release year (range)
+  * Rating (range)
+- Sort options:
+  * Latest updates
+  * Most popular
+  * Highest rated
+  * A-Z
+  * Release year
+- Search functionality
+  * Fuzzy search by title
+  * Search by author/artist
+- Pagination or Infinite scroll
+- Loading skeletons
+- Empty state with suggestions
+
+8.2 COMIC DETAILS PAGE
+----------------------
+Location: src/app/(root)/comics/[slug]/page.tsx
+
+Layout:
+- Hero section with cover image (large, blur background)
+- Title and alternative titles
+- Author & Artist (clickable links)
+- Rating with review count
+- Genres (clickable badges)
+- Type and Status
+- Release year
+- View count
+- Description (collapsible if long)
+- **Bookmark Actions Component** (Add/Remove)
+- **Read First Chapter CTA**
+- Chapter list section:
+  * Sort (ascending/descending)
+  * Chapter cards with:
+    - Chapter number & title
+    - Release date
+    - Read status indicator
+    - Download button (optional)
+- Related comics carousel
+- Comments section (optional)
+- Share buttons (social media)
+
+8.3 BOOKMARK ADD/REMOVE FUNCTIONALITY
+-------------------------------------
+
+CREATE COMPONENTS:
+
+1. AddToBookmarkButton - src/components/comics/AddToBookmarkButton.tsx
+   Features:
+   - Icon button (bookmark outline)
+   - Click to show status dropdown:
+     * Reading
+     * Plan to Read
+     * Completed
+     * Dropped
+     * On Hold
+   - Optimistic UI update
+   - Loading state
+   - Success toast notification
+   - Error handling
+
+2. RemoveFromBookmarkButton - src/components/comics/RemoveFromBookmarkButton.tsx
+   Features:
+   - Icon button (filled bookmark)
+   - Confirmation dialog
+   - Optimistic UI update
+   - Success toast
+   - Error handling
+
+3. BookmarkStatus - src/components/comics/BookmarkStatus.tsx
+   Features:
+   - Display current bookmark status (badge)
+   - Quick status change dropdown
+   - Progress indicator (chapters read / total)
+   - Last read chapter link
+   - Update reading progress
+
+Implementation Example:
+
+```typescript
+// src/components/comics/BookmarkActions.tsx
+'use client';
+
+import { useState, useTransition } from 'react';
+import { addToBookmarksAction, removeFromBookmarksAction } from '@/lib/actions/bookmarks';
+import { Button } from '@/components/ui/button';
+import { BookmarkIcon, BookmarkFilledIcon } from '@/components/icons';
+import { toast } from 'sonner';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+
+type BookmarkStatus = 'Reading' | 'PlanToRead' | 'Completed' | 'Dropped' | 'OnHold';
+
+interface BookmarkActionsProps {
+  comicId: number;
+  comicSlug: string;
+  isBookmarked: boolean;
+  currentStatus?: BookmarkStatus;
+}
+
+export function BookmarkActions({
+  comicId,
+  comicSlug,
+  isBookmarked,
+  currentStatus,
+}: BookmarkActionsProps) {
+  const [bookmarked, setBookmarked] = useState(isBookmarked);
+  const [status, setStatus] = useState<BookmarkStatus | undefined>(currentStatus);
+  const [isPending, startTransition] = useTransition();
+
+  const handleAddBookmark = (selectedStatus: BookmarkStatus) => {
+    startTransition(async () => {
+      setBookmarked(true);
+      setStatus(selectedStatus);
+
+      const result = await addToBookmarksAction({
+        comicId,
+        status: selectedStatus,
+      });
+
+      if (result.success) {
+        toast.success(`Added to ${selectedStatus}!`);
+      } else {
+        setBookmarked(false);
+        setStatus(undefined);
+        toast.error(result.error || 'Failed to add bookmark');
+      }
+    });
+  };
+
+  const handleRemoveBookmark = () => {
+    startTransition(async () => {
+      setBookmarked(false);
+      setStatus(undefined);
+
+      const result = await removeFromBookmarksAction({ comicId });
+
+      if (result.success) {
+        toast.success('Removed from bookmarks');
+      } else {
+        setBookmarked(true);
+        setStatus(currentStatus);
+        toast.error(result.error || 'Failed to remove bookmark');
+      }
+    });
+  };
+
+  if (bookmarked) {
+    return (
+      <div className="flex items-center gap-2">
+        <Button
+          variant="outline"
+          onClick={handleRemoveBookmark}
+          disabled={isPending}
+          className="gap-2"
+        >
+          <BookmarkFilledIcon className="h-4 w-4" />
+          {status}
+        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" disabled={isPending}>
+              Change Status
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            {(['Reading', 'PlanToRead', 'Completed', 'Dropped', 'OnHold'] as const).map(
+              (s) => (
+                <DropdownMenuItem
+                  key={s}
+                  onClick={() => handleAddBookmark(s)}
+                >
+                  {s}
+                </DropdownMenuItem>
+              )
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    );
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button disabled={isPending} className="gap-2">
+          <BookmarkIcon className="h-4 w-4" />
+          Add to Bookmarks
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        {(['Reading', 'PlanToRead', 'Completed', 'Dropped', 'OnHold'] as const).map(
+          (s) => (
+            <DropdownMenuItem
+              key={s}
+              onClick={() => handleAddBookmark(s)}
+            >
+              {s}
+            </DropdownMenuItem>
+          )
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+```
+
+================================================================================
+9. CHAPTER READER PAGES (with Image Gallery)
+================================================================================
+
+9.1 CHAPTER READER PAGE
+-----------------------
+Location: src/app/(root)/comics/[slug]/[chapterSlug]/page.tsx
+
+Features:
+- Full-screen reading mode
+- Chapter navigation (prev/next)
+- Image viewer with multiple modes:
+  * Vertical scroll (default)
+  * Horizontal page-by-page
+  * Double page spread
+  * Fit to width
+  * Fit to height
+  * Original size
+- Image preloading (next 2-3 images)
+- Lazy loading
+- Zoom controls (pinch/buttons)
+- Page indicator (current / total)
+- Progress bar
+- Keyboard navigation:
+  * Arrow keys (navigate)
+  * Space (next page)
+  * F (fullscreen toggle)
+  * ESC (exit reader)
+- Touch gestures:
+  * Swipe left/right (navigate)
+  * Pinch zoom
+  * Double tap (zoom toggle)
+- Reading settings panel:
+  * Background color (white/black/sepia)
+  * Reading mode
+  * Image quality
+  * Preload count
+- Auto-bookmark last read page
+- Chapter list dropdown (quick jump)
+- Comments toggle
+- Share current page
+
+9.2 IMAGE GALLERY COMPONENT
+---------------------------
+Use third-party package: react-photo-view or yet-another-react-lightbox
+
+Installation:
+```powershell
+pnpm add yet-another-react-lightbox
+```
+
+Implementation:
+
+```typescript
+// src/components/chapters/ChapterReader.tsx
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
+import Lightbox from 'yet-another-react-lightbox';
+import 'yet-another-react-lightbox/styles.css';
+import Zoom from 'yet-another-react-lightbox/plugins/zoom';
+import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
+
+interface ChapterImage {
+  url: string;
+  order: number;
+}
+
+interface ChapterReaderProps {
+  images: ChapterImage[];
+  chapterTitle: string;
+  comicSlug: string;
+  chapterSlug: string;
+}
+
+export function ChapterReader({
+  images,
+  chapterTitle,
+  comicSlug,
+  chapterSlug,
+}: ChapterReaderProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [readingMode, setReadingMode] = useState<'vertical' | 'horizontal'>('vertical');
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        setCurrentIndex((prev) => Math.min(prev + 1, images.length - 1));
+      } else if (e.key === 'ArrowLeft') {
+        setCurrentIndex((prev) => Math.max(prev - 1, 0));
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [images.length]);
+
+  // Auto-save reading progress
+  useEffect(() => {
+    // TODO: Save current page to database
+    console.log('Saving progress:', currentIndex);
+  }, [currentIndex]);
+
+  if (readingMode === 'vertical') {
+    return (
+      <div className="chapter-reader-vertical">
+        {images.map((image, index) => (
+          <div key={image.order} className="chapter-page">
+            <Image
+              src={image.url}
+              alt={`Page ${index + 1}`}
+              width={1200}
+              height={1800}
+              loading={index < 3 ? 'eager' : 'lazy'}
+              priority={index === 0}
+            />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // Horizontal mode uses Lightbox
+  return (
+    <Lightbox
+      open={true}
+      index={currentIndex}
+      slides={images.map((img) => ({ src: img.url }))}
+      plugins={[Zoom, Fullscreen]}
+      on={{
+        view: ({ index }) => setCurrentIndex(index),
+      }}
+    />
+  );
+}
+```
+
+9.3 CHAPTER LIST COMPONENT
+--------------------------
+Location: src/components/chapters/ChapterList.tsx
+
+Features:
+- List all chapters for a comic
+- Chapter number & title
+- Release date (relative time)
+- Read status indicator (checkmark/progress)
+- Mark as read/unread toggle
+- Download chapter (optional)
+- Sort order toggle (asc/desc)
+- Compact/expanded view
+- Virtualization for long lists
+
+================================================================================
+10. BOOKMARK MANAGEMENT SYSTEM
+================================================================================
+
+10.1 MY BOOKMARKS PAGE
+----------------------
+Location: src/app/(root)/bookmarks/page.tsx
+
+Features:
+- Tabs for each status:
+  * All
+  * Reading
+  * Plan to Read
+  * Completed
+  * Dropped
+  * On Hold
+- Comic cards similar to listing page
+- Additional info:
+  * Reading progress (X / Y chapters)
+  * Last read chapter
+  * Last updated
+- Filter options:
+  * Genre
+  * Type
+  * Sort by (last updated, title, rating)
+- Search within bookmarks
+- Bulk actions:
+  * Change status
+  * Remove from bookmarks
+- Grid/List view toggle
+- Pagination
+
+10.2 BOOKMARK DETAILS PAGE
+--------------------------
+Location: src/app/(root)/bookmarks/[id]/page.tsx
+
+Features:
+- Full comic details
+- Current bookmark status
+- Reading progress chart
+- Last read chapter (with continue reading button)
+- Personal notes (textarea)
+- Personal rating (stars)
+- Started reading date
+- Completed date (if applicable)
+- Update status dropdown
+- Remove bookmark button
+
+10.3 BOOKMARK ZOD SCHEMAS
+-------------------------
+Location: src/schemas/bookmarkSchemas.ts
+
+```typescript
+import { z } from 'zod';
+
+export const createBookmarkSchema = z.object({
+  comicId: z.number().int().positive(),
+  status: z.enum(['Reading', 'PlanToRead', 'Completed', 'Dropped', 'OnHold']),
+  notes: z.string().max(1000).optional(),
+  rating: z.number().min(0).max(5).optional(),
+});
+
+export const updateBookmarkSchema = z.object({
+  status: z.enum(['Reading', 'PlanToRead', 'Completed', 'Dropped', 'OnHold']).optional(),
+  currentChapterId: z.number().int().positive().optional(),
+  notes: z.string().max(1000).optional(),
+  rating: z.number().min(0).max(5).optional(),
+});
+
+export const updateProgressSchema = z.object({
+  bookmarkId: z.number().int().positive(),
+  chapterId: z.number().int().positive(),
+  pageNumber: z.number().int().min(1).optional(),
+});
+```
+
+10.4 BOOKMARK SERVER ACTIONS
+----------------------------
+Location: src/lib/actions/bookmarks.ts
+
+```typescript
+'use server';
+
+import { z } from 'zod';
+import { auth } from '@/lib/auth';
+import { db } from '@/database/client';
+import { bookmarks, readingProgress } from '@/database/schema';
+import { eq, and } from 'drizzle-orm';
+import { createBookmarkSchema, updateBookmarkSchema } from '@/schemas/bookmarkSchemas';
+import { revalidatePath } from 'next/cache';
+
+export async function addToBookmarksAction(
+  values: z.infer<typeof createBookmarkSchema>
+) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return { error: 'Not authenticated' };
+    }
+
+    const validated = createBookmarkSchema.parse(values);
+
+    // Check if bookmark already exists
+    const existing = await db.query.bookmarks.findFirst({
+      where: and(
+        eq(bookmarks.userId, Number(session.user.id)),
+        eq(bookmarks.comicId, validated.comicId)
+      ),
+    });
+
+    if (existing) {
+      return { error: 'Already bookmarked' };
+    }
+
+    await db.insert(bookmarks).values({
+      userId: Number(session.user.id),
+      comicId: validated.comicId,
+      status: validated.status,
+      notes: validated.notes,
+      rating: validated.rating,
+    });
+
+    revalidatePath('/bookmarks');
+    revalidatePath(`/comics/${validated.comicId}`);
+
+    return { success: true };
+  } catch (error) {
+    console.error('Add bookmark error:', error);
+    return { error: 'Failed to add bookmark' };
+  }
+}
+
+export async function removeFromBookmarksAction(values: { comicId: number }) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return { error: 'Not authenticated' };
+    }
+
+    await db.delete(bookmarks).where(
+      and(
+        eq(bookmarks.userId, Number(session.user.id)),
+        eq(bookmarks.comicId, values.comicId)
+      )
+    );
+
+    revalidatePath('/bookmarks');
+    revalidatePath(`/comics/${values.comicId}`);
+
+    return { success: true };
+  } catch (error) {
+    console.error('Remove bookmark error:', error);
+    return { error: 'Failed to remove bookmark' };
+  }
+}
+
+export async function updateBookmarkProgressAction(values: {
+  comicId: number;
+  chapterId: number;
+  pageNumber?: number;
+}) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return { error: 'Not authenticated' };
+    }
+
+    // Get bookmark
+    const bookmark = await db.query.bookmarks.findFirst({
+      where: and(
+        eq(bookmarks.userId, Number(session.user.id)),
+        eq(bookmarks.comicId, values.comicId)
+      ),
+    });
+
+    if (!bookmark) {
+      return { error: 'Bookmark not found' };
+    }
+
+    // Update or create reading progress
+    await db.insert(readingProgress).values({
+      bookmarkId: bookmark.id,
+      chapterId: values.chapterId,
+      pageNumber: values.pageNumber || 1,
+      completedAt: null,
+    }).onConflictDoUpdate({
+      target: [readingProgress.bookmarkId, readingProgress.chapterId],
+      set: {
+        pageNumber: values.pageNumber || 1,
+        updatedAt: new Date(),
+      },
+    });
+
+    revalidatePath('/bookmarks');
+
+    return { success: true };
+  } catch (error) {
+    console.error('Update progress error:', error);
+    return { error: 'Failed to update progress' };
+  }
+}
+
+// Add other bookmark actions...
+```
+
+================================================================================
+11. DATABASE SEEDING SYSTEM (Optimized & Validated)
+================================================================================
+
+11.1 DATA SOURCES
+----------------
+- @users.json
+- @comics.json
+- @comicsdata1.json
+- @comicsdata2.json
+- @chapters.json
+- @chaptersdata1.json
+- @chaptersdata2.json
+
+11.2 REQUIREMENTS
+----------------
+✓ Dynamic & Fast - Batch inserts, parallel processing
+✓ Validated onConflictDoUpdate - Upsert functionality
+✓ Zod Validation - Validate all data before insertion
+✓ Password Encryption - Use CUSTOM_PASSWORD env variable with bcryptjs
+✓ Image Download Optimization:
+  - Check if file exists in filesystem
+  - Check if URL exists in database
+  - Download only if not found
+  - Save with original filename and extension
+  - Retry logic for failed downloads
+✓ Comprehensive Logging - Clear logs for each operation
+
+11.3 IMAGE STORAGE PATHS
+------------------------
+- Comic covers: public/comics/covers/${comic.slug}/cover.{ext}
+- Comic fallback: public/placeholder-comic.jpg
+- Chapter images: public/comics/chapters/${comic.slug}/${chapter.slug}/{order}.{ext}
+- User avatars: public/shadcn.jpg (default)
+
+11.4 HELPER FUNCTIONS
+--------------------
+Create at src/database/seed/helpers/
+
+1. imageDownloader.ts
+```typescript
+import fs from 'fs/promises';
+import path from 'path';
+import { existsSync } from 'fs';
+
+export async function downloadImage(url: string, destination: string): Promise<string> {
+  try {
+    // Check if file already exists
+    if (existsSync(destination)) {
+      console.log(`Image already exists: ${destination}`);
+      return destination;
+    }
+
+    // Create directory if not exists
+    const dir = path.dirname(destination);
+    await fs.mkdir(dir, { recursive: true });
+
+    // Download image
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to download: ${response.statusText}`);
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    // Save image
+    await fs.writeFile(destination, buffer);
+    console.log(`Downloaded: ${destination}`);
+
+    return destination;
+  } catch (error) {
+    console.error(`Download failed for ${url}:`, error);
+    throw error;
+  }
+}
+
+export function getImageExtension(url: string): string {
+  const match = url.match(/\.(jpg|jpeg|png|gif|webp)$/i);
+  return match ? match[1].toLowerCase() : 'jpg';
+}
+
+export async function checkImageExists(filePath: string): Promise<boolean> {
+  return existsSync(filePath);
+}
+```
+
+2. validationSchemas.ts
+```typescript
+import { z } from 'zod';
+
+export const userSeedSchema = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+  password: z.string().optional(),
+  role: z.enum(['admin', 'user']).default('user'),
+  avatar: z.string().url().optional(),
+});
+
+export const comicSeedSchema = z.object({
+  title: z.string().min(1),
+  alternativeTitles: z.array(z.string()).optional(),
+  description: z.string().min(1),
+  slug: z.string().min(1),
+  coverImage: z.string().url(),
+  status: z.enum(['Ongoing', 'Completed', 'Hiatus', 'Cancelled']),
+  releaseYear: z.number().int().optional(),
+  authorName: z.string().optional(),
+  artistName: z.string().optional(),
+  typeName: z.string().optional(),
+  genres: z.array(z.string()).optional(),
+});
+
+export const chapterSeedSchema = z.object({
+  comicSlug: z.string().min(1),
+  chapterNumber: z.number().positive(),
+  title: z.string().optional(),
+  slug: z.string().min(1),
+  images: z.array(z.object({
+    url: z.string().url(),
+    order: z.number().int().positive(),
+  })),
+  releaseDate: z.string().datetime().optional(),
+});
+```
+
+3. passwordHelper.ts
+```typescript
+import bcrypt from 'bcryptjs';
+import { env } from '@/lib/env';
+
+export async function hashPassword(password?: string): Promise<string> {
+  const pwd = password || env.CUSTOM_PASSWORD;
+  return bcrypt.hash(pwd, 10);
+}
+
+export function getDefaultPassword(): string {
+  return env.CUSTOM_PASSWORD;
+}
+```
+
+4. seedLogger.ts
+```typescript
+export function logOperation(message: string, data?: unknown): void {
+  console.log(`[SEED] ${message}`, data ? JSON.stringify(data, null, 2) : '');
+}
+
+export function logProgress(current: number, total: number, label: string): void {
+  const percentage = ((current / total) * 100).toFixed(2);
+  console.log(`[PROGRESS] ${label}: ${current}/${total} (${percentage}%)`);
+}
+
+export function logSuccess(message: string): void {
+  console.log(`✅ [SUCCESS] ${message}`);
+}
+
+export function logError(error: unknown, context?: string): void {
+  console.error(`❌ [ERROR] ${context || 'Unknown error'}:`, error);
+}
+```
+
+5. batchProcessor.ts
+```typescript
+export async function processBatch<T>(
+  items: T[],
+  batchSize: number,
+  processor: (batch: T[]) => Promise<void>
+): Promise<void> {
+  const chunks = chunkArray(items, batchSize);
+
+  for (let i = 0; i < chunks.length; i++) {
+    console.log(`Processing batch ${i + 1}/${chunks.length}`);
+    await processor(chunks[i]);
+  }
+}
+
+export function chunkArray<T>(array: T[], size: number): T[][] {
+  const chunks: T[][] = [];
+  for (let i = 0; i < array.length; i += size) {
+    chunks.push(array.slice(i, i + size));
+  }
+  return chunks;
+}
+```
+
+11.5 SEEDER FILES
+----------------
+Create at src/database/seed/seeders/
+
+Structure:
+```
+src/database/seed/
+├── helpers/
+│   ├── imageDownloader.ts
+│   ├── validationSchemas.ts
+│   ├── passwordHelper.ts
+│   ├── seedLogger.ts
+│   └── batchProcessor.ts
+├── seeders/
+│   ├── userSeeder.ts
+│   ├── comicSeeder.ts
+│   ├── chapterSeeder.ts
+│   ├── genreSeeder.ts
+│   ├── authorSeeder.ts
+│   ├── artistSeeder.ts
+│   └── typeSeeder.ts
+├── index.ts (orchestrator)
+└── run.ts (CLI entry point)
+```
+
+11.6 MAIN SEED ORCHESTRATOR
+---------------------------
+src/database/seed/index.ts
+
+```typescript
+import { seedUsers } from './seeders/userSeeder';
+import { seedGenres } from './seeders/genreSeeder';
+import { seedAuthors } from './seeders/authorSeeder';
+import { seedArtists } from './seeders/artistSeeder';
+import { seedTypes } from './seeders/typeSeeder';
+import { seedComics } from './seeders/comicSeeder';
+import { seedChapters } from './seeders/chapterSeeder';
+import { logSuccess, logError } from './helpers/seedLogger';
+
+export async function runSeed(dryRun = false) {
+  try {
+    console.log('🚀 Starting database seed...');
+    console.log(`Mode: ${dryRun ? 'DRY RUN' : 'ACTUAL'}`);
+
+    // Seed in order (respecting foreign keys)
+    await seedUsers(dryRun);
+    await seedGenres(dryRun);
+    await seedAuthors(dryRun);
+    await seedArtists(dryRun);
+    await seedTypes(dryRun);
+    await seedComics(dryRun);
+    await seedChapters(dryRun);
+
+    logSuccess('Database seed completed successfully!');
+  } catch (error) {
+    logError(error, 'Seed failed');
+    throw error;
+  }
+}
+```
+
+11.7 VALIDATION & TESTING
+-------------------------
+Commands:
+```powershell
+# Dry run (no database changes)
+pnpm db:seed:dry-run
+
+# Full seed
+pnpm db:seed
+
+# Seed specific table
+pnpm db:seed:users
+pnpm db:seed:comics
+```
+
+Fix all:
+- Database errors (unique constraints, foreign keys)
+- Validation errors (Zod schema failures)
+- Data integrity warnings
+- Image download failures
+
+================================================================================
+12. IMAGE HANDLING & OPTIMIZATION
+================================================================================
+
+12.1 IMAGE SERVICE
+------------------
+Location: src/services/imageService.ts
+
+Features:
+- Download images from URLs
+- Validate image format (JPEG, PNG, WebP, GIF)
+- Resize/compress images
+- Generate thumbnails
+- Convert to WebP
+- Store in organized directories
+- Cache image URLs
+- Handle CDN integration
+
+12.2 IMAGE OPTIMIZATION
+----------------------
+- Use Next.js Image component everywhere
+- Set appropriate sizes and quality
+- Use blur placeholders
+- Lazy load below-the-fold images
+- Implement responsive images
+- Convert to WebP format
+- Compress images (80-85% quality)
+- Set proper caching headers
+
+12.3 IMAGE STORAGE STRUCTURE
+----------------------------
+```
+public/
+├── uploads/
+│   ├── comics/
+│   │   ├── covers/
+│   │   │   ├── {slug}/
+│   │   │   │   └── cover.webp
+│   │   └── chapters/
+│   │       ├── {comic-slug}/
+│   │       │   ├── {chapter-slug}/
+│   │       │   │   ├── 001.webp
+│   │       │   │   ├── 002.webp
+│   ├── avatars/
+│   │   ├── {user-id}.webp
+│   └── temp/
+├── placeholder-comic.jpg
+└── shadcn.jpg (default avatar)
+```
+
+================================================================================
+13. FOLDER STRUCTURE OPTIMIZATION
+================================================================================
+
+CURRENT STRUCTURE REVIEW:
+-------------------------
+Analyze and optimize:
+- Remove empty directories
+- Consolidate duplicate folders
+- Organize by feature/domain
+- Implement barrel exports (index.ts)
+- Separate concerns (UI, logic, data)
+
+RECOMMENDED STRUCTURE:
+---------------------
+```
+src/
+├── app/
+│   ├── (auth)/           # Auth pages
+│   │   ├── sign-in/
+│   │   ├── sign-up/
+│   │   ├── forgot-password/
+│   │   └── reset-password/
+│   ├── (root)/           # Public pages
+│   │   ├── page.tsx
+│   │   ├── comics/
+│   │   │   ├── page.tsx
+│   │   │   └── [slug]/
+│   │   │       ├── page.tsx
+│   │   │       └── [chapterSlug]/
+│   │   │           └── page.tsx
+│   │   ├── bookmarks/
+│   │   │   ├── page.tsx
+│   │   │   └── [id]/
+│   │   │       └── page.tsx
+│   │   └── profile/
+│   │       ├── page.tsx
+│   │       ├── edit/
+│   │       ├── change-password/
+│   │       └── settings/
+│   ├── admin/            # Admin pages
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   ├── users/
+│   │   ├── comics/
+│   │   ├── chapters/
+│   │   ├── genres/
+│   │   ├── authors/
+│   │   ├── artists/
+│   │   └── types/
+│   └── api/              # API routes
+│       ├── auth/
+│       └── webhooks/
+├── components/
+│   ├── ui/               # shadcn/ui components
+│   ├── auth/             # Auth components
+│   ├── admin/            # Admin components
+│   ├── comics/           # Comic components
+│   ├── chapters/         # Chapter components
+│   ├── bookmarks/        # Bookmark components
+│   └── layout/           # Layout components
+├── lib/
+│   ├── actions/          # Server actions
+│   │   ├── auth.ts
+│   │   ├── bookmarks.ts
+│   │   └── admin/
+│   ├── hooks/            # Custom hooks
+│   ├── utils/            # Utility functions
+│   ├── auth.ts           # NextAuth config
+│   └── env.ts            # Environment validation
+├── database/
+│   ├── schema/           # Drizzle schema
+│   ├── migrations/       # SQL migrations
+│   ├── seed/             # Seed system
+│   └── client.ts         # DB client
+├── schemas/              # Zod schemas
+│   ├── authSchemas.ts
+│   ├── adminSchemas.ts
+│   └── bookmarkSchemas.ts
+├── services/             # Business logic
+│   ├── imageService.ts
+│   ├── emailService.ts
+│   └── cacheService.ts
+└── types/                # TypeScript types
+    ├── database.ts
+    └── api.ts
+```
+
+================================================================================
+14. REFACTORING WITH AST-BASED TOOLS (jscodeshift/ts-morph)
+================================================================================
+
+14.1 INSTALL TOOLS
+------------------
+```powershell
+pnpm add -D jscodeshift @types/jscodeshift ts-morph
+```
+
+14.2 COMMON REFACTORING TASKS
+-----------------------------
+
+1. Convert 'any' to specific types
+   - Analyze usage context
+   - Infer proper types
+   - Add generic constraints where needed
+
+2. Extract duplicated code
+   - Find similar patterns
+   - Extract to utility functions
+   - Create generic components
+
+3. Modernize syntax
+   - Convert class components to functional
+   - Use modern React patterns
+   - Apply TypeScript best practices
+
+4. Optimize imports
+   - Remove unused imports
+   - Sort imports alphabetically
+   - Use barrel imports
+
+14.3 CREATE CODEMOD SCRIPTS
+---------------------------
+Location: scripts/codemods/
+
+Examples:
+
+1. convert-any-to-specific.ts
+```typescript
+import { Project } from 'ts-morph';
+
+const project = new Project({
+  tsConfigFilePath: 'tsconfig.json',
+});
+
+const sourceFiles = project.getSourceFiles('src/**/*.ts');
+
+for (const sourceFile of sourceFiles) {
+  const anyTypes = sourceFile.getDescendantsOfKind(SyntaxKind.AnyKeyword);
+
+  anyTypes.forEach((anyType) => {
+    const parent = anyType.getParent();
+    // Analyze context and replace with specific type
+    // This is a simplified example
+    console.log(`Found 'any' at: ${sourceFile.getFilePath()}`);
+  });
+}
+
+project.save();
+```
+
+2. extract-duplicates.ts
+3. optimize-imports.ts
+4. modernize-components.ts
+
+14.4 RUN CODEMODS
+----------------
+```powershell
+# Convert any types
+pnpm codemod:convert-any
+
+# Extract duplicates
+pnpm codemod:extract-duplicates
+
+# Optimize imports
+pnpm codemod:optimize-imports
+```
+
+================================================================================
+15. SCRIPTS CLI OPTIMIZATION
+================================================================================
+
+15.1 COMPLETE COMMAND-LINE INTERFACE
+------------------------------------
+Create a unified CLI at: scripts/cli.ts
+
+Features:
+- Interactive menu
+- Colorized output
+- Progress indicators
+- Error handling
+- Logging to files
+- Dry-run mode for destructive operations
+
+Commands to include:
+```
+comicwise-cli
+├── dev           # Development server
+├── build         # Production build
+├── test          # Run tests
+│   ├── unit
+│   ├── integration
+│   └── e2e
+├── db            # Database operations
+│   ├── migrate
+│   ├── seed
+│   ├── reset
+│   └── backup
+├── analyze       # Code analysis
+│   ├── performance
+│   ├── security
+│   ├── quality
+│   └── bundle
+├── cleanup       # Cleanup operations
+│   ├── duplicates
+│   ├── unused
+│   └── backups
+├── generate      # Code generation
+│   ├── component
+│   ├── page
+│   ├── action
+│   └── docs
+├── deploy        # Deployment
+│   ├── staging
+│   └── production
+└── git           # Git operations
+    ├── init
+    ├── commit
+    └── push
+```
+
+15.2 IMPLEMENTATION
+------------------
+Use packages:
+```powershell
+pnpm add -D commander inquirer ora chalk
+```
+
+Example CLI structure:
+
+```typescript
+// scripts/cli.ts
+import { Command } from 'commander';
+import chalk from 'chalk';
+import ora from 'ora';
+
+const program = new Command();
+
+program
+  .name('comicwise-cli')
+  .description('ComicWise Platform CLI')
+  .version('1.0.0');
+
+program
+  .command('db:seed')
+  .description('Seed database with sample data')
+  .option('--dry-run', 'Run without making changes')
+  .action(async (options) => {
+    const spinner = ora('Seeding database...').start();
+
+    try {
+      // Run seed logic
+      spinner.succeed('Database seeded successfully!');
+    } catch (error) {
+      spinner.fail('Seed failed');
+      console.error(chalk.red(error));
+    }
+  });
+
+// Add more commands...
+
+program.parse();
+```
+
+15.3 UPDATE PACKAGE.JSON SCRIPTS
+--------------------------------
+```json
+{
+  "scripts": {
+    "cli": "tsx scripts/cli.ts",
+    "dev": "pnpm cli dev",
+    "build": "pnpm cli build",
+    "db:seed": "pnpm cli db:seed",
+    "db:seed:dry-run": "pnpm cli db:seed --dry-run",
+    "analyze": "pnpm cli analyze",
+    "cleanup": "pnpm cli cleanup",
+    "deploy:staging": "pnpm cli deploy staging",
+    "deploy:production": "pnpm cli deploy production"
+  }
+}
+```
+
+================================================================================
+16. VS CODE CONFIGURATION
+================================================================================
+
+16.1 MCP CONFIGURATION (.vscode/mcp.json)
+-----------------------------------------
+```json
+{
+  "mcpServers": {
+    "next": {
+      "command": "npx",
+      "args": ["next-mcp"],
+      "env": {}
+    },
+    "postgres": {
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-postgres"],
+      "env": {
+        "POSTGRES_CONNECTION_STRING": "${env:DATABASE_URL}"
+      }
+    },
+    "redis": {
+      "command": "npx",
+      "args": ["redis-mcp"],
+      "env": {
+        "REDIS_URL": "${env:UPSTASH_REDIS_REST_URL}"
+      }
+    }
+  }
+}
+```
+
+16.2 EXTENSIONS (.vscode/extensions.json)
+-----------------------------------------
+```json
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    "pflannery.vscode-versionlens",
+    "ms-vscode.vscode-typescript-next",
+    "streetsidesoftware.code-spell-checker",
+    "github.copilot",
+    "github.copilot-chat"
+  ]
+}
+```
+
+16.3 LAUNCH CONFIGURATION (.vscode/launch.json)
+-----------------------------------------------
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Next.js: debug server-side",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm dev"
+    },
+    {
+      "name": "Next.js: debug client-side",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3000"
+    }
+  ]
+}
+```
+
+16.4 TASKS (.vscode/tasks.json)
+-------------------------------
+```json
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build Project",
+      "type": "shell",
+      "command": "pnpm build",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Run Tests",
+      "type": "shell",
+      "command": "pnpm test",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Seed Database",
+      "type": "shell",
+      "command": "pnpm db:seed"
+    }
+  ]
+}
+```
+
+16.5 SETTINGS (.vscode/settings.json)
+-------------------------------------
+```json
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ],
+  "files.exclude": {
+    "**/.next": true,
+    "**/node_modules": true
+  }
+}
+```
+
+================================================================================
+17. TESTING SUITE (100% Coverage)
+================================================================================
+
+17.1 TESTING STACK
+------------------
+- Vitest: Unit & Integration tests
+- Playwright: E2E tests
+- Testing Library: React component tests
+- MSW: API mocking
+
+17.2 TEST STRUCTURE
+-------------------
+```
+src/
+├── __tests__/
+│   ├── unit/
+│   │   ├── components/
+│   │   ├── lib/
+│   │   └── utils/
+│   ├── integration/
+│   │   ├── api/
+│   │   └── actions/
+│   └── e2e/
+│       ├── auth.spec.ts
+│       ├── comics.spec.ts
+│       └── admin.spec.ts
+```
+
+17.3 UNIT TESTS
+--------------
+Test all:
+- Components (render, props, events)
+- Utilities (pure functions)
+- Hooks (state management)
+- Schemas (validation)
+
+Example:
+```typescript
+// src/__tests__/unit/components/BookmarkActions.test.tsx
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { BookmarkActions } from '@/components/comics/BookmarkActions';
+import { addToBookmarksAction } from '@/lib/actions/bookmarks';
+
+vi.mock('@/lib/actions/bookmarks');
+
+describe('BookmarkActions', () => {
+  it('should add bookmark when clicked', async () => {
+    const mockAdd = vi.fn().mockResolvedValue({ success: true });
+    (addToBookmarksAction as any).mockImplementation(mockAdd);
+
+    render(
+      <BookmarkActions
+        comicId={1}
+        comicSlug="test-comic"
+        isBookmarked={false}
+      />
+    );
+
+    const button = screen.getByText('Add to Bookmarks');
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(mockAdd).toHaveBeenCalledWith({
+        comicId: 1,
+        status: expect.any(String),
+      });
+    });
+  });
+});
+```
+
+17.4 INTEGRATION TESTS
+---------------------
+Test:
+- API routes
+- Server actions
+- Database operations
+
+17.5 E2E TESTS
+-------------
+Test complete user flows:
+- Sign up → Sign in → Browse comics → Bookmark → Read chapter
+- Admin: Create comic → Add chapters → Publish
+- Profile management
+
+17.6 COVERAGE GOALS
+------------------
+- Unit tests: 90%+
+- Integration tests: 80%+
+- E2E tests: Critical paths
+- Overall: 85%+
+
+Commands:
+```powershell
+# Run all tests
+pnpm test
+
+# Unit tests only
+pnpm test:unit
+
+# Integration tests
+pnpm test:integration
+
+# E2E tests
+pnpm test:e2e
+
+# Coverage report
+pnpm test:coverage
+```
+
+================================================================================
+18. PERFORMANCE OPTIMIZATION
+================================================================================
+
+18.1 BUNDLE OPTIMIZATION
+-----------------------
+- Code splitting by route
+- Dynamic imports for heavy components
+- Tree shaking unused code
+- Minification and compression
+- Analyze bundle with @next/bundle-analyzer
+
+18.2 CACHING STRATEGY
+--------------------
+- Redis for session data
+- React Query for client-side data
+- API route caching (stale-while-revalidate)
+- Static page generation where possible
+- CDN for static assets
+
+18.3 DATABASE OPTIMIZATION
+-------------------------
+- Add indexes on frequently queried fields
+- Use connection pooling
+- Implement query batching
+- Optimize N+1 queries with eager loading
+- Use database views for complex queries
+
+18.4 IMAGE OPTIMIZATION
+----------------------
+- Next/Image component everywhere
+- WebP format conversion
+- Responsive images
+- Lazy loading
+- Blur placeholders
+- CDN delivery
+
+18.5 PERFORMANCE MONITORING
+--------------------------
+- Lighthouse CI
+- Web Vitals tracking
+- Sentry performance monitoring
+- Custom performance marks
+
+================================================================================
+19. CI/CD PIPELINE
+================================================================================
+
+19.1 GITHUB ACTIONS WORKFLOWS
+-----------------------------
+
+CREATE: .github/workflows/ci.yml
+```yaml
+name: CI
+
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+    branches: [main, development]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+
+  type-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm type-check
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:coverage
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [lint, type-check, test]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+```
+
+CREATE: .github/workflows/cd.yml
+```yaml
+name: CD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+```
+
+================================================================================
+20. DOCKER & DEPLOYMENT
+================================================================================
+
+20.1 DOCKERFILE
+--------------
+CREATE: Dockerfile
+
+```dockerfile
+FROM node:18-alpine AS base
+
+# Install pnpm
+RUN npm install -g pnpm
+
+# Dependencies stage
+FROM base AS deps
+WORKDIR /app
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+
+# Builder stage
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN pnpm build
+
+# Runner stage
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
+
+EXPOSE 3000
+
+ENV PORT 3000
+ENV HOSTNAME "0.0.0.0"
+
+CMD ["node", "server.js"]
+```
+
+20.2 DOCKER COMPOSE
+------------------
+CREATE: docker-compose.yml
+
+```yaml
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - NEXTAUTH_URL=${NEXTAUTH_URL}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: comicwise
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: comicwise
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:
+```
+
+Commands:
+```powershell
+# Build image
+docker build -t comicwise .
+
+# Run with compose
+docker-compose up -d
+
+# Stop
+docker-compose down
+```
+
+================================================================================
+21. ANALYTICS & MONITORING
+================================================================================
+
+21.1 SENTRY INTEGRATION
+-----------------------
+Already configured in:
+- sentry.client.config.ts
+- sentry.edge.config.ts
+- sentry.server.config.ts
+
+21.2 GOOGLE ANALYTICS
+--------------------
+CREATE: src/lib/analytics.ts
+
+```typescript
+export const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_ID;
+
+export function pageview(url: string) {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('config', GA_TRACKING_ID!, {
+      page_path: url,
+    });
+  }
+}
+
+export function event({ action, category, label, value }: {
+  action: string;
+  category: string;
+  label: string;
+  value?: number;
+}) {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', action, {
+      event_category: category,
+      event_label: label,
+      value: value,
+    });
+  }
+}
+```
+
+21.3 CUSTOM ANALYTICS
+--------------------
+Track:
+- Reading time per chapter
+- Popular comics
+- User engagement
+- Bookmark trends
+- Search queries
+
+================================================================================
+22. INTERNATIONALIZATION (i18n)
+================================================================================
+
+22.1 SETUP
+---------
+```powershell
+pnpm add next-intl
+```
+
+22.2 CONFIGURATION
+-----------------
+CREATE: src/i18n/config.ts
+
+```typescript
+export const locales = ['en', 'es', 'fr', 'de'] as const;
+export type Locale = typeof locales[number];
+
+export const defaultLocale: Locale = 'en';
+```
+
+22.3 TRANSLATION FILES
+---------------------
+CREATE: src/locales/en.json, es.json, etc.
+
+```json
+{
+  "common": {
+    "home": "Home",
+    "comics": "Comics",
+    "bookmarks": "Bookmarks",
+    "profile": "Profile"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out"
+  }
+}
+```
+
+================================================================================
+23. DOCUMENTATION GENERATION
+================================================================================
+
+23.1 CREATE DOCUMENTATION GENERATOR
+-----------------------------------
+Location: scripts/generateDocs.ts
+
+Generate:
+- API documentation (from JSDoc)
+- Component documentation (from prop types)
+- Database schema documentation
+- Setup guides
+- Usage examples
+
+23.2 OUTPUT FILES
+----------------
+docs/
+├── setup.md
+├── usage.md
+├── api-reference.md
+├── components.md
+├── database-schema.md
+└── contributing.md
+
+================================================================================
+24. CLEANUP & MAINTENANCE
+================================================================================
+
+24.1 DELETE DUPLICATES SCRIPT
+-----------------------------
+Location: scripts/deleteDuplicates.ts
+
+Delete:
+- Duplicate Zod schemas
+- Duplicate components
+- Duplicate functions
+- Duplicate types/interfaces
+- All .backup files
+- Empty folders
+- Unused files
+
+24.2 CLEANUP PACKAGES
+--------------------
+Location: scripts/cleanupPackages.ts
+
+Process:
+1. Analyze imports across project
+2. Identify unused packages
+3. Generate report
+4. Uninstall with pnpm remove
+
+24.3 SCHEDULED MAINTENANCE
+-------------------------
+Weekly:
+- Run cleanup scripts
+- Update dependencies
+- Review security alerts
+- Optimize database (VACUUM, ANALYZE)
+
+================================================================================
+25. GIT WORKFLOW & VERSION CONTROL
+================================================================================
+
+25.1 GIT INITIALIZATION
+----------------------
+CREATE: scripts/setupGit.ts
+
+```typescript
+import { execSync } from 'child_process';
+
+export function setupGit() {
+  // Initialize repo
+  execSync('git init');
+
+  // Create branches
+  execSync('git checkout -b development');
+  execSync('git checkout -b production');
+
+  // Set remote
+  execSync('git remote add origin <REMOTE_URL>');
+
+  // Initial commit
+  execSync('git add .');
+  execSync('git commit -m "Initial commit: ComicWise platform setup"');
+}
+```
+
+25.2 BRANCH STRATEGY
+-------------------
+- main: Production branch
+- development: Development branch
+- feature/*: Feature branches
+- hotfix/*: Hotfix branches
+
+25.3 COMMIT CONVENTIONS
+----------------------
+Use Conventional Commits:
+- feat: New feature
+- fix: Bug fix
+- docs: Documentation
+- style: Formatting
+- refactor: Code restructuring
+- test: Tests
+- chore: Maintenance
+
+================================================================================
+26. VERCEL DEPLOYMENT
+================================================================================
+
+26.1 DEPLOYMENT SCRIPT
+---------------------
+CREATE: scripts/deployToVercel.ts
+
+```typescript
+import { execSync } from 'child_process';
+
+export async function deployToVercel(env: 'preview' | 'production') {
+  console.log(`Deploying to ${env}...`);
+
+  // Install Vercel CLI if needed
+  execSync('npm install -g vercel', { stdio: 'inherit' });
+
+  // Link project
+  execSync('vercel link', { stdio: 'inherit' });
+
+  // Deploy
+  const cmd = env === 'production' ? 'vercel --prod' : 'vercel';
+  execSync(cmd, { stdio: 'inherit' });
+
+  console.log('Deployment complete!');
+}
+```
+
+26.2 ENVIRONMENT VARIABLES
+-------------------------
+Set in Vercel dashboard:
+- DATABASE_URL
+- DATABASE_DIRECT_URL
+- UPSTASH_REDIS_REST_URL
+- UPSTASH_REDIS_REST_TOKEN
+- NEXTAUTH_SECRET
+- NEXTAUTH_URL
+- CUSTOM_PASSWORD
+- SENTRY_DSN
+
+================================================================================
+27. COMPLETION CHECKLIST
+================================================================================
+
+BEFORE MARKING AS COMPLETE, VERIFY:
+
+✅ Configuration Files
+   □ All VS Code configs created and validated
+   □ Environment variables properly set
+   □ App configuration centralized
+
+✅ Authentication System
+   □ Generic auth form component created
+   □ All auth pages implemented
+   □ Zod schemas defined
+   □ Server actions tested
+
+✅ Admin Panel
+   □ Generic admin form component created
+   □ CRUD pages for all database tables
+   □ Admin schemas defined
+   □ Server actions implemented
+   □ Admin layout and navigation complete
+
+✅ User Pages
+   □ Profile pages created
+   □ Bookmark pages implemented
+   □ Settings functional
+
+✅ Comic System
+   □ Comic listing page with filters
+   □ Comic details page complete
+   □ Bookmark add/remove functionality
+   □ Chapter reader with image gallery
+   □ Chapter navigation working
+
+✅ Database
+   □ Seeding system optimized
+   □ Dry-run successful
+   □ Full seed successful
+   □ Image downloads working
+   □ Data integrity validated
+
+✅ Code Quality
+   □ All TypeScript errors fixed
+   □ All ESLint errors fixed
+   □ No 'any' types remaining
+   □ 100% type coverage
+   □ All tests passing
+   □ Coverage > 80%
+
+✅ Performance
+   □ Bundle size optimized
+   □ Images optimized
+   □ Caching implemented
+   □ Database indexed
+   □ Web Vitals acceptable
+
+✅ DevOps
+   □ CI/CD workflows created
+   □ Docker configuration complete
+   □ Deployment scripts ready
+   □ Git workflow established
+
+✅ Documentation
+   □ README comprehensive
+   □ API documentation generated
+   □ Setup guide complete
+   □ Contributing guide created
+
+✅ Deployment
+   □ Deployed to Vercel
+   □ Environment variables set
+   □ Database migrated
+   □ Monitoring active
+
+================================================================================
+FINAL INSTRUCTIONS
+================================================================================
+
+EXECUTION ORDER:
+---------------
+1. Read and understand all project files
+2. Request and confirm permissions
+3. Create/optimize configuration files (Tasks 1-4)
+4. Implement authentication system (Task 5)
+5. Build admin panel (Task 6)
+6. Create user pages (Task 7)
+7. Develop comic & chapter pages (Tasks 8-9)
+8. Implement bookmark system (Task 10)
+9. Optimize database seeding (Task 11)
+10. Set up image handling (Task 12)
+11. Optimize folder structure (Task 13)
+12. Run refactoring tools (Task 14)
+13. Build scripts CLI (Task 15)
+14. Configure VS Code (Task 16)
+15. Create testing suite (Task 17)
+16. Apply performance optimizations (Task 18)
+17. Set up CI/CD (Task 19)
+18. Configure Docker (Task 20)
+19. Integrate analytics (Task 21)
+20. Add i18n support (Task 22)
+21. Generate documentation (Task 23)
+22. Run cleanup scripts (Task 24)
+23. Set up Git workflow (Task 25)
+24. Deploy to Vercel (Task 26)
+25. Verify completion checklist (Task 27)
+
+COMPLETION PROTOCOL:
+-------------------
+1. Complete ALL tasks in order
+2. Fix all errors as they arise
+3. Validate each step before proceeding
+4. DO NOT create summary until finished
+5. After all tasks complete, respond with:
+   "All tasks have been completed successfully."
+6. Create recommendations-list.md with suggestions
+7. Await further instructions
+
+QUALITY STANDARDS:
+-----------------
+- Zero TypeScript errors
+- Zero ESLint errors
+- Zero console warnings (production)
+- 100% type safety
+- 80%+ test coverage
+- All Web Vitals in green
+- Lighthouse score > 90
+- No security vulnerabilities
+
+================================================================================
+END OF COMPREHENSIVE SETUP PROMPT
+================================================================================
+
+Version: 4.0.0
+Last Updated: 2026-01-19
+Maintainer: ComicWise Development Team
+
+================================================================================

@@ -1,0 +1,172 @@
+{
+  "tasks": [
+    {
+      "label": "🚀 Dev Server",
+      "type": "shell",
+      "command": "pnpm dev",
+      "isBackground": true,
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": {
+        "pattern": { "regexp": "." },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "starting the development server",
+          "endsPattern": "ready started server"
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "dev"
+      }
+    },
+    {
+      "label": "🏗️  Build",
+      "type": "shell",
+      "command": "pnpm build",
+      "group": "build",
+      "problemMatcher": "$tsc",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "build"
+      }
+    },
+    {
+      "label": "✅ Type Check",
+      "type": "shell",
+      "command": "pnpm type-check",
+      "problemMatcher": "$tsc",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "validation"
+      }
+    },
+    {
+      "label": "🎨 Lint",
+      "type": "shell",
+      "command": "pnpm lint",
+      "problemMatcher": "$eslint-stylish",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "validation"
+      }
+    },
+    {
+      "label": "💅 Format",
+      "type": "shell",
+      "command": "pnpm format",
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared",
+        "group": "validation"
+      }
+    },
+    {
+      "label": "🧪 Unit Tests",
+      "type": "shell",
+      "command": "pnpm test:unit",
+      "isBackground": true,
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "test"
+      }
+    },
+    {
+      "label": "🎭 E2E Tests",
+      "type": "shell",
+      "command": "pnpm test",
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "test"
+      }
+    },
+    {
+      "label": "🗄️  Database Push",
+      "type": "shell",
+      "command": "pnpm db:push",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "database"
+      }
+    },
+    {
+      "label": "🌱 Database Seed",
+      "type": "shell",
+      "command": "pnpm db:seed",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "database"
+      }
+    },
+    {
+      "label": "🔄 Database Reset",
+      "type": "shell",
+      "command": "pnpm db:reset",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "database"
+      }
+    },
+    {
+      "label": "🎯 Full Validation",
+      "dependsOn": ["✅ Type Check", "🎨 Lint", "💅 Format"],
+      "dependsOrder": "sequence",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "validation"
+      }
+    },
+    {
+      "label": "🚀 Complete Setup",
+      "type": "shell",
+      "command": "pnpm setup",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "setup"
+      }
+    },
+    {
+      "label": "🧹 Cleanup Project",
+      "type": "shell",
+      "command": "pnpm cleanup",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "maintenance"
+      }
+    },
+    {
+      "label": "🐳 Docker Up",
+      "type": "shell",
+      "command": "pnpm docker:up",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "docker"
+      }
+    },
+    {
+      "label": "🐳 Docker Down",
+      "type": "shell",
+      "command": "pnpm docker:down",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "docker"
+      }
+    }
+  ],
+  "version": "2.0.0"
+}

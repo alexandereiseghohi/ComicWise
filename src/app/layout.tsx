@@ -1,0 +1,155 @@
+import type { Metadata, Viewport } from "next";
+
+import { Providers } from "@/app/Providers";
+import { ToastContainer } from "@/components/ui/ToastContainer";
+import "@/styles/globals.css";
+import localFont from "next/font/local";
+// Primary Font: IBM Plex Sans (Variable)
+const ibmPlexSans = localFont({
+  src: [
+    {
+      path: "./fonts/IBM_Plex_Sans/IBMPlexSans-VariableFont_wdth,wght.ttf",
+      style: "normal",
+    },
+    {
+      path: "./fonts/IBM_Plex_Sans/IBMPlexSans-Italic-VariableFont_wdth,wght.ttf",
+      style: "italic",
+    },
+  ],
+  variable: "--font-ibm-plex-sans",
+  display: "swap",
+  preload: true,
+});
+
+// Display Font: Bebas Neue
+const bebasNeue = localFont({
+  src: [
+    {
+      path: "./fonts/Bebas_Neue/BebasNeue-Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+  ],
+  variable: "--font-bebas-neue",
+  display: "swap",
+});
+
+// Alternative Sans: Schibsted Grotesk (Variable)
+const schibstedGrotesk = localFont({
+  src: [
+    {
+      path: "./fonts/Schibsted_Grotesk/SchibstedGrotesk-VariableFont_wght.ttf",
+      style: "normal",
+    },
+    {
+      path: "./fonts/Schibsted_Grotesk/SchibstedGrotesk-Italic-VariableFont_wght.ttf",
+      style: "italic",
+    },
+  ],
+  variable: "--font-schibsted-grotesk",
+  display: "swap",
+});
+
+// Monospace Font: Martian Mono (Variable)
+const martianMono = localFont({
+  src: [
+    {
+      path: "./fonts/Martian_Mono/MartianMono-VariableFont_wdth,wght.ttf",
+    },
+  ],
+  variable: "--font-martian-mono",
+  display: "swap",
+});
+
+// Additional Fonts: Fira Sans (Full Family)
+const firaSans = localFont({
+  src: [
+    { path: "./fonts/Fira_Sans/FiraSans-Light.ttf", weight: "300", style: "normal" },
+    {
+      path: "./fonts/Fira_Sans/FiraSans-LightItalic.ttf",
+      weight: "300",
+      style: "italic",
+    },
+    { path: "./fonts/Fira_Sans/FiraSans-Regular.ttf", weight: "400", style: "normal" },
+    { path: "./fonts/Fira_Sans/FiraSans-Italic.ttf", weight: "400", style: "italic" },
+    { path: "./fonts/Fira_Sans/FiraSans-Medium.ttf", weight: "500", style: "normal" },
+    {
+      path: "./fonts/Fira_Sans/FiraSans-MediumItalic.ttf",
+      weight: "500",
+      style: "italic",
+    },
+    { path: "./fonts/Fira_Sans/FiraSans-SemiBold.ttf", weight: "600", style: "normal" },
+    {
+      path: "./fonts/Fira_Sans/FiraSans-SemiBoldItalic.ttf",
+      weight: "600",
+      style: "italic",
+    },
+    { path: "./fonts/Fira_Sans/FiraSans-Bold.ttf", weight: "700", style: "normal" },
+    { path: "./fonts/Fira_Sans/FiraSans-BoldItalic.ttf", weight: "700", style: "italic" },
+  ],
+  variable: "--font-fira-sans",
+  display: "swap",
+});
+
+// Monospace Alternative: Fira Mono
+const firaMono = localFont({
+  src: [
+    { path: "./fonts/Fira_Mono/FiraMono-Regular.ttf", weight: "400", style: "normal" },
+    { path: "./fonts/Fira_Mono/FiraMono-Medium.ttf", weight: "500", style: "normal" },
+    { path: "./fonts/Fira_Mono/FiraMono-Bold.ttf", weight: "700", style: "normal" },
+  ],
+  variable: "--font-fira-mono",
+  display: "swap",
+});
+
+export const metadata: Metadata = {
+  title: "ComicWise - Modern Comic Reading Platform",
+  description:
+    "Read your favorite manga, manhwa, and manhua online. Track your reading progress and discover new comics.",
+  keywords: ["comics", "manga", "manhwa", "manhua", "webtoon", "reading"],
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "000000" },
+  ],
+  viewportFit: "cover",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta httpEquiv="x-ua-compatible" content="IE=edge" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://ik.imagekit.io" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+      </head>
+      <body
+        className={`
+          ${ibmPlexSans.variable}
+          ${bebasNeue.variable}
+          ${schibstedGrotesk.variable}
+          ${martianMono.variable}
+          ${firaSans.variable}
+          ${firaMono.variable}
+          font-sans antialiased
+        `}
+      >
+        <Providers attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          {children}
+          <ToastContainer />
+        </Providers>
+      </body>
+    </html>
+  );
+}

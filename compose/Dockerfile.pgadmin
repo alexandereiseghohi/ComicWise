@@ -1,0 +1,32 @@
+# PgAdmin 4 - PostgreSQL Management UI
+# Web UI available at http://localhost:5050
+
+FROM dpage/pgadmin4:latest
+
+LABEL maintainer="ComicWise Team"
+LABEL description="PgAdmin 4 for PostgreSQL administration"
+
+# Set environment variables for pgAdmin (can be overridden)
+ENV PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL:-admin@example.com}
+ENV PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD:-admin}
+ENV PGADMIN_CONFIG_PROXY_X_FOR_COUNT=1
+ENV PGADMIN_CONFIG_PROXY_X_PROTO_COUNT=1
+ENV PGADMIN_CONFIG_PROXY_X_HOST_COUNT=1
+ENV PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION=False
+ENV PGADMIN_CONFIG_COOKIE_DEFAULT_SECURE=False
+ENV PGADMIN_CONFIG_COOKIE_SAMESITE=Lax
+
+# Create config mount point
+RUN mkdir -p /var/lib/pgadmin/storage && \
+    chown -R pgadmin:pgadmin /var/lib/pgadmin
+
+VOLUME ["/var/lib/pgadmin"]
+
+EXPOSE 80
+EXPOSE 443
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD ["wget", "--spider", "-q", "http://localhost:80/misc/ping"]
+
+ENTRYPOINT ["/entrypoint.sh"]

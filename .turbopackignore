@@ -1,0 +1,9 @@
+# Turbopack ignore file for server-side operations
+# These files contain intentional dynamic file path operations that trigger
+# Turbopack's overly broad pattern warnings. They are safe because:
+# 1. They are server-side only operations
+# 2. They are not bundled with client code
+# 3. They are necessary for seed and upload functionality
+
+src/database/seed/**
+src/services/upload/providers/local.ts

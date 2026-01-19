@@ -1,0 +1,26 @@
+{
+  "dryRun": true,
+  "files": {
+    "backups": [
+      "C:\\Users\\Alexa\\Desktop\\SandBox\\comicwise\\.vscode\\extensions.json.backup",
+      "C:\\Users\\Alexa\\Desktop\\SandBox\\comicwise\\.vscode\\launch.json.backup",
+      "C:\\Users\\Alexa\\Desktop\\SandBox\\comicwise\\.vscode\\mcp.json.backup",
+      "C:\\Users\\Alexa\\Desktop\\SandBox\\comicwise\\.vscode\\settings.json.backup",
+      "C:\\Users\\Alexa\\Desktop\\SandBox\\comicwise\\.vscode\\tasks.json.backup",
+      "C:\\Users\\Alexa\\Desktop\\SandBox\\comicwise\\appConfig.ts.backup",
+      "C:\\Users\\Alexa\\Desktop\\SandBox\\comicwise\\README.md.backup"
+    ],
+    "duplicates": [],
+    "unused": []
+  },
+  "statistics": {
+    "backupFilesFound": 7,
+    "backupFilesRemoved": 7,
+    "duplicatesFound": 0,
+    "duplicatesRemoved": 0,
+    "unusedFilesFound": 0,
+    "unusedFilesRemoved": 0,
+    "spaceFreed": 91441
+  },
+  "timestamp": "2025-12-29T20:08:45.913Z"
+}

@@ -1,0 +1,40 @@
+{
+  "aliases": {
+    "dev": "pnpm dev",
+    "d": "pnpm dev",
+    "b": "pnpm build",
+    "t": "pnpm test",
+    "l": "pnpm lint:fix",
+    "tc": "pnpm type-check",
+    "fmt": "pnpm format",
+    "db:m": "pw db migrate",
+    "db:s": "cw db seed",
+    "db:r": "cw db reset",
+    "cache:c": "cw cache clear",
+    "cache:s": "cw cache stats",
+    "q:start": "cw queue start",
+    "q:stop": "cw queue stop",
+    "h": "cw health"
+  },
+  "templates": {
+    "component": "cli/templates/component",
+    "page": "cli/templates/page",
+    "action": "cli/templates/action",
+    "api": "cli/templates/api"
+  },
+  "workflows": {
+    "full-check": [
+      "cw health",
+      "pnpm type-check",
+      "pnpm lint",
+      "pnpm test:unit:run"
+    ],
+    "deploy-prep": ["pnpm clean", "cw db migrate", "cw health", "pnpm build"],
+    "dev-setup": [
+      "pnpm install",
+      "cw db migrate",
+      "cw db seed",
+      "cw queue start --workers 3"
+    ]
+  }
+}

@@ -1,0 +1,199 @@
+{
+  "environment": "development",
+  "isValid": true,
+  "summary": {
+    "required": 5,
+    "optional": 25,
+    "missing": 0,
+    "invalid": 1
+  },
+  "timestamp": "2025-12-29T20:08:36.722Z",
+  "variables": [
+    {
+      "name": "DATABASE_URL",
+      "status": "required",
+      "value": "postgresql://postgresbot:6|lyj9,h2)&a@localhost:5432/comicwise",
+      "validation": "valid"
+    },
+    {
+      "name": "AUTH_SECRET",
+      "status": "required",
+      "value": "you***mum",
+      "validation": "valid"
+    },
+    {
+      "name": "AUTH_URL",
+      "status": "required",
+      "value": "http://localhost:3000/api/auth",
+      "validation": "valid"
+    },
+    {
+      "name": "NODE_ENV",
+      "status": "required",
+      "value": "development",
+      "validation": "valid"
+    },
+    {
+      "name": "NEXT_PUBLIC_APP_URL",
+      "status": "required",
+      "value": "http://localhost:3000",
+      "validation": "valid"
+    },
+    {
+      "name": "NEON_DATABASE_URL",
+      "status": "optional",
+      "value": "postgresql://neondb_owner:npg_yeYK3aZx8LWw@ep-misty-truth-a85d73oi-pooler.eastus2.azure.neon.tech:5432/comicwise?sslmode=true",
+      "validation": "valid"
+    },
+    {
+      "name": "UPLOAD_PROVIDER",
+      "status": "optional",
+      "validation": "invalid",
+      "message": "Variable value is invalid"
+    },
+    {
+      "name": "IMAGEKIT_PUBLIC_KEY",
+      "status": "optional",
+      "value": "pub***2Q=",
+      "validation": "valid"
+    },
+    {
+      "name": "IMAGEKIT_PRIVATE_KEY",
+      "status": "optional",
+      "value": "pri***SI=",
+      "validation": "valid"
+    },
+    {
+      "name": "IMAGEKIT_URL_ENDPOINT",
+      "status": "optional",
+      "value": "https://ik.imagekit.io/bt7aws08b",
+      "validation": "valid"
+    },
+    {
+      "name": "CLOUDINARY_CLOUD_NAME",
+      "status": "optional",
+      "value": "dvzyttf7k",
+      "validation": "valid"
+    },
+    {
+      "name": "CLOUDINARY_API_KEY",
+      "status": "optional",
+      "value": "991***889",
+      "validation": "valid"
+    },
+    {
+      "name": "CLOUDINARY_API_SECRET",
+      "status": "optional",
+      "value": "Vav***q2Y",
+      "validation": "valid"
+    },
+    {
+      "name": "EMAIL_SERVER_HOST",
+      "status": "optional",
+      "value": "smtp.gmail.com",
+      "validation": "valid"
+    },
+    {
+      "name": "EMAIL_SERVER_PORT",
+      "status": "optional",
+      "value": "587",
+      "validation": "valid"
+    },
+    {
+      "name": "EMAIL_SERVER_USER",
+      "status": "optional",
+      "value": "rhixecompany@gmail.com\"  # Your email",
+      "validation": "valid"
+    },
+    {
+      "name": "EMAIL_SERVER_PASSWORD",
+      "status": "optional",
+      "value": "lyc***ord",
+      "validation": "valid"
+    },
+    {
+      "name": "EMAIL_FROM",
+      "status": "optional",
+      "value": "noreply@comicwise.com",
+      "validation": "valid"
+    },
+    {
+      "name": "EMAIL_SECURE",
+      "status": "optional",
+      "value": "false",
+      "validation": "valid"
+    },
+    {
+      "name": "REDIS_HOST",
+      "status": "optional",
+      "value": "redis-18097.c261.us-east-1-4.ec2.cloud.redislabs.com",
+      "validation": "valid"
+    },
+    {
+      "name": "REDIS_PORT",
+      "status": "optional",
+      "value": "18097",
+      "validation": "valid"
+    },
+    {
+      "name": "REDIS_PASSWORD",
+      "status": "optional",
+      "value": "W2M***ord",
+      "validation": "valid"
+    },
+    {
+      "name": "REDIS_DB",
+      "status": "optional",
+      "value": "0",
+      "validation": "valid"
+    },
+    {
+      "name": "REDIS_TLS_ENABLED",
+      "status": "optional",
+      "value": "true",
+      "validation": "valid"
+    },
+    {
+      "name": "UPSTASH_REDIS_REST_URL",
+      "status": "optional",
+      "value": "https://pet-sawfish-10129.upstash.io",
+      "validation": "valid"
+    },
+    {
+      "name": "UPSTASH_REDIS_REST_TOKEN",
+      "status": "optional",
+      "value": "ASe***Mjk",
+      "validation": "valid"
+    },
+    {
+      "name": "QSTASH_TOKEN",
+      "status": "optional",
+      "value": "eyJ***n0=",
+      "validation": "valid"
+    },
+    {
+      "name": "QSTASH_URL",
+      "status": "optional",
+      "value": "https://qstash.upstash.io",
+      "validation": "valid"
+    },
+    {
+      "name": "AUTH_GITHUB_CLIENT_ID",
+      "status": "optional",
+      "value": "Ov23lilsIaJtd4AnJW5H",
+      "validation": "valid"
+    },
+    {
+      "name": "AUTH_GITHUB_CLIENT_SECRET",
+      "status": "optional",
+      "value": "27e***f1a",
+      "validation": "valid"
+    },
+    {
+      "name": "CUSTOM_PASSWORD",
+      "status": "optional",
+      "value": "S*k***4_Q",
+      "validation": "valid"
+    }
+  ]
+}

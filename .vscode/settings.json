@@ -1,0 +1,118 @@
+{
+  "// BREADCRUMBS": "",
+  "// EDITOR SETTINGS": "Core editor configuration",
+  "// EMMET": "",
+  "// ERROR LENS": "",
+  "// ESLINT SETTINGS": "",
+  "// EXPLORER SETTINGS": "",
+  "// FILES SETTINGS": "",
+  "// GIT SETTINGS": "",
+  "// LANGUAGE-SPECIFIC FORMATTERS": "",
+  "// NEXT.JS SPECIFIC": "",
+  "// PRETTIER": "",
+  "// SEARCH SETTINGS": "",
+  "// TAILWIND CSS": "",
+  "// TERMINAL": "",
+  "// TYPESCRIPT SETTINGS": "",
+  "[css]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[javascript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[javascriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[json]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[jsonc]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[markdown]": {
+    "editor.defaultFormatter": "yzhang.markdown-all-in-one",
+    "editor.wordWrap": "on"
+  },
+
+  "[scss]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[typescriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "breadcrumbs.enabled": true,
+  "breadcrumbs.symbolPath": "on",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.detectIndentation": false,
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.insertSpaces": true,
+  "editor.tabSize": 2,
+  "editor.trimAutoWhitespace": true,
+  "emmet.includeLanguages": {
+    "typescript": "typescriptreact",
+    "javascript": "javascriptreact"
+  },
+
+  "errorLens.enabledDiagnosticLevels": ["error", "warning"],
+  "errorLens.fontSize": "12px",
+
+  "eslint.format.enable": true,
+  "eslint.lintTask.enable": true,
+
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.ts": "${capture}.test.ts, ${capture}.spec.ts",
+    "*.tsx": "${capture}.test.tsx, ${capture}.spec.tsx, ${capture}.module.css",
+    "package.json": "pnpm-lock.yaml, package-lock.json, yarn.lock"
+  },
+
+  "files.associations": {
+    "*.css": "tailwindcss",
+    "*.env*": "dotenv"
+  },
+  "files.eol": "\n",
+
+  "files.exclude": {
+    "**/.git": true,
+    "**/.next": true,
+    "**/node_modules": true,
+    "**/.turbo": true,
+    "**/dist": true,
+    "**/build": true
+  },
+
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "git.autofetch": true,
+
+  "git.confirmSync": false,
+  "git.enableSmartCommit": true,
+  "next.telemetry.enabled": false,
+
+  "prettier.enable": true,
+  "prettier.requireConfig": true,
+
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/.turbo": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/coverage": true,
+    "**/pnpm-lock.yaml": true
+  },
+
+  "tailwindCSS.emmetCompletions": true,
+
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cn\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ],
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.fontSize": 13,
+
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.suggest.autoImports": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.updateImportsOnFileMove.enabled": "always"
+}

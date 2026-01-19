@@ -1,0 +1,131 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "ms-vscode.vscode-typescript-next",
+    "editorconfig.editorconfig",
+
+    "PulkitGangwar.nextjs-snippets",
+    "dsznajder.es7-react-js-snippets",
+    "burkeholland.simple-react-snippets",
+    "formulahendry.auto-rename-tag",
+    "wix.glean",
+
+    "bradlc.vscode-tailwindcss",
+    "pranaygp.vscode-css-peek",
+    "bierner.color-info",
+    "naumovs.color-highlight",
+    "csstools.postcss",
+
+    "cweijan.vscode-postgresql-client2",
+    "redis.redis-for-vscode",
+    "Prisma.prisma",
+    "mtxr.sqltools",
+
+    "vitest.explorer",
+    "ms-playwright.playwright",
+    "orta.vscode-jest",
+    "streetsidesoftware.code-spell-checker",
+
+    "github.copilot",
+    "github.copilot-chat",
+    "GitHub.copilot-mcp",
+    "visualstudioexptteam.vscodeintellicode",
+
+    "usernamehw.errorlens",
+    "yoavbls.pretty-ts-errors",
+    "wix.vscode-import-cost",
+    "kisstkondoros.vscode-gutter-preview",
+
+    "eamodio.gitlens",
+    "donjayamanne.githistory",
+    "mhutchie.git-graph",
+    "github.vscode-pull-request-github",
+
+    "ms-azuretools.vscode-docker",
+    "ms-kubernetes-tools.vscode-kubernetes-tools",
+    "ms-vscode-remote.remote-containers",
+
+    "yzhang.markdown-all-in-one",
+    "davidanson.vscode-markdownlint",
+    "bierner.markdown-preview-github-styles",
+    "bierner.markdown-mermaid",
+
+    "gruntfuggly.todo-tree",
+    "aaron-bond.better-comments",
+    "wayou.vscode-todo-highlight",
+    "alefragnani.bookmarks",
+
+    "mikestead.dotenv",
+    "tamasfe.even-better-toml",
+
+    "humao.rest-client",
+    "rangav.vscode-thunder-client",
+    "42crunch.vscode-openapi",
+
+    "ms-vscode.powershell",
+    "timonwong.shellcheck",
+
+    "pkief.material-icon-theme",
+    "oderwat.indent-rainbow",
+    "johnpapa.vscode-peacock",
+
+    "xabikos.javascriptsnippets",
+    "afractal.node-essentials",
+    "christian-kohler.path-intellisense",
+    "christian-kohler.npm-intellisense",
+
+    "ritwickdey.liveserver",
+
+    "pflannery.vscode-versionlens",
+    "gamunu.vscode-yarn",
+
+    "ms-vscode-remote.remote-wsl",
+    "ms-vscode-remote.vscode-remote-extensionpack",
+
+    "stateful.runme",
+    "mrmlnc.vscode-duplicate",
+
+    "wix.vscode-import-cost",
+    "ms-vsliveshare.vsliveshare",
+
+    "kisstkondoros.vscode-gutter-preview",
+    "pnp.polacode",
+
+    "jacobdufault.fuzzy-search",
+
+    "zainchen.json",
+    "quicktype.quicktype"
+  ],
+
+  "unwantedRecommendations": [
+    "hookyqr.beautify",
+    "dbaeumer.jshint",
+    "eg2.tslint",
+    "ms-vscode.vscode-typescript-tslint-plugin",
+
+    "ritwickdey.live-sass",
+    "syler.sass-indented",
+    "mrmlnc.vscode-scss",
+
+    "octref.vetur",
+    "vue.volar",
+    "angular.ng-template",
+    "svelte.svelte-vscode",
+
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "rust-lang.rust-analyzer",
+    "golang.go",
+    "ms-dotnettools.csharp",
+    "redhat.java",
+    "ms-vscode.cmake-tools",
+
+    "ms-vscode.sublime-keybindings",
+    "ms-vscode.atom-keybindings",
+    "hbenl.vscode-test-explorer",
+
+    "ionutvmi.path-autocomplete",
+    "pmneo.tsimporter"
+  ]
+}

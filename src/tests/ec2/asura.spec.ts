@@ -1,0 +1,510 @@
+import { expect, test } from "@playwright/test";
+
+test("test", async ({ page }) => {
+  await page.goto("https://asuracomic.net/");
+  await page.getByRole("link", { name: "View all" }).click();
+  await expect(page.getByText("Next")).toBeVisible();
+  await page.getByText("Next").click();
+  await expect(page.getByText("Previous")).toBeVisible();
+  await page.getByRole("link", { name: "Ongoing MANHWA Regression of" }).click();
+  await expect(page.locator("body")).toContainText("Regression of the Yong Clan Heir");
+  await page.getByRole("link", { name: "New Chapter Chapter" }).click();
+  await expect(page.locator("body")).toMatchAriaSnapshot(`
+    - heading /Regression of the Yong Clan Heir Chapter \\d+/ [level=2]
+    - paragraph:
+      - text: All chapters are in
+      - link "Regression of the Yong Clan Heir":
+        - /url: /series/regression-of-the-yong-clan-heir-66bfb5b6
+    - link "Facebook Facebook":
+      - /url: https://www.facebook.com/sharer/sharer.php?u=https://asuracomic.net//series/regression-of-the-yong-clan-heir-66bfb5b6/chapter/42&t=Regression%20of%20the%20Yong%20Clan%20Heir
+      - img "Facebook"
+      - text: ""
+    - link "Twitter Twitter":
+      - /url: https://www.twitter.com/intent/tweet?url=https://asuracomic.net//series/regression-of-the-yong-clan-heir-66bfb5b6/chapter/42&text=Regression%20of%20the%20Yong%20Clan%20Heir
+      - img "Twitter"
+      - text: ""
+    - link "WhatsApp WhatsApp":
+      - /url: whatsapp://send/?text=Regression%20of%20the%20Yong%20Clan%20Heir%20https://asuracomic.net//series/regression-of-the-yong-clan-heir-66bfb5b6/chapter/42
+      - img "WhatsApp"
+      - text: ""
+    - link "Pinterest Pinterest":
+      - /url: https://pinterest.com/pin/create/button/?url=https://asuracomic.net//series/regression-of-the-yong-clan-heir-66bfb5b6/chapter/42&media=https%3A%2F%2Fgg.asuracomic.net%2Fstorage%2Fmedia%2F264280%2Fconversions%2F01JHFSH1MN7W6NEFJT07S241P4-thumb-small.webp&description=Regression%20of%20the%20Yong%20Clan%20Heir
+      - img "Pinterest"
+      - text: ""
+    - link "Asura Scans":
+      - /url: /series
+      - heading "Asura Scans" [level=3]
+      - img
+    - link "Regression of the Yong Clan Heir":
+      - /url: /series/regression-of-the-yong-clan-heir-66bfb5b6
+      - heading "Regression of the Yong Clan Heir" [level=3]
+      - img
+    - heading /Regression of the Yong Clan Heir Chapter \\d+/ [level=3]
+    - heading "Read the latest mangaRegression of the Yong Clan Heir Chapter 42at Asura Scans . MangaRegression of the Yong Clan Heir is always updated at Asura Scans . Dont forget to read the other manga updates. A list of manga collectionsAsura Scans is in the Manga List menu." [level=2]
+    - button /Chapter \\d+/:
+      - heading /Chapter \\d+/ [level=2]
+      - img
+    - button "Default Quality":
+      - text: ""
+      - img
+    - link "Prev":
+      - /url: /series/regression-of-the-yong-clan-heir-66bfb5b6/chapter/41
+      - img
+      - heading "Prev" [level=2]
+    - heading "Next" [level=2]
+    - img
+    - img "chapter page 1"
+    - img "chapter page 2"
+    - img "chapter page 3"
+    - img "chapter page 4"
+    - img "chapter page 5"
+    - img "chapter page 6"
+    - img "chapter page 7"
+    - img "chapter page 8"
+    - img "chapter page 9"
+    - img /chapter page \\d+/
+    - img /chapter page \\d+/
+    - img /chapter page \\d+/
+    - img /chapter page \\d+/
+    - img /chapter page \\d+/
+    - img "end page"
+    - button /Chapter \\d+/:
+      - heading /Chapter \\d+/ [level=2]
+      - img
+    - link "Prev":
+      - /url: /series/regression-of-the-yong-clan-heir-66bfb5b6/chapter/41
+      - img
+      - heading "Prev" [level=2]
+    - heading "Next" [level=2]
+    - img
+    - 'heading /tags: read manga Regression of the Yong Clan Heir Chapter \\d+, comic Regression of the Yong Clan Heir Chapter \\d+, readRegression of the Yong Clan Heir Chapter \\d+ online, Regression of the Yong Clan HeirChapter \\d+ chapter, Regression of the Yong Clan Heir Chapter 42chapter, Regression of the Yong Clan Heir Chapter \\d+ high quality, Regression of the Yong Clan Heir Chapter \\d+ manga scan, January 14th \\d+,/ [level=2]'
+    - heading "Related Series" [level=3]
+    - link /Ongoing Absolute Regression Chapter \\d+ Rated \\d+\\.\\d+ on 5 9\\.7/:
+      - /url: /series/absolute-regression-5be299fe
+      - text: ""
+      - heading "Absolute Regression" [level=2]
+      - heading /Chapter \\d+/ [level=2]
+      - img /Rated \\d+\\.\\d+ on 5/
+      - text: ""
+    - link /Ongoing The Youngest Son of the Eunhae Merchant Group Chapter \\d+ Rated 4\\.4 on 5 8\\.8/:
+      - /url: /series/the-youngest-son-of-the-eunhae-merchant-group-3abdaee9
+      - text: ""
+      - heading "The Youngest Son of the Eunhae Merchant Group" [level=2]
+      - heading /Chapter \\d+/ [level=2]
+      - img "Rated 4.4 on 5"
+      - text: ""
+    - link /Ongoing The Divine Demon’s Grand Ascension Chapter \\d+ Rated \\d+\\.\\d+ on 5 9\\.3/:
+      - /url: /series/the-divine-demons-grand-ascension-1fade8c6
+      - text: ""
+      - heading "The Divine Demon’s Grand Ascension" [level=2]
+      - heading /Chapter \\d+/ [level=2]
+      - img /Rated \\d+\\.\\d+ on 5/
+      - text: ""
+    - link /Ongoing Rebirth of the Divine Demon Chapter \\d+ Rated 4\\.5 on 5 9/:
+      - /url: /series/rebirth-of-the-divine-demon-5ba8cbe5
+      - text: ""
+      - heading "Rebirth of the Divine Demon" [level=2]
+      - heading /Chapter \\d+/ [level=2]
+      - img "Rated 4.5 on 5"
+      - text: ""
+    - link /Ongoing Reborn on the Demonic Cult Battlefield Chapter \\d+ Rated \\d+\\.\\d+ on 5 7\\.5/:
+      - /url: /series/reborn-on-the-demonic-cult-battlefield-5d8b2ee8
+      - text: ""
+      - heading "Reborn on the Demonic Cult Battlefield" [level=2]
+      - heading /Chapter \\d+/ [level=2]
+      - img /Rated \\d+\\.\\d+ on 5/
+      - text: ""
+    - heading "Comments" [level=3]
+    - heading "What do you think?" [level=2]
+    - paragraph: /\\d+ Reactions/
+    - button /👍 \\d+ Upvote/
+    - button "😂 3 Funny"
+    - button /😍 \\d+ Love/
+    - button "😮 0 Surprised"
+    - button "😠 3 Angry"
+    - button "😢 1 Sad"
+    - text: /\\d+ Comments/
+    - button "best"
+    - button "newest"
+    - button "oldest"
+    - img
+    - paragraph: Unlock Free Chapters!
+    - paragraph: Comment for 3 days in a row to unlock a locked chapter for free
+    - link "Log in":
+      - /url: /login
+      - button "Log in":
+        - img
+        - text: ""
+    - text: Log in to join the conversation
+    - link "Log in":
+      - /url: /login
+      - button "Log in":
+        - img
+        - text: ""
+    - text: Join the discussion... Miriam Breslauer ASURA+ 1 day ago
+    - paragraph: Deux Ex Machina Activate!
+    - button /\\d+/ [disabled]:
+      - img
+      - text: ""
+    - button "7" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - button "Hide replies":
+      - img
+      - text: ""
+    - text: reiokami 1 day ago
+    - paragraph: "@Miriam Breslauer its not deus ex machina since he have it from the start, its bsicaly the same as naruto using kyuubi chakra lol"
+    - button /\\d+/ [disabled]:
+      - img
+      - text: ""
+    - button "1" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: sajen 1 day ago
+    - paragraph: "@Miriam Breslauer We were already told he could summon the old monster before, so it isn't a DEM. It's a prepared plot armor."
+    - button /\\d+/ [disabled]:
+      - img
+      - text: ""
+    - button "3" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: Xantis 1 day ago
+    - paragraph: "@Miriam Breslauer deus ex machina + naruto"
+    - button "3" [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: Darkwin 1 day ago
+    - paragraph: "@Miriam Breslauer isnt the term, chekov´s gun? a method explained before hand, that solves a plot point as the story goes on."
+    - button /\\d+/ [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: /PsyLynx about \\d+ hours ago/
+    - paragraph: "@Darkwin Chekov's gun is about not explaining things with no relevance to the plot. It says something like \\"if you describe a loaded gun in detail it should be fired later in the story\\" otherwise you wasted the narration on nothing. Though it is talking about set up and pay off to some extent, it's ..."
+    - button /Read more \\(\\d+ characters\\)/:
+      - img
+      - text: ""
+    - button "5" [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: /radziu93 about \\d+ hours ago/
+    - paragraph: "@reiokami well thanks, now I'm gonna thinkt about Naruto every time MC does that, lol"
+    - button "1" [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: /Yddriss about \\d+ hours ago/
+    - paragraph: "@sajen How do you define plot armor?"
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: /sajen about \\d+ hours ago/
+    - paragraph: "@Yddriss Some event or abilities that got the characters out of impossible situations. A strong character gets surrounded by weak bandits and he beats them? Not plot armor."
+    - paragraph: A weaker character got surrounded by celestial level army but manages to escape despite all odds? Plot armor.
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: mosenol766etenx 1 day ago
+    - paragraph: Lady can I take those bandages off you
+    - button /\\d+/ [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - button "Hide replies":
+      - img
+      - text: ""
+    - text: Zander D1scord ID is zandervj ASURA+ 1 day ago
+    - paragraph: "@mosenol766etenx"
+    - img "Comment GIF"
+    - button "3" [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: ImmortalGuy 1 day ago
+    - paragraph: "@mosenol766etenx u wildin 🥷"
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: /ImScaredOfRed ASURA\\+ about \\d+ hours ago/
+    - paragraph: "@mosenol766etenx 💯"
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: Ace about 1 hour ago
+    - paragraph: "@mosenol766etenx lol"
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: Syllvester_Alarie 1 day ago
+    - paragraph: How is there the asura tanslaton on a diff sit and on the asura sit it doesn't exist????
+    - button "5" [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - button "Hide reply":
+      - img
+      - text: ""
+    - text: /Aokk2 about \\d+ hours ago/
+    - paragraph:
+      - text: "@Syllvester_Alarie"
+      - strong: English
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "1" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: 3idjn7 1 day ago
+    - paragraph: As much as he doesn't want the demoinic master, he's clutching for him on the regular.
+    - button "4" [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - button "Hide reply":
+      - img
+      - text: ""
+    - text: mosenol766etenx 1 day ago
+    - paragraph: "@3idjn7 of course he need his cxm"
+    - paragraph: I mean his qi
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "1" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: Introvertchild 1 day ago
+    - paragraph: The author's pretty bad at handling any combat outside of 1v1s lol. It's all disjointed
+    - button "2" [disabled]:
+      - img
+      - text: ""
+    - button "1" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: Syllvester_Alarie 1 day ago
+    - paragraph: Where is chapter?🥺😠
+    - button "2" [disabled]:
+      - img
+      - text: ""
+    - button "1" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: DeathSickle 1 day ago
+    - paragraph: Dayum
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: /ManiacReader about \\d+ hours ago/
+    - paragraph: Isn't he gonna be in trouble if he uses d3mo#nic energy infront of all of the other guys? Like did I miss smth? I've lost all the plot too
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: /HatchAtk about \\d+ hours ago/
+    - paragraph: w
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: nikk about 8 hours ago
+    - paragraph: ok what is it
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: /Aan Zhang about \\d+ hours ago/
+    - paragraph: 🫣
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: /ImScaredOfRed ASURA\\+ about \\d+ hours ago/
+    - paragraph: Embrace the Dark Side!
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: Agentmonkeyfist 1 day ago
+    - paragraph: Yugi just activated his trap card
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: Osama 1 day ago
+    - paragraph: Good
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - button "Hide replies":
+      - img
+      - text: ""
+    - text: Freaky_Monkey 1 day ago
+    - paragraph: "@Osama nice pfp and name 🗿"
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: Osama about 6 hours ago
+    - paragraph: "@Freaky_Monkey 🗿"
+    - button "1" [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - text: /dLu about \\d+ hours ago/
+    - paragraph: Mc gonna power up
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "0" [disabled]:
+      - img
+      - text: ""
+    - button "Reply" [disabled]:
+      - img
+      - text: ""
+    - button "Load More Comments"
+    `);
+});
