@@ -4,13 +4,14 @@ import appConfig from "@/appConfig";
 import { db as database } from "@/database/db";
 import { passwordResetToken, user, verificationToken } from "@/database/schema";
 import type { AuthActionResponse } from "@/dto";
+import { auth } from "@/lib/auth";
 import {
   sendAccountUpdatedEmail,
   sendPasswordResetEmail,
   sendVerificationEmail,
   sendWelcomeEmail,
 } from "@/lib/email";
-import { checkRateLimit } from "@/lib/ratelimit";
+import { checkRateLimit } from "@/lib/rateLimit";
 import type {
   ForgotPasswordInput,
   ResendVerificationEmailInput,
@@ -530,12 +531,66 @@ export async function changePassword(data: {
   newPassword: string;
 }): Promise<AuthActionResponse> {
   try {
-    // TODO: Get current user from session and verify current password
-    // This is a placeholder implementation
+    const session = await auth();
+
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        error: "Please sign in to change your password",
+      };
+    }
+
+    // Get current user from database
+    const currentUser = await database.query.user.findFirst({
+      where: eq(user.id, session.user.id),
+    });
+
+    if (!currentUser || !currentUser.password) {
+      return {
+        success: false,
+        error: "User not found or no password set",
+      };
+    }
+
+    // Verify current password
+    const isValidPassword = await bcrypt.compare(data.currentPassword, currentUser.password);
+
+    if (!isValidPassword) {
+      return {
+        success: false,
+        error: "Current password is incorrect",
+      };
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(
+      data.newPassword,
+      appConfig.security?.bcryptRounds ?? 10
+    );
+
+    // Update password
+    await database
+      .update(user)
+      .set({ password: hashedPassword })
+      .where(eq(user.id, session.user.id));
+
+    // Send account updated email
+    if (appConfig.features.email) {
+      const ip = await getClientIP();
+      await sendAccountUpdatedEmail({
+        name: currentUser.name ?? "User",
+        email: currentUser.email,
+        changeType: "password",
+        ipAddress: ip,
+      });
+    }
+
     return {
       success: true,
+      message: "Password changed successfully",
     };
-  } catch {
+  } catch (error) {
+    console.error("Change password error:", error);
     return {
       success: false,
       error: "Failed to change password",

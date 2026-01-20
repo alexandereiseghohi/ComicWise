@@ -83,12 +83,12 @@ export async function closeConnection(): Promise<void> {
   await client.end({ timeout: 5 });
 }
 
-// ═══════════════════════════════════════════════════
-// GRACEFUL SHUTDOWN
-// ═══════════════════════════════════════════════════
+// // ═══════════════════════════════════════════════════
+// // GRACEFUL SHUTDOWN
+// // ═══════════════════════════════════════════════════
 
-if (typeof process !== "undefined") {
-  process.on("beforeExit", async () => {
-    await closeConnection();
-  });
-}
+// if (typeof process !== "undefined") {
+//   process.on("beforeExit", async () => {
+//     await closeConnection();
+//   });
+// }

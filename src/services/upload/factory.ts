@@ -1,25 +1,27 @@
 // ═══════════════════════════════════════════════════════════════════════════
-// UPLOAD PROVIDER FACTORY - Provider selection and instantiation
+// UPLOAD PROVIDER FACTORY - Provider selection and instantiation (Server-only)
+// Use dynamic imports to avoid bundling all providers into client bundles
 // ═══════════════════════════════════════════════════════════════════════════
 
-import { env } from "appConfig";
-
-import type { UploadProvider, UploadProviderType } from "@/services/upload/types";
+import type { UploadProvider } from "@/services/upload/types";
 
 /**
  * Get the upload provider instance based on environment configuration
  * Dynamically imports and instantiates the appropriate provider
+ * IMPORTANT: Only call from server contexts (API routes, Server Actions, seeders)
  *
- * returns UploadProvider instance
- * throws Error if provider is not configured or unknown
+ * @returns UploadProvider instance
+ * @throws Error if provider is not configured or unknown
  *
- * example
+ * @example
  * ```typescript
  * const provider = await getUploadProvider();
  * const result = await provider.upload(file);
  * ```
  */
 export async function getUploadProvider(): Promise<UploadProvider> {
+  // Dynamically import env only in server context
+  const { env } = await import("appConfig");
   const providerType: string = env.UPLOAD_PROVIDER;
 
   switch (providerType) {

@@ -1,6 +1,7 @@
 # 🎨 ComicWise
 
-> A modern, high-performance web comic platform built with Next.js 16, PostgreSQL, and Redis.
+> A modern, high-performance web comic platform built with Next.js 16,
+> PostgreSQL, and Redis.
 
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
@@ -61,6 +62,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript 5
 - **Styling**: Tailwind CSS 4.1
@@ -69,6 +71,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 - **Forms**: React Hook Form + Zod
 
 ### Backend
+
 - **Database**: PostgreSQL 16
 - **ORM**: Drizzle ORM
 - **Cache**: Redis (ioredis + Upstash)
@@ -76,6 +79,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 - **Validation**: Zod
 
 ### DevOps
+
 - **Package Manager**: pnpm
 - **Linting**: ESLint 9
 - **Formatting**: Prettier 3
@@ -106,7 +110,7 @@ comicwise/
 # Run unit tests
 pnpm test:unit
 
-# Run e2e tests  
+# Run e2e tests
 pnpm test
 
 # Run with coverage
@@ -125,26 +129,28 @@ docker compose -f docker-compose.yml up -d
 
 ## 📝 Available Scripts
 
-| Command | Description |
-|---------|-------------|
-| `pnpm dev` | Start development server |
-| `pnpm build` | Build for production |
-| `pnpm start` | Start production server |
-| `pnpm lint` | Run ESLint |
-| `pnpm format` | Format code with Prettier |
-| `pnpm type-check` | Check TypeScript types |
-| `pnpm test` | Run all tests |
-| `pnpm db:push` | Push database schema |
-| `pnpm db:seed` | Seed database |
-| `pnpm db:studio` | Open Drizzle Studio |
+| Command           | Description               |
+| ----------------- | ------------------------- |
+| `pnpm dev`        | Start development server  |
+| `pnpm build`      | Build for production      |
+| `pnpm start`      | Start production server   |
+| `pnpm lint`       | Run ESLint                |
+| `pnpm format`     | Format code with Prettier |
+| `pnpm type-check` | Check TypeScript types    |
+| `pnpm test`       | Run all tests             |
+| `pnpm db:push`    | Push database schema      |
+| `pnpm db:seed`    | Seed database             |
+| `pnpm db:studio`  | Open Drizzle Studio       |
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please read our [Contributing Guide](./docs/CONTRIBUTING.md).
+Contributions are welcome! Please read our
+[Contributing Guide](./docs/CONTRIBUTING.md).
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE)
+file for details.
 
 ## 🙏 Acknowledgments
 
@@ -157,4 +163,4 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 
 **Made with ❤️ by the ComicWise Team**
 
-*Last updated: 2026-01-19T19:55:57.783Z*
+_Last updated: 2026-01-20T04:24:35.792Z_

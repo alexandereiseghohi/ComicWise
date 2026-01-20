@@ -8,7 +8,7 @@ import fs from "fs/promises";
 import path from "path";
 import sharp from "sharp";
 
-import type { UploadOptions, UploadProvider, UploadResult } from "@/services/upload/index";
+import type { UploadOptions, UploadProvider, UploadResult } from "@/services/upload/types";
 
 export interface LocalTransformationOptions {
   width?: number;
@@ -22,7 +22,7 @@ export class LocalProvider implements UploadProvider {
   private readonly publicPath: string;
 
   constructor() {
-    this.uploadDir = path.join(process.cwd(), "public", "uploads");
+    this.uploadDir = `${process.cwd()}${path.sep}public${path.sep}uploads`;
     this.publicPath = "/uploads";
   }
 
@@ -86,11 +86,11 @@ export class LocalProvider implements UploadProvider {
 
       // Create directory structure
       const folder = options.folder ?? "general";
-      const uploadPath = path.join(this.uploadDir, folder);
+      const uploadPath = `${this.uploadDir}${path.sep}${folder}`;
       await fs.mkdir(uploadPath, { recursive: true });
 
       // Save file
-      const filePath = path.join(uploadPath, filename);
+      const filePath = `${uploadPath}${path.sep}${filename}`;
       await fs.writeFile(filePath, buffer);
 
       // Get file stats
@@ -125,7 +125,7 @@ export class LocalProvider implements UploadProvider {
    */
   async delete(publicId: string): Promise<boolean> {
     try {
-      const filePath = path.join(this.uploadDir, publicId);
+      const filePath = `${this.uploadDir}${path.sep}${publicId.replace(/\//g, path.sep)}`;
       await fs.unlink(filePath);
       return true;
     } catch (error) {
@@ -158,7 +158,7 @@ export class LocalProvider implements UploadProvider {
    */
   async listFiles(folder = "general"): Promise<string[]> {
     try {
-      const uploadPath = path.join(this.uploadDir, folder);
+      const uploadPath = `${this.uploadDir}${path.sep}${folder}`;
       const files = await fs.readdir(uploadPath);
       return files;
     } catch (error) {
@@ -177,7 +177,7 @@ export class LocalProvider implements UploadProvider {
     modifiedAt: Date;
   } | null> {
     try {
-      const filePath = path.join(this.uploadDir, publicId);
+      const filePath = `${this.uploadDir}${path.sep}${publicId.replace(/\//g, path.sep)}`;
       const stats = await fs.stat(filePath);
       return {
         size: stats.size,

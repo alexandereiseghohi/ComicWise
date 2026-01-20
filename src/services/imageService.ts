@@ -2,10 +2,10 @@
 // IMAGE SERVICE - Download and store remote images using configured upload provider
 // Dynamically uses UPLOAD_PROVIDER from environment (.env.local)
 // Supports: local, imagekit, cloudinary
+// Uses dynamic imports to prevent bundling upload provider logic into client
 // ═══════════════════════════════════════════════════════════════════════════════
 
-import type { UploadProvider } from "@/services/upload";
-import { getUploadProvider } from "@/services/upload";
+import type { UploadProvider } from "@/services/upload/types";
 import crypto from "crypto";
 import { existsSync } from "fs";
 import path from "path";
@@ -37,9 +37,12 @@ export class ImageService {
 
   /**
    * Get or initialize the upload provider from environment configuration
+   * Uses dynamic import to avoid bundling into client bundles
    */
   private async getProvider(): Promise<UploadProvider> {
     if (!this.uploadProvider && !this.providerInitialized) {
+      // Dynamic import prevents provider logic from being bundled
+      const { getUploadProvider } = await import("@/services/upload/factory");
       this.uploadProvider = await getUploadProvider();
       this.providerInitialized = true;
     }

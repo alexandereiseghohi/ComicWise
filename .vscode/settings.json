@@ -1,19 +1,4 @@
 {
-  "// BREADCRUMBS": "",
-  "// EDITOR SETTINGS": "Core editor configuration",
-  "// EMMET": "",
-  "// ERROR LENS": "",
-  "// ESLINT SETTINGS": "",
-  "// EXPLORER SETTINGS": "",
-  "// FILES SETTINGS": "",
-  "// GIT SETTINGS": "",
-  "// LANGUAGE-SPECIFIC FORMATTERS": "",
-  "// NEXT.JS SPECIFIC": "",
-  "// PRETTIER": "",
-  "// SEARCH SETTINGS": "",
-  "// TAILWIND CSS": "",
-  "// TERMINAL": "",
-  "// TYPESCRIPT SETTINGS": "",
   "[css]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
   "[javascript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
   "[javascriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
@@ -21,12 +6,16 @@
   "[jsonc]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
   "[markdown]": {
     "editor.defaultFormatter": "yzhang.markdown-all-in-one",
-    "editor.wordWrap": "on"
+    "editor.wordWrap": "on",
+    "files.trimTrailingWhitespace": false,
+    "editor.formatOnSave": true
   },
 
   "[scss]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
   "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
   "[typescriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[vitest]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+
   "breadcrumbs.enabled": true,
   "breadcrumbs.symbolPath": "on",
   "editor.codeActionsOnSave": {
@@ -38,6 +27,7 @@
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
   "editor.insertSpaces": true,
+  "editor.rulers": [100],
   "editor.tabSize": 2,
   "editor.trimAutoWhitespace": true,
   "emmet.includeLanguages": {
@@ -65,11 +55,13 @@
   },
 
   "files.associations": {
+    "*.agent.md": "chatagent",
     "*.css": "tailwindcss",
-    "*.env*": "dotenv"
+    "*.env*": "dotenv",
+    "*.instructions.md": "instructions",
+    "*.prompt.md": "prompt"
   },
   "files.eol": "\n",
-
   "files.exclude": {
     "**/.git": true,
     "**/.next": true,
@@ -85,7 +77,15 @@
 
   "git.confirmSync": false,
   "git.enableSmartCommit": true,
-  "next.telemetry.enabled": false,
+  "github.copilot.chat.agent.autoFix": true,
+  "next.telemetry.enabled": true,
+
+  "playwright.webServer": {
+    "command": "pnpm dev",
+    "port": 3000,
+    "timeout": 120000,
+    "reuseExistingServer": false
+  },
 
   "prettier.enable": true,
   "prettier.requireConfig": true,
@@ -111,8 +111,22 @@
 
   "typescript.enablePromptUseWorkspaceTsdk": true,
 
+  "typescript.inlayHints.enumMemberValues.enabled": true,
+
+  "typescript.inlayHints.functionLikeReturnTypes.enabled": true,
+  "typescript.inlayHints.parameterNames.enabled": "literals",
+  "typescript.inlayHints.parameterTypes.enabled": true,
+  "typescript.inlayHints.propertyDeclarationTypes.enabled": true,
+  "typescript.inlayHints.returnTypes.enabled": true,
+  "typescript.inlayHints.variableTypes.enabled": true,
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "typescript.suggest.autoImports": true,
   "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.updateImportsOnFileMove.enabled": "always"
+  "typescript.updateImportsOnFileMove.enabled": "always",
+
+  "vitest.commandLine": "pnpm vitest",
+  "vitest.enable": true,
+  "yaml.schemas": {
+    "./.schemas/collection.schema.json": "*.collection.yml"
+  }
 }

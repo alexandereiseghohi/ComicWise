@@ -1,12 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useComics } from "@/hooks/useStores";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
 import { ComicCard } from "./ComicCard";
 import { ComicFilters } from "./ComicFilters";
-import { useComics } from "@/hooks/useStores";
 
 interface Comic {
   id: number;
@@ -54,7 +54,7 @@ export function ComicsList({
     setComics(comics);
   }, [comics, setComics]);
 
-  const displayComics = filteredComics.length > 0 ? filteredComics : comics;
+  const displayComics = (filteredComics.length > 0 ? filteredComics : comics) as Comic[];
 
   return (
     <div className="space-y-8">

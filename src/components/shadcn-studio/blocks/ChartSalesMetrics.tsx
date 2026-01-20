@@ -1,5 +1,7 @@
 "use client";
 
+import { Bar, BarChart, Label, Pie, PieChart } from "recharts";
+
 import {
   BadgePercentIcon,
   ChartNoAxesCombinedIcon,
@@ -8,8 +10,6 @@ import {
   ShoppingBagIcon,
   TrendingUpIcon,
 } from "lucide-react";
-
-import { Bar, BarChart, Label, Pie, PieChart } from "recharts";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -161,12 +161,7 @@ const SalesMetricsCard = ({ className }: { className?: string }) => {
             </CardHeader>
 
             <CardContent className="px-0">
-              <ChartContainer
-                config={revenueChartConfig}
-                className={`
-                h-38.5 w-full
-              `}
-              >
+              <ChartContainer config={revenueChartConfig} className={`h-38.5 w-full`}>
                 <PieChart margin={{ top: 0, bottom: 0, left: 0, right: 0 }}>
                   <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
                   <Pie
@@ -180,7 +175,7 @@ const SalesMetricsCard = ({ className }: { className?: string }) => {
                     paddingAngle={2}
                   >
                     <Label
-                      content={({ viewBox }: { viewBox?: { cx?: number; cy?: number } }) => {
+                      content={({ viewBox }: { viewBox: any }) => {
                         if (viewBox && "cx" in viewBox && "cy" in viewBox) {
                           return (
                             <text
@@ -270,12 +265,7 @@ const SalesMetricsCard = ({ className }: { className?: string }) => {
                 </div>
               </div>
 
-              <ChartContainer
-                config={salesChartConfig}
-                className={`
-                h-7.75 w-full
-              `}
-              >
+              <ChartContainer config={salesChartConfig} className={`h-7.75 w-full`}>
                 <BarChart
                   accessibilityLayer
                   data={salesChartData}

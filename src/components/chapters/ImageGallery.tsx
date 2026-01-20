@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useCallback, useEffect } from 'react';
-import Image from 'next/image';
-import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from "lucide-react";
+import Image from "next/image";
+import { useCallback, useEffect, useState } from "react";
 
 interface ImageGalleryProps {
   images: Array<{
@@ -63,21 +63,21 @@ export function ImageGallery({
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') handlePrevious();
-      if (e.key === 'ArrowRight') handleNext();
-      if (e.key === '+') handleZoomIn();
-      if (e.key === '-') handleZoomOut();
-      if (e.key === '0') handleResetZoom();
+      if (e.key === "ArrowLeft") handlePrevious();
+      if (e.key === "ArrowRight") handleNext();
+      if (e.key === "+") handleZoomIn();
+      if (e.key === "-") handleZoomOut();
+      if (e.key === "0") handleResetZoom();
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handlePrevious, handleNext, handleZoomIn, handleZoomOut, handleResetZoom]);
 
   // Auto-hide UI
   useEffect(() => {
     let timeout: NodeJS.Timeout;
-    
+
     const resetTimeout = () => {
       clearTimeout(timeout);
       setShowUI(true);
@@ -85,13 +85,13 @@ export function ImageGallery({
     };
 
     const handleMouseMove = () => resetTimeout();
-    
+
     resetTimeout();
-    window.addEventListener('mousemove', handleMouseMove);
-    
+    window.addEventListener("mousemove", handleMouseMove);
+
     return () => {
       clearTimeout(timeout);
-      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
 
@@ -102,8 +102,8 @@ export function ImageGallery({
       {/* Header */}
       <div
         className={cn(
-          'absolute top-0 right-0 left-0 z-10 bg-linear-to-b from-black/80 to-transparent p-4 transition-opacity duration-300',
-          showUI ? 'opacity-100' : 'opacity-0'
+          "absolute top-0 right-0 left-0 z-10 bg-linear-to-b from-black/80 to-transparent p-4 transition-opacity duration-300",
+          showUI ? "opacity-100" : "opacity-0"
         )}
       >
         <div className="container mx-auto flex items-center justify-between">
@@ -129,13 +129,13 @@ export function ImageGallery({
             </div>
           )}
           <Image
-            src={currentImage?.imageUrl || '/placeholder-page.png'}
+            src={currentImage?.imageUrl || "/placeholder-page.png"}
             alt={`Page ${currentPage + 1}`}
             width={1200}
             height={1800}
             className="max-h-screen w-auto object-contain"
             priority={currentPage === 0}
-            loading={currentPage === 0 ? 'eager' : 'lazy'}
+            loading={currentPage === 0 ? "eager" : "lazy"}
             onLoad={() => setLoading(false)}
             quality={95}
           />
@@ -145,8 +145,8 @@ export function ImageGallery({
       {/* Navigation Controls */}
       <div
         className={cn(
-          'absolute right-0 bottom-0 left-0 z-10 bg-linear-to-t from-black/80 to-transparent p-4 transition-opacity duration-300',
-          showUI ? 'opacity-100' : 'opacity-0'
+          "absolute right-0 bottom-0 left-0 z-10 bg-linear-to-t from-black/80 to-transparent p-4 transition-opacity duration-300",
+          showUI ? "opacity-100" : "opacity-0"
         )}
       >
         <div className="container mx-auto flex items-center justify-center gap-4">
@@ -172,11 +172,11 @@ export function ImageGallery({
             >
               <ZoomOut className="size-4" />
             </Button>
-            
+
             <span className="min-w-[60px] text-center text-sm text-white">
               {Math.round(zoom * 100)}%
             </span>
-            
+
             <Button
               variant="ghost"
               size="icon"
@@ -212,10 +212,10 @@ export function ImageGallery({
                   setLoading(true);
                 }}
                 className={cn(
-                  'relative h-20 w-14 shrink-0 overflow-hidden rounded-sm border-2 transition-all',
+                  "relative h-20 w-14 shrink-0 overflow-hidden rounded-sm border-2 transition-all",
                   index === currentPage
-                    ? 'border-white ring-2 ring-white/50'
-                    : 'border-white/30 hover:border-white/60'
+                    ? "border-white ring-2 ring-white/50"
+                    : "border-white/30 hover:border-white/60"
                 )}
               >
                 <Image
@@ -237,8 +237,8 @@ export function ImageGallery({
       {/* Help Text */}
       <div
         className={cn(
-          'absolute bottom-24 left-1/2 -translate-x-1/2 rounded-lg bg-black/60 px-4 py-2 text-sm text-white backdrop-blur-sm transition-opacity duration-300',
-          showUI ? 'opacity-100' : 'opacity-0'
+          "absolute bottom-24 left-1/2 -translate-x-1/2 rounded-lg bg-black/60 px-4 py-2 text-sm text-white backdrop-blur-sm transition-opacity duration-300",
+          showUI ? "opacity-100" : "opacity-0"
         )}
       >
         Use arrow keys to navigate • +/- to zoom • Click to toggle UI

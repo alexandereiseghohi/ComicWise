@@ -1,8 +1,8 @@
-import { renderHook, act } from '@testing-library/react';
-import { useAuthStore } from '../authStore';
-import type { User } from '@/types';
+import type { User } from "@/types";
+import { act, renderHook } from "@testing-library/react";
+import { useAuthStore } from "../authStore";
 
-describe('authStore', () => {
+describe("authStore", () => {
   beforeEach(() => {
     // Reset store before each test
     const { result } = renderHook(() => useAuthStore());
@@ -11,22 +11,22 @@ describe('authStore', () => {
     });
   });
 
-  it('should initialize with default state', () => {
+  it("should initialize with default state", () => {
     const { result } = renderHook(() => useAuthStore());
-    
+
     expect(result.current.user).toBeNull();
     expect(result.current.isAuthenticated).toBe(false);
     expect(result.current.isLoading).toBe(false);
   });
 
-  it('should set user and authentication status', () => {
+  it("should set user and authentication status", () => {
     const { result } = renderHook(() => useAuthStore());
-    
+
     const mockUser: Partial<User> = {
-      id: '1',
-      email: 'test@example.com',
-      name: 'Test User',
-      role: 'user' as const,
+      id: "1",
+      email: "test@example.com",
+      name: "Test User",
+      role: "user" as const,
       password: null,
       emailVerified: null,
       image: null,
@@ -43,7 +43,7 @@ describe('authStore', () => {
     expect(result.current.isAuthenticated).toBe(true);
   });
 
-  it('should set loading state', () => {
+  it("should set loading state", () => {
     const { result } = renderHook(() => useAuthStore());
 
     act(() => {
@@ -59,14 +59,14 @@ describe('authStore', () => {
     expect(result.current.isLoading).toBe(false);
   });
 
-  it('should update user information', () => {
+  it("should update user information", () => {
     const { result } = renderHook(() => useAuthStore());
 
     const initialUser: Partial<User> = {
-      id: '1',
-      email: 'test@example.com',
-      name: 'Test User',
-      role: 'user' as const,
+      id: "1",
+      email: "test@example.com",
+      name: "Test User",
+      role: "user" as const,
       password: null,
       emailVerified: null,
       image: null,
@@ -80,21 +80,21 @@ describe('authStore', () => {
     });
 
     act(() => {
-      result.current.updateUser({ name: 'Updated Name' });
+      result.current.updateUser({ name: "Updated Name" });
     });
 
-    expect(result.current.user?.name).toBe('Updated Name');
-    expect(result.current.user?.email).toBe('test@example.com');
+    expect(result.current.user?.name).toBe("Updated Name");
+    expect(result.current.user?.email).toBe("test@example.com");
   });
 
-  it('should logout and clear user data', () => {
+  it("should logout and clear user data", () => {
     const { result } = renderHook(() => useAuthStore());
 
     const mockUser: Partial<User> = {
-      id: '1',
-      email: 'test@example.com',
-      name: 'Test User',
-      role: 'user' as const,
+      id: "1",
+      email: "test@example.com",
+      name: "Test User",
+      role: "user" as const,
       password: null,
       emailVerified: null,
       image: null,
@@ -117,24 +117,24 @@ describe('authStore', () => {
     expect(result.current.isAuthenticated).toBe(false);
   });
 
-  it('should not update user when logged out', () => {
+  it("should not update user when logged out", () => {
     const { result } = renderHook(() => useAuthStore());
 
     act(() => {
-      result.current.updateUser({ name: 'Should Not Update' });
+      result.current.updateUser({ name: "Should Not Update" });
     });
 
     expect(result.current.user).toBeNull();
   });
 
-  it('should persist user data in localStorage', () => {
+  it("should persist user data in localStorage", () => {
     const { result } = renderHook(() => useAuthStore());
 
     const mockUser: Partial<User> = {
-      id: '1',
-      email: 'test@example.com',
-      name: 'Test User',
-      role: 'user' as const,
+      id: "1",
+      email: "test@example.com",
+      name: "Test User",
+      role: "user" as const,
       password: null,
       emailVerified: null,
       image: null,
@@ -148,9 +148,9 @@ describe('authStore', () => {
     });
 
     // Check localStorage
-    const stored = localStorage.getItem('comicwise-auth');
+    const stored = localStorage.getItem("comicwise-auth");
     expect(stored).toBeTruthy();
-    
+
     if (stored) {
       const parsed = JSON.parse(stored);
       expect(parsed.state.user.email).toEqual(mockUser.email);

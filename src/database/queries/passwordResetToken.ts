@@ -1,21 +1,12 @@
-import { db as database } from "@/database/db";
-import { passwordResetToken } from "@/database/schema";
-import { eq } from "drizzle-orm";
+import { db } from "@/database/db";
+import { and, eq, gt } from "drizzle-orm";
 
 export async function getPasswordResetToken(token: string) {
-  return await database.query.passwordResetToken.findFirst({
-    where: eq(passwordResetToken.token, token),
-  });
-}
+  const [passwordResetToken] = await db
+    .select()
+    .from(passwordResetToken)
+    .where(and(eq(passwordResetToken.token, token), gt(passwordResetToken.expiresAt, new Date())))
+    .limit(1);
 
-export async function getValidPasswordResetToken(token: string) {
-  return await database.query.passwordResetToken.findFirst({
-    where: eq(passwordResetToken.token, token),
-  });
-}
-
-export async function getPasswordResetTokensByEmail(email: string) {
-  return await database.query.passwordResetToken.findMany({
-    where: eq(passwordResetToken.email, email),
-  });
+  return passwordResetToken;
 }

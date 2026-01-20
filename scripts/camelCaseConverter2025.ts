@@ -158,7 +158,15 @@ class CamelCaseConverter {
           if (this.dryRun) {
             console.log(chalk.gray(`  Would rename: ${op.from} → ${op.to}`));
           } else {
-            await fs.move(op.from, op.to);
+            // Check if source and destination are the same (case-insensitive on Windows)
+            if (op.from.toLowerCase() === op.to.toLowerCase() && op.from !== op.to) {
+              // Handle case-only rename on case-insensitive filesystems
+              const tempFile = op.to + ".tmp";
+              await fs.move(op.from, tempFile, { overwrite: true });
+              await fs.move(tempFile, op.to, { overwrite: true });
+            } else {
+              await fs.move(op.from, op.to, { overwrite: true });
+            }
           }
         }
       }

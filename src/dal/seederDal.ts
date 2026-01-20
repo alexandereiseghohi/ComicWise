@@ -248,7 +248,7 @@ export class SeederDal {
       await this.updateComicGenres(comicId, entities.genreIds);
 
       return { success: true, id: comicId, created: !existing };
-    } catch (error: any) {
+    } catch (error) {
       const message = this.extractErrorMessage(error, "Failed to process comic");
       return { success: false, error: message };
     }
@@ -334,7 +334,7 @@ export class SeederDal {
       await this.saveChapterImages(chapterId, imageUrls);
 
       return { success: true, id: chapterId, created: !existing };
-    } catch (error: any) {
+    } catch (error) {
       const message = this.extractErrorMessage(error, "Failed to process chapter");
       return { success: false, error: message };
     }

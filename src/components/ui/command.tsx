@@ -10,7 +10,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/ui/Dialog";
 import { cn } from "utils";
 
 function Command({ className, ...props }: React.ComponentProps<typeof CommandPrimitive>) {
@@ -48,10 +48,7 @@ function CommandDialog({
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription>{description}</DialogDescription>
       </DialogHeader>
-      <DialogContent
-        className={cn("overflow-hidden p-0", className)}
-        showCloseButton={showCloseButton}
-      >
+      <DialogContent className={cn("overflow-hidden p-0", className)}>
         <Command
           className={`
             **:data-[slot=command-input-wrapper]:h-12

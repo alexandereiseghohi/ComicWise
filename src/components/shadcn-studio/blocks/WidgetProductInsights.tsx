@@ -62,12 +62,7 @@ const ProductInsightsCard = ({ className }: { className?: string }) => {
             <span className="text-xs">Product reached</span>
             <span className="text-2xl font-semibold">21,153</span>
           </div>
-          <ChartContainer
-            config={productReachChartConfig}
-            className={`
-            min-h-13 max-w-18
-          `}
-          >
+          <ChartContainer config={productReachChartConfig} className={`min-h-13 max-w-18`}>
             <BarChart accessibilityLayer data={productReachChartData} barSize={8}>
               <Bar dataKey="reached" fill="var(--color-reached)" radius={2} />
             </BarChart>
@@ -79,12 +74,7 @@ const ProductInsightsCard = ({ className }: { className?: string }) => {
             <span className="text-xs">Order placed </span>
             <span className="text-2xl font-semibold">2,123</span>
           </div>
-          <ChartContainer
-            config={orderPlacedChartConfig}
-            className={`
-            min-h-13 max-w-18
-          `}
-          >
+          <ChartContainer config={orderPlacedChartConfig} className={`min-h-13 max-w-18`}>
             <BarChart accessibilityLayer data={orderPlacedChartData} barSize={8}>
               <Bar dataKey="orders" fill="var(--color-orders)" radius={2} />
             </BarChart>

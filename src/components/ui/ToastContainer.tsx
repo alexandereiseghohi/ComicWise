@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
 import { useNotifications } from "@/hooks/useStores";
-import { X, CheckCircle2, AlertCircle, AlertTriangle, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AlertCircle, AlertTriangle, CheckCircle2, Info, X } from "lucide-react";
+import { useEffect } from "react";
 
 export function ToastContainer() {
   const { toasts, removeToast } = useNotifications();
@@ -11,7 +11,7 @@ export function ToastContainer() {
   useEffect(() => {
     // Auto-remove toasts after their duration
     const timers: NodeJS.Timeout[] = [];
-    
+
     toasts.forEach((toast) => {
       if (toast.duration) {
         const timer = setTimeout(() => {
@@ -22,7 +22,7 @@ export function ToastContainer() {
     });
 
     return () => {
-      timers.forEach(timer => clearTimeout(timer));
+      timers.forEach((timer) => clearTimeout(timer));
     };
   }, [toasts, removeToast]);
 
@@ -31,11 +31,7 @@ export function ToastContainer() {
   return (
     <div className="pointer-events-none fixed inset-0 z-50 flex flex-col items-end justify-end gap-2 p-4 md:p-6">
       {toasts.map((toast) => (
-        <Toast
-          key={toast.id}
-          toast={toast}
-          onClose={() => removeToast(toast.id)}
-        />
+        <Toast key={toast.id} toast={toast} onClose={() => removeToast(toast.id)} />
       ))}
     </div>
   );
@@ -64,9 +60,12 @@ function Toast({ toast, onClose }: ToastProps) {
   };
 
   const colors = {
-    success: "bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-900 dark:text-green-100",
-    error: "bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-800 text-red-900 dark:text-red-100",
-    warning: "bg-yellow-50 dark:bg-yellow-950 border-yellow-200 dark:border-yellow-800 text-yellow-900 dark:text-yellow-100",
+    success:
+      "bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800 text-green-900 dark:text-green-100",
+    error:
+      "bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-800 text-red-900 dark:text-red-100",
+    warning:
+      "bg-yellow-50 dark:bg-yellow-950 border-yellow-200 dark:border-yellow-800 text-yellow-900 dark:text-yellow-100",
     info: "bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-100",
   };
 
@@ -83,9 +82,7 @@ function Toast({ toast, onClose }: ToastProps) {
         <Icon className="mt-0.5 size-5 shrink-0" />
         <div className="flex-1 space-y-1">
           <p className="text-sm font-semibold">{toast.title}</p>
-          {toast.message && (
-            <p className="text-sm opacity-90">{toast.message}</p>
-          )}
+          {toast.message && <p className="text-sm opacity-90">{toast.message}</p>}
           {toast.action && (
             <button
               onClick={() => {

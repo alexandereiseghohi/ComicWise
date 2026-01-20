@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useReaderStore, useBookmarkStore } from "@/stores";
+import { useBookmarkStore, useReaderStore } from "@/stores";
 import { ChevronLeft, ChevronRight, Home, List, Maximize, Minimize } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -37,7 +37,7 @@ interface ReaderProps {
 
 export function ChapterReader({ chapter, comic, images, prevChapter, nextChapter }: ReaderProps) {
   const router = useRouter();
-  
+
   // Zustand stores
   const {
     currentPage,
@@ -88,7 +88,16 @@ export function ChapterReader({ chapter, comic, images, prevChapter, nextChapter
     } else if (nextChapter) {
       router.push(`/comics/${comic.id}/read/${nextChapter.id}`);
     }
-  }, [currentPage, storeTotalPages, nextChapter, router, comic.id, nextPage, addToHistory, chapter.id]);
+  }, [
+    currentPage,
+    storeTotalPages,
+    nextChapter,
+    router,
+    comic.id,
+    nextPage,
+    addToHistory,
+    chapter.id,
+  ]);
 
   const handleToggleFullscreen = useCallback(() => {
     if (!document.fullscreenElement) {

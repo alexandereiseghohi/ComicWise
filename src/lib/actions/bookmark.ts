@@ -57,9 +57,8 @@ export async function updateBookmarkStatus(comicId: number, status: BookmarkStat
   }
 
   try {
-    // TODO: Implement updateBookmarkStatus mutation in database/mutations
-    // For now, we'll use addBookmark which should handle upsert
-    await addBookmarkMutation(session.user.id, comicId, undefined, status);
+    const { updateBookmarkStatus: updateStatusMutation } = await import("@/database/mutations");
+    await updateStatusMutation(session.user.id, comicId, status);
     revalidatePath("/bookmarks");
     revalidatePath(`/comics/${comicId}`);
 

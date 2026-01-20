@@ -1,6 +1,6 @@
 /**
  * Reader Store - Manages chapter reading state
- * 
+ *
  * Features:
  * - Reading progress tracking
  * - Reader settings
@@ -8,59 +8,59 @@
  * - Reading mode preferences
  */
 
-import { create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { devtools, persist } from "zustand/middleware";
 
 interface ReaderState {
   // Reading progress
   currentPage: number;
   totalPages: number;
-  
+
   // Reader settings
-  readingMode: 'vertical' | 'horizontal' | 'webtoon';
-  pageLayout: 'single' | 'double';
-  imageQuality: 'original' | 'high' | 'medium' | 'low';
+  readingMode: "vertical" | "horizontal" | "webtoon";
+  pageLayout: "single" | "double";
+  imageQuality: "original" | "high" | "medium" | "low";
   autoScroll: boolean;
   autoScrollSpeed: number;
-  
+
   // UI settings
   showPageNumbers: boolean;
   showProgress: boolean;
   fullscreen: boolean;
   zoom: number;
-  
+
   // Navigation
   history: Array<{ comicId: number; chapterId: number; page: number }>;
-  
+
   // Actions
   setPage(page: number): void;
   setTotalPages(total: number): void;
   nextPage(): void;
   prevPage(): void;
-  
-  setReadingMode(mode: ReaderState['readingMode']): void;
-  setPageLayout(layout: ReaderState['pageLayout']): void;
-  setImageQuality(quality: ReaderState['imageQuality']): void;
+
+  setReadingMode(mode: ReaderState["readingMode"]): void;
+  setPageLayout(layout: ReaderState["pageLayout"]): void;
+  setImageQuality(quality: ReaderState["imageQuality"]): void;
   setAutoScroll(enabled: boolean): void;
   setAutoScrollSpeed(speed: number): void;
-  
+
   togglePageNumbers(): void;
   toggleProgress(): void;
   toggleFullscreen(): void;
   setZoom(zoom: number): void;
-  
+
   addToHistory(comicId: number, chapterId: number, page: number): void;
   clearHistory(): void;
-  
+
   reset(): void;
 }
 
 const initialState = {
   currentPage: 1,
   totalPages: 0,
-  readingMode: 'vertical' as const,
-  pageLayout: 'single' as const,
-  imageQuality: 'high' as const,
+  readingMode: "vertical" as const,
+  pageLayout: "single" as const,
+  imageQuality: "high" as const,
   autoScroll: false,
   autoScrollSpeed: 1,
   showPageNumbers: true,
@@ -77,7 +77,7 @@ export const useReaderStore = create<ReaderState>()(
         ...initialState,
 
         setPage: (page) => set({ currentPage: page }),
-        
+
         setTotalPages: (total) => set({ totalPages: total }),
 
         nextPage: () =>
@@ -91,23 +91,20 @@ export const useReaderStore = create<ReaderState>()(
           })),
 
         setReadingMode: (mode) => set({ readingMode: mode }),
-        
+
         setPageLayout: (layout) => set({ pageLayout: layout }),
-        
+
         setImageQuality: (quality) => set({ imageQuality: quality }),
-        
+
         setAutoScroll: (enabled) => set({ autoScroll: enabled }),
-        
+
         setAutoScrollSpeed: (speed) => set({ autoScrollSpeed: speed }),
 
-        togglePageNumbers: () =>
-          set((state) => ({ showPageNumbers: !state.showPageNumbers })),
+        togglePageNumbers: () => set((state) => ({ showPageNumbers: !state.showPageNumbers })),
 
-        toggleProgress: () =>
-          set((state) => ({ showProgress: !state.showProgress })),
+        toggleProgress: () => set((state) => ({ showProgress: !state.showProgress })),
 
-        toggleFullscreen: () =>
-          set((state) => ({ fullscreen: !state.fullscreen })),
+        toggleFullscreen: () => set((state) => ({ fullscreen: !state.fullscreen })),
 
         setZoom: (zoom) => set({ zoom: Math.max(50, Math.min(200, zoom)) }),
 
@@ -115,9 +112,7 @@ export const useReaderStore = create<ReaderState>()(
           set((state) => ({
             history: [
               { comicId, chapterId, page },
-              ...state.history.filter(
-                (h) => !(h.comicId === comicId && h.chapterId === chapterId)
-              ),
+              ...state.history.filter((h) => !(h.comicId === comicId && h.chapterId === chapterId)),
             ].slice(0, 50), // Keep last 50
           })),
 
@@ -126,7 +121,7 @@ export const useReaderStore = create<ReaderState>()(
         reset: () => set(initialState),
       }),
       {
-        name: 'comicwise-reader',
+        name: "comicwise-reader",
         partialize: (state) => ({
           readingMode: state.readingMode,
           pageLayout: state.pageLayout,
@@ -140,6 +135,6 @@ export const useReaderStore = create<ReaderState>()(
         }),
       }
     ),
-    { name: 'comicwise-reader' }
+    { name: "comicwise-reader" }
   )
 );

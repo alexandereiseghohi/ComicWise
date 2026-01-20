@@ -1,7 +1,7 @@
-import { renderHook, act } from '@testing-library/react';
-import { useReaderStore } from '../readerStore';
+import { act, renderHook } from "@testing-library/react";
+import { useReaderStore } from "../readerStore";
 
-describe('readerStore', () => {
+describe("readerStore", () => {
   beforeEach(() => {
     const { result } = renderHook(() => useReaderStore());
     act(() => {
@@ -9,19 +9,19 @@ describe('readerStore', () => {
     });
   });
 
-  it('should initialize with default state', () => {
+  it("should initialize with default state", () => {
     const { result } = renderHook(() => useReaderStore());
 
     expect(result.current.currentPage).toBe(1);
     expect(result.current.totalPages).toBe(0);
-    expect(result.current.readingMode).toBe('vertical');
-    expect(result.current.pageLayout).toBe('single');
-    expect(result.current.imageQuality).toBe('high');
+    expect(result.current.readingMode).toBe("vertical");
+    expect(result.current.pageLayout).toBe("single");
+    expect(result.current.imageQuality).toBe("high");
     expect(result.current.fullscreen).toBe(false);
     expect(result.current.zoom).toBe(100);
   });
 
-  it('should set current page', () => {
+  it("should set current page", () => {
     const { result } = renderHook(() => useReaderStore());
 
     act(() => {
@@ -31,7 +31,7 @@ describe('readerStore', () => {
     expect(result.current.currentPage).toBe(5);
   });
 
-  it('should set total pages', () => {
+  it("should set total pages", () => {
     const { result } = renderHook(() => useReaderStore());
 
     act(() => {
@@ -41,7 +41,7 @@ describe('readerStore', () => {
     expect(result.current.totalPages).toBe(50);
   });
 
-  it('should navigate to next page', () => {
+  it("should navigate to next page", () => {
     const { result } = renderHook(() => useReaderStore());
 
     act(() => {
@@ -56,7 +56,7 @@ describe('readerStore', () => {
     expect(result.current.currentPage).toBe(6);
   });
 
-  it('should not go beyond total pages', () => {
+  it("should not go beyond total pages", () => {
     const { result } = renderHook(() => useReaderStore());
 
     act(() => {
@@ -71,7 +71,7 @@ describe('readerStore', () => {
     expect(result.current.currentPage).toBe(10);
   });
 
-  it('should navigate to previous page', () => {
+  it("should navigate to previous page", () => {
     const { result } = renderHook(() => useReaderStore());
 
     act(() => {
@@ -85,7 +85,7 @@ describe('readerStore', () => {
     expect(result.current.currentPage).toBe(4);
   });
 
-  it('should not go below page 1', () => {
+  it("should not go below page 1", () => {
     const { result } = renderHook(() => useReaderStore());
 
     act(() => {
@@ -99,43 +99,43 @@ describe('readerStore', () => {
     expect(result.current.currentPage).toBe(1);
   });
 
-  it('should change reading mode', () => {
+  it("should change reading mode", () => {
     const { result } = renderHook(() => useReaderStore());
 
     act(() => {
-      result.current.setReadingMode('horizontal');
+      result.current.setReadingMode("horizontal");
     });
 
-    expect(result.current.readingMode).toBe('horizontal');
+    expect(result.current.readingMode).toBe("horizontal");
 
     act(() => {
-      result.current.setReadingMode('webtoon');
+      result.current.setReadingMode("webtoon");
     });
 
-    expect(result.current.readingMode).toBe('webtoon');
+    expect(result.current.readingMode).toBe("webtoon");
   });
 
-  it('should change page layout', () => {
+  it("should change page layout", () => {
     const { result } = renderHook(() => useReaderStore());
 
     act(() => {
-      result.current.setPageLayout('double');
+      result.current.setPageLayout("double");
     });
 
-    expect(result.current.pageLayout).toBe('double');
+    expect(result.current.pageLayout).toBe("double");
   });
 
-  it('should change image quality', () => {
+  it("should change image quality", () => {
     const { result } = renderHook(() => useReaderStore());
 
     act(() => {
-      result.current.setImageQuality('original');
+      result.current.setImageQuality("original");
     });
 
-    expect(result.current.imageQuality).toBe('original');
+    expect(result.current.imageQuality).toBe("original");
   });
 
-  it('should toggle fullscreen', () => {
+  it("should toggle fullscreen", () => {
     const { result } = renderHook(() => useReaderStore());
 
     expect(result.current.fullscreen).toBe(false);
@@ -153,7 +153,7 @@ describe('readerStore', () => {
     expect(result.current.fullscreen).toBe(false);
   });
 
-  it('should set zoom level', () => {
+  it("should set zoom level", () => {
     const { result } = renderHook(() => useReaderStore());
 
     act(() => {
@@ -163,7 +163,7 @@ describe('readerStore', () => {
     expect(result.current.zoom).toBe(150);
   });
 
-  it('should toggle page numbers', () => {
+  it("should toggle page numbers", () => {
     const { result } = renderHook(() => useReaderStore());
 
     expect(result.current.showPageNumbers).toBe(true);
@@ -175,7 +175,7 @@ describe('readerStore', () => {
     expect(result.current.showPageNumbers).toBe(false);
   });
 
-  it('should toggle progress indicator', () => {
+  it("should toggle progress indicator", () => {
     const { result } = renderHook(() => useReaderStore());
 
     expect(result.current.showProgress).toBe(true);
@@ -187,7 +187,7 @@ describe('readerStore', () => {
     expect(result.current.showProgress).toBe(false);
   });
 
-  it('should add to reading history', () => {
+  it("should add to reading history", () => {
     const { result } = renderHook(() => useReaderStore());
 
     act(() => {
@@ -202,7 +202,7 @@ describe('readerStore', () => {
     });
   });
 
-  it('should limit history to 50 items', () => {
+  it("should limit history to 50 items", () => {
     const { result } = renderHook(() => useReaderStore());
 
     act(() => {
@@ -214,7 +214,7 @@ describe('readerStore', () => {
     expect(result.current.history.length).toBe(50);
   });
 
-  it('should clear history', () => {
+  it("should clear history", () => {
     const { result } = renderHook(() => useReaderStore());
 
     act(() => {
@@ -231,12 +231,12 @@ describe('readerStore', () => {
     expect(result.current.history.length).toBe(0);
   });
 
-  it('should reset all settings', () => {
+  it("should reset all settings", () => {
     const { result } = renderHook(() => useReaderStore());
 
     act(() => {
       result.current.setPage(10);
-      result.current.setReadingMode('horizontal');
+      result.current.setReadingMode("horizontal");
       result.current.setZoom(150);
       result.current.toggleFullscreen();
     });
@@ -246,12 +246,12 @@ describe('readerStore', () => {
     });
 
     expect(result.current.currentPage).toBe(1);
-    expect(result.current.readingMode).toBe('vertical');
+    expect(result.current.readingMode).toBe("vertical");
     expect(result.current.zoom).toBe(100);
     expect(result.current.fullscreen).toBe(false);
   });
 
-  it('should enable and configure auto-scroll', () => {
+  it("should enable and configure auto-scroll", () => {
     const { result } = renderHook(() => useReaderStore());
 
     act(() => {
@@ -263,15 +263,15 @@ describe('readerStore', () => {
     expect(result.current.autoScrollSpeed).toBe(5);
   });
 
-  it('should persist settings in localStorage', () => {
+  it("should persist settings in localStorage", () => {
     const { result } = renderHook(() => useReaderStore());
 
     act(() => {
-      result.current.setReadingMode('webtoon');
-      result.current.setImageQuality('original');
+      result.current.setReadingMode("webtoon");
+      result.current.setImageQuality("original");
     });
 
-    const stored = localStorage.getItem('comicwise-reader');
+    const stored = localStorage.getItem("comicwise-reader");
     expect(stored).toBeTruthy();
   });
 });

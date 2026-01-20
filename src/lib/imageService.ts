@@ -1,6 +1,6 @@
 /**
  * Image Service - Handles image optimization, upload, and management
- * 
+ *
  * Features:
  * - WebP conversion
  * - Image compression
@@ -9,20 +9,20 @@
  * - Local/cloud storage support
  */
 
-import { createHash } from 'crypto';
-import { mkdir, writeFile, unlink } from 'fs/promises';
-import { existsSync } from 'fs';
-import path from 'path';
-import sharp from 'sharp';
+import { createHash } from "crypto";
+import { existsSync } from "fs";
+import { mkdir, unlink, writeFile } from "fs/promises";
+import path from "path";
+import sharp from "sharp";
 
 // ═══════════════════════════════════════════════════
 // CONFIGURATION
 // ═══════════════════════════════════════════════════
 
 const IMAGE_CONFIG = {
-  uploadDir: path.join(process.cwd(), 'public', 'uploads'),
+  uploadDir: path.join(process.cwd(), "public", "uploads"),
   maxFileSize: 10 * 1024 * 1024, // 10MB
-  allowedFormats: ['jpeg', 'jpg', 'png', 'webp', 'gif'] as const,
+  allowedFormats: ["jpeg", "jpg", "png", "webp", "gif"] as const,
   quality: {
     webp: 85,
     jpeg: 85,
@@ -44,7 +44,7 @@ export interface ImageUploadOptions {
   folder?: string;
   generateThumbnail?: boolean;
   convertToWebP?: boolean;
-  sizes?: ('thumbnail' | 'small' | 'medium' | 'large')[];
+  sizes?: ("thumbnail" | "small" | "medium" | "large")[];
 }
 
 export interface ImageUploadResult {
@@ -70,7 +70,7 @@ export interface ImageUploadResult {
  * @param buffer
  */
 function generateHash(buffer: Buffer): string {
-  return createHash('sha256').update(buffer).digest('hex').slice(0, 16);
+  return createHash("sha256").update(buffer).digest("hex").slice(0, 16);
 }
 
 /**
@@ -93,8 +93,8 @@ function generateFilename(originalName: string, hash: string, suffix?: string): 
   const ext = path.extname(originalName);
   const name = path.basename(originalName, ext);
   const timestamp = Date.now();
-  const safeName = name.replaceAll(/[^\da-z]/gi, '-').toLowerCase();
-  const suffixPart = suffix ? `-${suffix}` : '';
+  const safeName = name.replaceAll(/[^\da-z]/gi, "-").toLowerCase();
+  const suffixPart = suffix ? `-${suffix}` : "";
   return `${safeName}-${hash}${suffixPart}-${timestamp}${ext}`;
 }
 
@@ -117,17 +117,17 @@ async function processImage(
   options: {
     width?: number;
     height?: number;
-    format?: 'jpeg' | 'png' | 'webp';
+    format?: "jpeg" | "png" | "webp";
     quality?: number;
-    fit?: 'cover' | 'contain' | 'fill' | 'inside' | 'outside';
+    fit?: "cover" | "contain" | "fill" | "inside" | "outside";
   } = {}
 ): Promise<Buffer> {
   const {
     width,
     height,
     format,
-    quality = IMAGE_CONFIG.quality[format || 'webp'],
-    fit = 'cover',
+    quality = IMAGE_CONFIG.quality[format || "webp"],
+    fit = "cover",
   } = options;
 
   let pipeline = sharp(buffer);
@@ -139,22 +139,22 @@ async function processImage(
 
   // Convert format and apply quality
   switch (format) {
-  case 'webp':
-    pipeline = pipeline.webp({ quality });
-  
-  break;
-  
-  case 'jpeg':
-    pipeline = pipeline.jpeg({ quality, mozjpeg: true });
-  
-  break;
-  
-  case 'png':
-    pipeline = pipeline.png({ quality, compressionLevel: 9 });
-  
-  break;
-  
-  // No default
+    case "webp":
+      pipeline = pipeline.webp({ quality });
+
+      break;
+
+    case "jpeg":
+      pipeline = pipeline.jpeg({ quality, mozjpeg: true });
+
+      break;
+
+    case "png":
+      pipeline = pipeline.png({ quality, compressionLevel: 9 });
+
+      break;
+
+    // No default
   }
 
   return pipeline.toBuffer();
@@ -168,8 +168,8 @@ async function generateThumbnail(buffer: Buffer): Promise<Buffer> {
   return processImage(buffer, {
     width: IMAGE_CONFIG.sizes.thumbnail.width,
     height: IMAGE_CONFIG.sizes.thumbnail.height,
-    format: 'webp',
-    fit: 'cover',
+    format: "webp",
+    fit: "cover",
   });
 }
 
@@ -179,7 +179,7 @@ async function generateThumbnail(buffer: Buffer): Promise<Buffer> {
  */
 async function convertToWebP(buffer: Buffer): Promise<Buffer> {
   return processImage(buffer, {
-    format: 'webp',
+    format: "webp",
   });
 }
 
@@ -199,7 +199,7 @@ export async function uploadImage(
   options: ImageUploadOptions = {}
 ): Promise<ImageUploadResult> {
   const {
-    folder = 'images',
+    folder = "images",
     generateThumbnail: shouldGenerateThumbnail = true,
     convertToWebP: shouldConvertToWebP = true,
     sizes = [],
@@ -217,14 +217,16 @@ export async function uploadImage(
 
   // Validate file size
   if (buffer.length > IMAGE_CONFIG.maxFileSize) {
-    throw new Error(`File size exceeds maximum allowed size of ${IMAGE_CONFIG.maxFileSize / 1024 / 1024}MB`);
+    throw new Error(
+      `File size exceeds maximum allowed size of ${IMAGE_CONFIG.maxFileSize / 1024 / 1024}MB`
+    );
   }
 
   // Get image metadata
   const metadata = await sharp(buffer).metadata();
-  
+
   if (!metadata.format || !IMAGE_CONFIG.allowedFormats.includes(metadata.format as any)) {
-    throw new Error(`Invalid image format. Allowed: ${IMAGE_CONFIG.allowedFormats.join(', ')}`);
+    throw new Error(`Invalid image format. Allowed: ${IMAGE_CONFIG.allowedFormats.join(", ")}`);
   }
 
   // Generate hash for deduplication
@@ -251,9 +253,9 @@ export async function uploadImage(
   };
 
   // Generate WebP version
-  if (shouldConvertToWebP && metadata.format !== 'webp') {
+  if (shouldConvertToWebP && metadata.format !== "webp") {
     const webpBuffer = await convertToWebP(buffer);
-    const webpFilename = generateFilename(originalName, hash, 'webp').replace(/\.[^.]+$/, '.webp');
+    const webpFilename = generateFilename(originalName, hash, "webp").replace(/\.[^.]+$/, ".webp");
     const webpPath = path.join(uploadPath, webpFilename);
     await writeFile(webpPath, webpBuffer);
     result.webpUrl = `/uploads/${folder}/${webpFilename}`;
@@ -262,7 +264,10 @@ export async function uploadImage(
   // Generate thumbnail
   if (shouldGenerateThumbnail) {
     const thumbnailBuffer = await generateThumbnail(buffer);
-    const thumbnailFilename = generateFilename(originalName, hash, 'thumb').replace(/\.[^.]+$/, '.webp');
+    const thumbnailFilename = generateFilename(originalName, hash, "thumb").replace(
+      /\.[^.]+$/,
+      ".webp"
+    );
     const thumbnailPath = path.join(uploadPath, thumbnailFilename);
     await writeFile(thumbnailPath, thumbnailBuffer);
     result.thumbnailUrl = `/uploads/${folder}/${thumbnailFilename}`;
@@ -271,19 +276,22 @@ export async function uploadImage(
   // Generate size variants
   if (sizes.length > 0) {
     result.variants = {};
-    
+
     for (const size of sizes) {
       const sizeConfig = IMAGE_CONFIG.sizes[size];
       const variantBuffer = await processImage(buffer, {
         width: sizeConfig.width,
         height: sizeConfig.height,
-        format: 'webp',
+        format: "webp",
       });
-      
-      const variantFilename = generateFilename(originalName, hash, size).replace(/\.[^.]+$/, '.webp');
+
+      const variantFilename = generateFilename(originalName, hash, size).replace(
+        /\.[^.]+$/,
+        ".webp"
+      );
       const variantPath = path.join(uploadPath, variantFilename);
       await writeFile(variantPath, variantBuffer);
-      
+
       result.variants[size] = `/uploads/${folder}/${variantFilename}`;
     }
   }
@@ -296,8 +304,8 @@ export async function uploadImage(
  * @param imagePath
  */
 export async function deleteImage(imagePath: string): Promise<void> {
-  const fullPath = path.join(process.cwd(), 'public', imagePath);
-  
+  const fullPath = path.join(process.cwd(), "public", imagePath);
+
   if (existsSync(fullPath)) {
     await unlink(fullPath);
   }
@@ -305,7 +313,7 @@ export async function deleteImage(imagePath: string): Promise<void> {
   // Delete variants (webp, thumbnail, sizes)
   const dir = path.dirname(fullPath);
   const basename = path.basename(fullPath, path.extname(fullPath));
-  
+
   // Try to delete common variants
   const variants = [
     `${basename}-webp.webp`,
@@ -330,7 +338,7 @@ export async function deleteImage(imagePath: string): Promise<void> {
  * @param originalUrl
  */
 export function getOptimizedImageUrl(originalUrl: string): string {
-  const webpUrl = originalUrl.replace(/\.[^.]+$/, '-webp.webp');
+  const webpUrl = originalUrl.replace(/\.[^.]+$/, "-webp.webp");
   // In production, check if WebP exists, for now return original
   return originalUrl;
 }
@@ -348,7 +356,7 @@ export async function bulkOptimizeImages(
   const results = await Promise.all(
     files.map(({ file, name }) => uploadImage(file, name, options))
   );
-  
+
   return results;
 }
 

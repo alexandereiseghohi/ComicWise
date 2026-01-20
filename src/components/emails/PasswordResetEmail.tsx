@@ -1,4 +1,3 @@
-import appConfig from "@/appConfig";
 import {
   Body,
   Button,
@@ -13,176 +12,101 @@ import {
 } from "@react-email/components";
 
 interface PasswordResetEmailProps {
-  name: string;
-  email: string;
-  token: string;
+  resetLink: string;
+  userEmail: string;
 }
 
-export default function PasswordResetEmail({ name, email, token }: PasswordResetEmailProps) {
-  const resetUrl = `${appConfig.url}/reset-password?token=${token}`;
-
+export function PasswordResetEmail({ resetLink, userEmail }: PasswordResetEmailProps) {
   return (
     <Html>
       <Head />
       <Preview>Reset your ComicWise password</Preview>
       <Body style={main}>
         <Container style={container}>
-          <Section style={header}>
-            <Heading style={h1}>Password Reset Request</Heading>
+          <Heading style={h1}>Password Reset Request</Heading>
+          <Text style={text}>Hello,</Text>
+          <Text style={text}>
+            We received a request to reset the password for your ComicWise account ({userEmail}).
+          </Text>
+          <Text style={text}>
+            Click the button below to reset your password. This link will expire in 1 hour.
+          </Text>
+          <Section style={buttonContainer}>
+            <Button style={button} href={resetLink}>
+              Reset Password
+            </Button>
           </Section>
-
-          <Section style={content}>
-            <Text style={paragraph}>Hi {name},</Text>
-
-            <Text style={paragraph}>
-              We received a request to reset your password for your ComicWise account. Click the
-              button below to create a new password.
-            </Text>
-
-            <Section style={buttonContainer}>
-              <Button style={button} href={resetUrl}>
-                Reset Password
-              </Button>
-            </Section>
-
-            <Text style={paragraph}>
-              This password reset link will expire in 1 hour for security reasons.
-            </Text>
-
-            <Text style={note}>
-              If the button above doesn&apos;t work, copy and paste the following link into your
-              browser:
-              <br />
-              <Link href={resetUrl} style={link}>
-                {resetUrl}
-              </Link>
-            </Text>
-
-            <Section style={warningBox}>
-              <Text style={warningTitle}>⚠️ Important Security Notice</Text>
-              <Text style={warningText}>
-                If you didn&apos;t request a password reset, please ignore this email. Your password
-                will remain unchanged. However, if you&apos;re concerned about your account
-                security, please contact our support team immediately.
-              </Text>
-            </Section>
-          </Section>
-
-          <Section style={footerSection}>
-            <Text style={footerText}>
-              This email was sent to {email}
-              <br />
-              ComicWise - Your Comic Reading Companion
-            </Text>
-          </Section>
+          <Text style={text}>
+            If you didn't request a password reset, you can safely ignore this email.
+          </Text>
+          <Text style={footer}>
+            Or copy and paste this link into your browser:{" "}
+            <Link href={resetLink} style={link}>
+              {resetLink}
+            </Link>
+          </Text>
         </Container>
       </Body>
     </Html>
   );
 }
 
+export default PasswordResetEmail;
+
 const main = {
-  backgroundColor: "f6f9fc",
-  fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif',
+  backgroundColor: "#f6f9fc",
+  fontFamily:
+    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
 };
 
 const container = {
-  backgroundColor: "ffffff",
+  backgroundColor: "#ffffff",
   margin: "0 auto",
   padding: "20px 0 48px",
   marginBottom: "64px",
-  maxWidth: "600px",
-};
-
-const header = {
-  padding: "32px 24px",
-  textAlign: "center" as const,
 };
 
 const h1 = {
-  color: "1f2937",
-  fontSize: "28px",
+  color: "#333",
+  fontSize: "24px",
   fontWeight: "bold",
-  margin: "0",
+  margin: "40px 0",
   padding: "0",
+  textAlign: "center" as const,
 };
 
-const content = {
-  padding: "0 48px",
-};
-
-const paragraph = {
-  color: "374151",
+const text = {
+  color: "#333",
   fontSize: "16px",
   lineHeight: "26px",
-  margin: "16px 0",
+  padding: "0 40px",
 };
 
 const buttonContainer = {
+  padding: "27px 0 27px",
   textAlign: "center" as const,
-  margin: "32px 0",
 };
 
 const button = {
-  backgroundColor: "ef4444",
-  borderRadius: "6px",
-  color: "fff",
+  backgroundColor: "#5469d4",
+  borderRadius: "4px",
+  color: "#fff",
   fontSize: "16px",
   fontWeight: "bold",
   textDecoration: "none",
   textAlign: "center" as const,
-  display: "inline-block",
-  padding: "12px 32px",
-};
-
-const note = {
-  backgroundColor: "f3f4f6",
-  border: "1px solid e5e7eb",
-  borderRadius: "6px",
-  color: "6b7280",
-  fontSize: "14px",
-  lineHeight: "22px",
-  padding: "16px",
-  margin: "24px 0",
-};
-
-const warningBox = {
-  backgroundColor: "fef2f2",
-  border: "1px solid fecaca",
-  borderRadius: "6px",
-  padding: "16px",
-  margin: "24px 0",
-};
-
-const warningTitle = {
-  color: "991b1b",
-  fontSize: "14px",
-  fontWeight: "bold",
-  margin: "0 0 8px 0",
-};
-
-const warningText = {
-  color: "7f1d1d",
-  fontSize: "14px",
-  lineHeight: "22px",
-  margin: "0",
-};
-
-const footerSection = {
-  borderTop: "1px solid e5e7eb",
-  marginTop: "32px",
-  padding: "24px 48px",
-};
-
-const footerText = {
-  color: "9ca3af",
-  fontSize: "12px",
-  lineHeight: "20px",
-  textAlign: "center" as const,
+  display: "block",
+  padding: "12px 24px",
 };
 
 const link = {
-  color: "3b82f6",
+  color: "#5469d4",
   textDecoration: "underline",
-  wordBreak: "break-all" as const,
+};
+
+const footer = {
+  color: "#8898aa",
+  fontSize: "12px",
+  lineHeight: "16px",
+  padding: "0 40px",
 };

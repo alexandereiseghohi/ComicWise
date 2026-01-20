@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useFormContext } from 'react-hook-form';
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   FormControl,
   FormDescription,
@@ -8,27 +8,33 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { useFormContext } from "react-hook-form";
 
 interface FormFieldProps {
   name: string;
   label: string;
   description?: string;
   placeholder?: string;
-  type?: 'text' | 'email' | 'password' | 'number' | 'url';
+  type?: "text" | "email" | "password" | "number" | "url";
 }
 
-export function TextFormField({ name, label, description, placeholder, type = 'text' }: FormFieldProps) {
+export function TextFormField({
+  name,
+  label,
+  description,
+  placeholder,
+  type = "text",
+}: FormFieldProps) {
   const { control } = useFormContext();
   return (
     <FormField
@@ -48,7 +54,12 @@ export function TextFormField({ name, label, description, placeholder, type = 't
   );
 }
 
-export function TextareaFormField({ name, label, description, placeholder }: Omit<FormFieldProps, 'type'>) {
+export function TextareaFormField({
+  name,
+  label,
+  description,
+  placeholder,
+}: Omit<FormFieldProps, "type">) {
   const { control } = useFormContext();
   return (
     <FormField
@@ -68,11 +79,17 @@ export function TextareaFormField({ name, label, description, placeholder }: Omi
   );
 }
 
-interface SelectFormFieldProps extends Omit<FormFieldProps, 'type'> {
+interface SelectFormFieldProps extends Omit<FormFieldProps, "type"> {
   options: { label: string; value: string }[];
 }
 
-export function SelectFormField({ name, label, description, placeholder, options }: SelectFormFieldProps) {
+export function SelectFormField({
+  name,
+  label,
+  description,
+  placeholder,
+  options,
+}: SelectFormFieldProps) {
   const { control } = useFormContext();
   return (
     <FormField
@@ -103,7 +120,11 @@ export function SelectFormField({ name, label, description, placeholder, options
   );
 }
 
-export function CheckboxFormField({ name, label, description }: Omit<FormFieldProps, 'placeholder' | 'type'>) {
+export function CheckboxFormField({
+  name,
+  label,
+  description,
+}: Omit<FormFieldProps, "placeholder" | "type">) {
   const { control } = useFormContext();
   return (
     <FormField

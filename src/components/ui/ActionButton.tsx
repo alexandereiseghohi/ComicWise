@@ -10,9 +10,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from "@/components/ui/AlertDialog";
 import { Button } from "@/components/ui/button";
-import { LoadingSwap } from "@/components/ui/loading-swap";
+import { LoadingSwap } from "@/components/ui/LoadingSwap";
 import type { ComponentProps, ReactNode } from "react";
 import { useTransition } from "react";
 import { toast } from "sonner";

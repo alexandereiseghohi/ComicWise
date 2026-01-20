@@ -9,14 +9,14 @@ import {
   getGenericEntity,
   updateGenericEntity,
   zodToValidationResult,
-} from "@/lib/api/generic-crud";
+} from "@/lib/api/GenericCrud";
 import { typeIdSchema, updateTypeSchema } from "@/lib/validations";
 import type { NextRequest } from "next/server";
 
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  return getGenericEntity(id, {
-    getFn: async (idValue) => getTypeById(Number(idValue)),
+  return getGenericEntity(id as string, {
+    getFn: async (idValue: string) => getTypeById(Number(idValue)),
     validateFn: zodToValidationResult(typeIdSchema),
     entityName: "type",
   });
@@ -26,8 +26,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   const { id } = await params;
   const body = await request.json();
 
-  return updateGenericEntity(id, body, {
-    updateFn: async (idValue, data) =>
+  return updateGenericEntity(id as string, body, {
+    updateFn: async (idValue: string, data: unknown) =>
       updateType(Number(idValue), data as { name?: string; description?: string | null }),
     idValidateFn: zodToValidationResult(typeIdSchema),
     dataValidateFn: zodToValidationResult(updateTypeSchema),
@@ -40,8 +40,8 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  return deleteGenericEntity(id, {
-    deleteFn: async (typeId) => {
+  return deleteGenericEntity(id as string, {
+    deleteFn: async (typeId: string) => {
       const result = await deleteType(Number(typeId));
       return !!result;
     },

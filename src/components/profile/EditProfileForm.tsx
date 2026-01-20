@@ -1,14 +1,15 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AvatarUpload } from "@/components/ui/AvatarUpload";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { uploadAvatar } from "@/lib/actions/avatar";
 import { updateUserProfile } from "@/lib/actions/users";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Upload } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -35,6 +36,7 @@ interface EditProfileFormProps {
 export function EditProfileForm({ user }: EditProfileFormProps) {
   const [isPending, startTransition] = useTransition();
   const [imagePreview, setImagePreview] = useState<string | null>(user.image);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   const {
     register,
@@ -73,26 +75,34 @@ export function EditProfileForm({ user }: EditProfileFormProps) {
     });
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // TODO: Implement actual image upload
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const result = reader.result as string;
-        setImagePreview(result);
-        setValue("image", result);
-      };
-      reader.readAsDataURL(file);
-      toast.info("Image upload will be implemented with your storage provider");
+  const handleImageSelect = async (file: File) => {
+    setIsUploadingImage(true);
+    try {
+      const formData = new FormData();
+      formData.append("avatar", file);
+
+      const result = await uploadAvatar(formData);
+
+      if (result.success && result.data) {
+        setImagePreview(result.data.url);
+        setValue("image", result.data.url);
+        toast.success("Avatar uploaded successfully!");
+      } else if (!result.success) {
+        toast.error("error" in result ? result.error : "Failed to upload avatar");
+      }
+    } catch (error) {
+      toast.error("An error occurred while uploading avatar");
+      console.error("Avatar upload error:", error);
+    } finally {
+      setIsUploadingImage(false);
     }
   };
 
-  const initials = user.name
-    ?.split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase() || "U";
+  const handleImageRemove = () => {
+    setImagePreview(null);
+    setValue("image", "");
+    toast.info("Avatar removed. Save changes to confirm.");
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -103,30 +113,19 @@ export function EditProfileForm({ user }: EditProfileFormProps) {
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Avatar Upload */}
-          <div className="flex items-center gap-6">
-            <Avatar className="size-24">
-              <AvatarImage src={imagePreview || undefined} alt={user.name} />
-              <AvatarFallback className="text-2xl">{initials}</AvatarFallback>
-            </Avatar>
-            <div className="space-y-2">
-              <Label htmlFor="avatar-upload" className="cursor-pointer">
-                <div className="flex items-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground">
-                  <Upload className="size-4" />
-                  Upload Photo
-                </div>
-                <input
-                  id="avatar-upload"
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleImageChange}
-                  disabled={isPending}
-                />
-              </Label>
-              <p className="text-xs text-muted-foreground">
-                JPG, PNG or WebP. Max 2MB.
-              </p>
-            </div>
+          <div className="flex flex-col items-center">
+            <AvatarUpload
+              currentImage={imagePreview}
+              onImageSelect={handleImageSelect}
+              onImageRemove={handleImageRemove}
+              className="mb-4"
+            />
+            {isUploadingImage && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Uploading avatar...
+              </div>
+            )}
           </div>
 
           {/* Name */}
@@ -138,9 +137,7 @@ export function EditProfileForm({ user }: EditProfileFormProps) {
               placeholder="Enter your name"
               disabled={isPending}
             />
-            {errors.name && (
-              <p className="text-sm text-destructive">{errors.name.message}</p>
-            )}
+            {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
           </div>
 
           {/* Email */}
@@ -153,9 +150,7 @@ export function EditProfileForm({ user }: EditProfileFormProps) {
               placeholder="Enter your email"
               disabled={isPending}
             />
-            {errors.email && (
-              <p className="text-sm text-destructive">{errors.email.message}</p>
-            )}
+            {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
             <p className="text-xs text-muted-foreground">
               Changing your email will require verification
             </p>
@@ -171,9 +166,7 @@ export function EditProfileForm({ user }: EditProfileFormProps) {
               rows={4}
               disabled={isPending}
             />
-            {errors.bio && (
-              <p className="text-sm text-destructive">{errors.bio.message}</p>
-            )}
+            {errors.bio && <p className="text-sm text-destructive">{errors.bio.message}</p>}
             <p className="text-xs text-muted-foreground">
               Brief description for your profile. Max 500 characters.
             </p>

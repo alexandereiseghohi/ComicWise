@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Comic Data Access Layer
  * Handles all database operations for comics
  */

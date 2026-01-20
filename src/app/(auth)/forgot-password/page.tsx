@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { GenericForm } from '@/components/shared/GenericForm';
-import { TextFormField } from '@/components/shared/FormFields';
-import { forgotPasswordSchema } from '@/schemas/authSchemas';
-import { forgotPasswordAction } from '@/lib/actions/auth';
-import Link from 'next/link';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { TextFormField } from "@/components/shared/FormFields";
+import { GenericForm } from "@/components/shared/GenericForm";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { forgotPassword } from "@/lib/actions/auth";
+import { forgotPasswordSchema } from "@/schemas/authSchemas";
+import Link from "next/link";
 
 export default function ForgotPasswordPage() {
   const handleForgotPassword = async (data: unknown) => {
-    const result = await forgotPasswordAction(data);
+    const result = await forgotPassword(data as any);
     return result;
   };
 
@@ -28,9 +28,9 @@ export default function ForgotPasswordPage() {
           >
             {() => (
               <div className="space-y-4">
-                <TextFormField 
-                  name="email" 
-                  label="Email" 
+                <TextFormField
+                  name="email"
+                  label="Email"
                   type="email"
                   placeholder="john@example.com"
                   description="We'll send you a reset link"
@@ -39,7 +39,7 @@ export default function ForgotPasswordPage() {
             )}
           </GenericForm>
           <p className="mt-4 text-center text-sm text-muted-foreground">
-            Remember your password?{' '}
+            Remember your password?{" "}
             <Link href="/sign-in" className="text-primary hover:underline font-medium">
               Sign In
             </Link>

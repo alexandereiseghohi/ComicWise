@@ -1,6 +1,6 @@
 /**
  * Comic Store - Manages comics data and filtering
- * 
+ *
  * Features:
  * - Comics list state
  * - Filters and sorting
@@ -9,12 +9,12 @@
  * - Recently viewed
  */
 
-import { create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { devtools, persist } from "zustand/middleware";
 
 interface ComicState {
-  comics: any[];
-  filteredComics: any[];
+  comics: unknown[];
+  filteredComics: unknown[];
   filters: {
     search: string;
     genreIds: number[];
@@ -22,24 +22,24 @@ interface ComicState {
     status?: string;
     minRating?: number;
   };
-  sortBy: 'title' | 'rating' | 'views' | 'updated' | 'created';
-  sortOrder: 'asc' | 'desc';
+  sortBy: "title" | "rating" | "views" | "updated" | "created";
+  sortOrder: "asc" | "desc";
   currentPage: number;
   itemsPerPage: number;
   totalPages: number;
   recentlyViewed: number[];
-  
+
   // Actions
-  setComics(comics: any[]): void;
-  applyFilters(filters: Partial<ComicState['filters']>): void;
-  setSorting(sortBy: ComicState['sortBy'], sortOrder: ComicState['sortOrder']): void;
+  setComics(comics: unknown[]): void;
+  applyFilters(filters: Partial<ComicState["filters"]>): void;
+  setSorting(sortBy: ComicState["sortBy"], sortOrder: ComicState["sortOrder"]): void;
   setPage(page: number): void;
   addRecentlyViewed(comicId: number): void;
   clearFilters(): void;
 }
 
 const initialFilters = {
-  search: '',
+  search: "",
   genreIds: [],
   typeId: undefined,
   status: undefined,
@@ -53,8 +53,8 @@ export const useComicStore = create<ComicState>()(
         comics: [],
         filteredComics: [],
         filters: initialFilters,
-        sortBy: 'updated',
-        sortOrder: 'desc',
+        sortBy: "updated",
+        sortOrder: "desc",
         currentPage: 1,
         itemsPerPage: 24,
         totalPages: 1,
@@ -99,34 +99,32 @@ export const useComicStore = create<ComicState>()(
 
           // Apply rating filter
           if (filters.minRating) {
-            filtered = filtered.filter(
-              (comic) => Number(comic.rating) >= filters.minRating!
-            );
+            filtered = filtered.filter((comic) => Number(comic.rating) >= filters.minRating!);
           }
 
           // Apply sorting
           filtered.sort((a, b) => {
             let comparison = 0;
-            
+
             switch (sortBy) {
-              case 'title':
+              case "title":
                 comparison = a.title.localeCompare(b.title);
                 break;
-              case 'rating':
+              case "rating":
                 comparison = Number(a.rating) - Number(b.rating);
                 break;
-              case 'views':
+              case "views":
                 comparison = a.views - b.views;
                 break;
-              case 'updated':
+              case "updated":
                 comparison = new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
                 break;
-              case 'created':
+              case "created":
                 comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
                 break;
             }
 
-            return sortOrder === 'asc' ? comparison : -comparison;
+            return sortOrder === "asc" ? comparison : -comparison;
           });
 
           const totalPages = Math.ceil(filtered.length / get().itemsPerPage);
@@ -161,7 +159,7 @@ export const useComicStore = create<ComicState>()(
         },
       }),
       {
-        name: 'comicwise-comics',
+        name: "comicwise-comics",
         partialize: (state) => ({
           sortBy: state.sortBy,
           sortOrder: state.sortOrder,
@@ -170,6 +168,6 @@ export const useComicStore = create<ComicState>()(
         }),
       }
     ),
-    { name: 'comicwise-comics' }
+    { name: "comicwise-comics" }
   )
 );

@@ -2,8 +2,7 @@ import { FacebookIcon, InstagramIcon, TwitterIcon, YoutubeIcon } from "lucide-re
 
 import { Separator } from "@/components/ui/separator";
 
-import CurrentYear from "@/components/layout/CurrentYear";
-import Logo from "@/components/shadcn-studio/logo";
+import Logo from "@/assets/svg/logo";
 
 const Footer = () => {
   return (
@@ -54,7 +53,8 @@ const Footer = () => {
         `}
       >
         <p className="text-center font-medium text-balance">
-          ©<CurrentYear /> <a href="">Shadcn/studio</a>, Made with ❤️ for better web.
+          {`©${new Date().getFullYear()}`} <a href="">shadcn/studio</a>, Made with ❤️ for better
+          web.
         </p>
       </div>
     </footer>

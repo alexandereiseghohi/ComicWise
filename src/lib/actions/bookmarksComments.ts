@@ -4,6 +4,7 @@ import appConfig from "@/appConfig";
 import { db as database } from "@/database/db";
 import { bookmark, comment } from "@/database/schema";
 import type { ActionResult } from "@/dto";
+import { createRateLimitError, rateLimitAction, rateLimitConfigs } from "@/lib/rateLimit";
 import type {
   CreateBookmarkInput,
   CreateCommentInput,
@@ -208,8 +209,13 @@ export async function createComment(
   try {
     const validated = createCommentSchema.parse(input);
 
-    // Rate limiting
-    // TODO: Implement actual rate limiting check
+    // Rate limiting - prevent comment spam
+    const rateLimit = await rateLimitAction(rateLimitConfigs.user.comment, validated.userId);
+
+    if (!rateLimit.success) {
+      const error = createRateLimitError(rateLimit);
+      return { success: false, error: error.message };
+    }
 
     const [newComment] = await database.insert(comment).values(validated).returning();
 
@@ -218,7 +224,35 @@ export async function createComment(
     }
 
     // Get chapter and comic info for notifications
-    // TODO: Implement comment notification emails
+    const { sendCommentNotificationEmail } = await import("@/lib/nodemailer");
+    const chapterData = await database.query.chapter.findFirst({
+      where: (chapter, { eq }) => eq(chapter.id, validated.chapterId),
+      with: {
+        comic: {
+          with: {
+            bookmarks: {
+              with: {
+                user: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // Notify users who bookmarked this comic
+    if (chapterData?.comic?.bookmarks) {
+      for (const bookmark of chapterData.comic.bookmarks) {
+        if (bookmark.userId !== validated.userId && bookmark.user.email) {
+          await sendCommentNotificationEmail(
+            bookmark.user.email,
+            bookmark.user.name || "User",
+            chapterData.comic.title,
+            chapterData.title
+          ).catch((err) => console.error("Failed to send notification:", err));
+        }
+      }
+    }
 
     revalidatePath(`/read/${validated.chapterId}`);
 
@@ -296,9 +330,14 @@ export async function deleteComment(id: number, userId: string): Promise<ActionR
       return { success: false, error: "Comment not found" };
     }
 
-    // Check ownership or admin
-    // TODO: Add admin check
-    if (existing.userId !== userId) {
+    // Check ownership or admin/moderator role
+    const { auth: authFunction } = await import("auth");
+    const session = await authFunction();
+    const isOwner = existing.userId === userId;
+    const isAdminOrModerator =
+      session?.user?.role === "admin" || session?.user?.role === "moderator";
+
+    if (!isOwner && !isAdminOrModerator) {
       return { success: false, error: "Unauthorized to delete this comment" };
     }
 

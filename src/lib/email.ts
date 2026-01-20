@@ -154,9 +154,8 @@ export async function sendPasswordResetEmail(params: {
 }) {
   const html = await render(
     PasswordResetEmail({
-      name: params.name,
-      email: params.email,
-      token: params.resetToken,
+      resetLink: `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${params.resetToken}`,
+      userEmail: params.email,
     })
   );
 

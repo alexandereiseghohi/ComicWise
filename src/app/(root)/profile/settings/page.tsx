@@ -20,9 +20,7 @@ export default async function SettingsPage() {
     <div className="container mx-auto max-w-2xl px-4 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold md:text-4xl">Settings</h1>
-        <p className="mt-2 text-muted-foreground">
-          Manage your account settings and preferences
-        </p>
+        <p className="mt-2 text-muted-foreground">Manage your account settings and preferences</p>
       </div>
 
       <SettingsForm userId={session.user.id} />

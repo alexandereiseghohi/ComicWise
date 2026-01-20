@@ -1,16 +1,11 @@
-/**
- * ═══════════════════════════════════════════════════════════════════════════
- * Password Hasher - Secure Password Hashing Helper
- * ═══════════════════════════════════════════════════════════════════════════
- */
-
 import bcrypt from "bcryptjs";
 
+const SALT_ROUNDS = 10;
+
 export async function hashPassword(password: string): Promise<string> {
-  const rounds = 10;
-  return bcrypt.hash(password, rounds);
+  return await bcrypt.hash(password, SALT_ROUNDS);
 }
 
-export async function comparePassword(password: string, hash: string): Promise<boolean> {
-  return bcrypt.compare(password, hash);
+export async function verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
+  return await bcrypt.compare(password, hashedPassword);
 }

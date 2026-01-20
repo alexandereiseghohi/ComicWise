@@ -3,7 +3,7 @@
 // ═══════════════════════════════════════════════════
 
 import { signInAction, signOutAction } from "@/lib/actions/auth";
-import * as ratelimitLib from "@/lib/ratelimit";
+import * as ratelimitLib from "@/lib/rateLimit";
 import * as authLib from "auth";
 import type { Mock } from "vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";

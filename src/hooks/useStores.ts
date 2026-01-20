@@ -3,21 +3,21 @@
  * Provides convenient access to Zustand stores with proper typing
  */
 
-import { useAuthStore } from '@/stores/authStore';
-import { useBookmarkStore } from '@/stores/bookmarkStore';
-import { useComicStore } from '@/stores/comicStore';
-import { useReaderStore } from '@/stores/readerStore';
-import { useNotificationStore } from '@/stores/notificationStore';
-import { useUIStore } from '@/stores/uiStore';
+import { useAuthStore } from "@/stores/authStore";
+import { useBookmarkStore } from "@/stores/bookmarkStore";
+import { useComicStore } from "@/stores/comicStore";
+import { useNotificationStore } from "@/stores/notificationStore";
+import { useReaderStore } from "@/stores/readerStore";
+import { useUIStore } from "@/stores/uiStore";
 
 // Re-export all stores
-export { 
-  useAuthStore, 
-  useBookmarkStore, 
-  useComicStore, 
-  useReaderStore, 
+export {
+  useAuthStore,
+  useBookmarkStore,
+  useComicStore,
   useNotificationStore,
-  useUIStore 
+  useReaderStore,
+  useUIStore,
 };
 
 // Auth hooks
@@ -55,7 +55,7 @@ export const useComics = () => {
   const currentPage = useComicStore((state) => state.currentPage);
   const totalPages = useComicStore((state) => state.totalPages);
   const itemsPerPage = useComicStore((state) => state.itemsPerPage);
-  
+
   const setComics = useComicStore((state) => state.setComics);
   const applyFilters = useComicStore((state) => state.applyFilters);
   const setSorting = useComicStore((state) => state.setSorting);
@@ -137,7 +137,7 @@ export const useNotifications = () => {
   const removeToast = useNotificationStore((state) => state.removeToast);
   const markAsRead = useNotificationStore((state) => state.markAsRead);
   const markAllAsRead = useNotificationStore((state) => state.markAllAsRead);
-  
+
   const success = useNotificationStore((state) => state.success);
   const error = useNotificationStore((state) => state.error);
   const warning = useNotificationStore((state) => state.warning);

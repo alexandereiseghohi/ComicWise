@@ -109,6 +109,48 @@
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
       "presentation": { "group": "database", "order": 2 }
+    },
+    {
+      "name": "Server Actions Debug",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["dev"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "port": 9229,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "env": {
+        "NODE_ENV": "development",
+        "NODE_DEBUG": "nextjs:*"
+      },
+      "presentation": { "group": "development", "order": 3 }
+    },
+    {
+      "name": "API Routes Debug",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["dev"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "port": 9229,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "env": {
+        "NODE_ENV": "development",
+        "DEBUG": "*"
+      },
+      "presentation": { "group": "development", "order": 4 }
+    },
+    {
+      "name": "PostgreSQL Connection Debug",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["db:push"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "presentation": { "group": "database", "order": 3 }
     }
   ],
   "version": "0.2.0"

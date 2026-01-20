@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { useIsomorphicLayoutEffect } from "@/hooks/use-isomorphic-layout-effect";
+import { useIsomorphicLayoutEffect } from "@/hooks/useIsomorphicLayoutEffect";
 
 interface UseMediaQueryOptions {
   defaultValue?: boolean;

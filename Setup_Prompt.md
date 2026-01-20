@@ -10,7 +10,10 @@ author: ComicWise Team
 
 # 🚀 ComicWise - Ultimate Complete Setup Prompt
 
-> **The definitive comprehensive setup guide consolidating ALL content, tasks, recommendations, and best practices from the entire ComicWise project. This is your single source of truth for scaffolding and completing a production-ready web comic platform with advanced features.**
+> **The definitive comprehensive setup guide consolidating ALL content, tasks,
+> recommendations, and best practices from the entire ComicWise project. This is
+> your single source of truth for scaffolding and completing a production-ready
+> web comic platform with advanced features.**
 
 ---
 
@@ -34,9 +37,11 @@ author: ComicWise Team
 
 ### 🎓 Required Reading & Context
 
-**CRITICAL: Before starting, read and understand the following to get complete project context:**
+**CRITICAL: Before starting, read and understand the following to get complete
+project context:**
 
 Read and understand:
+
 - `@/**/*.ts` - All TypeScript files
 - `@/**/*.tsx` - All React/Next.js components
 - `@/**/*.mjs` - Module JavaScript files
@@ -71,11 +76,13 @@ Read and understand:
 ### 🔧 System Requirements
 
 **Operating System:**
+
 - Windows (PowerShell)
 - Linux (Bash)
 - macOS (Zsh/Bash)
 
 **Required Software:**
+
 - Node.js: 18.x or higher
 - Package Manager: pnpm (latest)
 - PostgreSQL: 15.x or higher
@@ -92,7 +99,8 @@ For ALL tasks, ensure:
 3. **Performance Optimization** - Optimize for speed and efficiency
 4. **Comprehensive Logging** - Clear, concise logs for each operation
 5. **PowerShell/Bash Syntax** - Use appropriate shell syntax
-6. **Backup Before Changes** - Copy existing files to `.backup` before modifications
+6. **Backup Before Changes** - Copy existing files to `.backup` before
+   modifications
 7. **Data Integrity** - Ensure database consistency
 8. **Error Handling** - Proper validation and error handling
 9. **Security Best Practices** - Protect sensitive data
@@ -101,6 +109,7 @@ For ALL tasks, ensure:
 ### 📁 File Handling Rules
 
 **If file exists:**
+
 ```powershell
 # Copy to backup
 Copy-Item "path/to/file.ts" "path/to/file.backup.ts"
@@ -108,6 +117,7 @@ Copy-Item "path/to/file.ts" "path/to/file.backup.ts"
 ```
 
 **If file doesn't exist:**
+
 ```
 Create new file with:
 - Optimized code
@@ -131,6 +141,7 @@ pnpm setup:complete
 ```
 
 This will:
+
 - ✅ Create all generic reusable components
 - ✅ Set up authentication system (6 pages)
 - ✅ Create user profile pages
@@ -199,13 +210,13 @@ IMPLEMENTATION REQUIREMENTS:
      * Search: Title, author, description
      * Pagination: 20 per page
      * Components: ComicCard, ComicFilters
-   
+
    - Comic Details (/comics/[slug]):
      * Display: Cover image, title, description, metadata, genres, chapters list
      * Features: BookmarkActions (add, remove, update status)
      * Related comics carousel
      * Comments section (optional)
-   
+
    - Chapter Reader (/comics/[slug]/[chapterNumber]):
      * Modes: Vertical (default), Horizontal
      * Features: Zoom (50%-200%), Swipe gestures, Keyboard navigation
@@ -224,7 +235,7 @@ IMPLEMENTATION REQUIREMENTS:
    - Homepage (/):
      * Sections: Hero, Latest comics, Popular comics, Recent chapters, Trending
      * SEO: Open Graph, Twitter Cards, JSON-LD
-   
+
    - Layout: Header (logo, navigation, search, user menu), Footer, Toast container
    - Components: HeroSection, ComicSection, Header, Footer
    - Search (/search): Full-text search across comics and chapters

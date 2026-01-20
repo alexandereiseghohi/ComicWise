@@ -1,98 +1,70 @@
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════
 // IMAGE UPLOAD SERVICE - Universal Provider Interface
 // Next.js 16.0.7 Optimized
-// ═══════════════════════════════════════════════════
-
-import { getUploadProvider } from "@/services/upload/factory";
-
-export interface UploadOptions {
-  folder?: string;
-  filename?: string;
-  transformation?: Record<string, unknown>;
-  tags?: string[];
-}
-
-export interface UploadResult {
-  url: string;
-  publicId: string;
-  width?: number;
-  height?: number;
-  format?: string;
-  size: number;
-  thumbnail?: string;
-  success?: boolean;
-  error?: string;
-}
-
-export interface UploadProvider {
-  upload(file: File | Buffer, options?: UploadOptions): Promise<UploadResult>;
-  delete(publicId: string): Promise<boolean>;
-  getUrl(publicId: string, transformation?: Record<string, unknown>): string;
-}
-
-// ═══════════════════════════════════════════════════
-// PROVIDER FACTORY & IMPORTS
-// ═══════════════════════════════════════════════════
-
-export {
-  getAvailableProviders,
-  getConfiguredProvider,
-  getUploadProvider,
-  isProviderAvailable,
-} from "@/services/upload/factory";
-
-// ═══════════════════════════════════════════════════
-// HELPER FUNCTIONS
-// ═══════════════════════════════════════════════════
-
-/**
- *
- * param file
- * param options
- * @param file
- * @param options
- */
-export async function uploadImage(
-  file: File | Buffer,
-  options?: UploadOptions
-): Promise<UploadResult> {
-  const provider = await getUploadProvider();
-  return provider.upload(file, options);
-}
-
-/**
- *
- * param publicId
- * @param publicId
- */
-export async function deleteImage(publicId: string): Promise<boolean> {
-  const provider = await getUploadProvider();
-  return provider.delete(publicId);
-}
-
-/**
- *
- * param publicId
- * param transformation
- * @param publicId
- * @param transformation
- */
-export async function getImageUrl(
-  publicId: string,
-  transformation?: Record<string, unknown>
-): Promise<string> {
-  const provider = await getUploadProvider();
-  return provider.getUrl(publicId, transformation);
-}
+//
+// IMPORTANT: Factory/Provider functions are NOT exported here.
+// Import directly from @/services/upload/factory in server contexts only.
+// This prevents circular dependencies and overly broad bundling.
+// ═══════════════════════════════════════════════════════════════════════════
 
 // ═══════════════════════════════════════════════════════════════════════════
-// RE-EXPORTS - Make types available from main export
+// TYPE EXPORTS ONLY - No runtime imports to prevent circular deps
 // ═══════════════════════════════════════════════════════════════════════════
 
 export type {
   FileValidationResult,
   ImageTransformation,
   UploadConstraints,
+  UploadOptions,
+  UploadProvider,
   UploadProviderType,
+  UploadResult,
   UploadType,
 } from "@/services/upload/types";
+
+// ═══════════════════════════════════════════════════════════════════════════
+// HELPER FUNCTIONS - Use dynamic imports in server contexts
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Upload an image file
+ * @param file - File or Buffer to upload
+ * @param options - Upload options
+ * @returns Upload result with URL and metadata
+ *
+ * @example
+ * ```typescript
+ * const result = await uploadImage(file, { folder: "avatars" });
+ * ```
+ */
+export async function uploadImage(file: File | Buffer, options?: any): Promise<any> {
+  const { getUploadProvider } = await import("@/services/upload/factory");
+  const provider = await getUploadProvider();
+  return provider.upload(file, options);
+}
+
+/**
+ * Delete an uploaded image
+ * @param publicId - Provider-specific public ID
+ * @returns Success status
+ */
+export async function deleteImage(publicId: string): Promise<boolean> {
+  const { getUploadProvider } = await import("@/services/upload/factory");
+  const provider = await getUploadProvider();
+  return provider.delete(publicId);
+}
+
+/**
+ * Get URL for an uploaded image with optional transformations
+ * @param publicId - Provider-specific public ID
+ * @param transformation - Transformation options (provider-specific)
+ * @returns Public URL to the image
+ */
+export async function getImageUrl(
+  publicId: string,
+  transformation?: Record<string, unknown>
+): Promise<string> {
+  const { getUploadProvider } = await import("@/services/upload/factory");
+  const provider = await getUploadProvider();
+  return provider.getUrl(publicId, transformation);
+}

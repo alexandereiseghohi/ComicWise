@@ -10,10 +10,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useComics } from "@/hooks/useStores";
 import { Search } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useTransition, useEffect } from "react";
-import { useComics } from "@/hooks/useStores";
+import { useEffect, useState, useTransition } from "react";
 
 interface Type {
   id: number;

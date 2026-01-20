@@ -1,6 +1,6 @@
 /**
  * Auth Store - Manages authentication state
- * 
+ *
  * Features:
  * - User session management
  * - Authentication status
@@ -8,15 +8,15 @@
  * - Logout handling
  */
 
-import { create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
-import type { User } from '@/types';
+import type { User } from "@/types";
+import { create } from "zustand";
+import { devtools, persist } from "zustand/middleware";
 
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  
+
   // Actions
   setUser(user: User | null): void;
   setLoading(loading: boolean): void;
@@ -54,13 +54,13 @@ export const useAuthStore = create<AuthState>()(
           })),
       }),
       {
-        name: 'comicwise-auth',
+        name: "comicwise-auth",
         partialize: (state) => ({
           user: state.user,
           isAuthenticated: state.isAuthenticated,
         }),
       }
     ),
-    { name: 'comicwise-auth' }
+    { name: "comicwise-auth" }
   )
 );

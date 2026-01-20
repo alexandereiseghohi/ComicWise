@@ -2,7 +2,8 @@
 
 ## Overview
 
-This document describes the complete integration of Zustand stores across the ComicWise platform for state management.
+This document describes the complete integration of Zustand stores across the
+ComicWise platform for state management.
 
 ## Store Architecture
 
@@ -47,14 +48,14 @@ This document describes the complete integration of Zustand stores across the Co
 ### Importing Stores
 
 ```typescript
-import { 
-  useAuth, 
-  useBookmarks, 
-  useComics, 
-  useReader, 
+import {
+  useAuth,
+  useBookmarks,
+  useComics,
+  useReader,
   useNotifications,
-  useUI 
-} from '@/hooks/useStores';
+  useUI,
+} from "@/hooks/useStores";
 ```
 
 ### Auth Store Examples
@@ -109,12 +110,12 @@ function ComicDetailPage({ comic }) {
 
 ```typescript
 function ComicsListPage() {
-  const { 
-    filteredComics, 
-    filters, 
-    applyFilters, 
-    setSorting, 
-    setPage 
+  const {
+    filteredComics,
+    filters,
+    applyFilters,
+    setSorting,
+    setPage
   } = useComics();
 
   const handleSearch = (search) => {
@@ -187,10 +188,10 @@ function FormComponent() {
 
 ```typescript
 function Layout() {
-  const { 
-    sidebarOpen, 
-    toggleSidebar, 
-    theme, 
+  const {
+    sidebarOpen,
+    toggleSidebar,
+    theme,
     setTheme,
     openModal,
     closeModal
@@ -210,13 +211,14 @@ function Layout() {
 
 ### Server Components
 
-Server components cannot directly use Zustand stores. Pass data as props to client components:
+Server components cannot directly use Zustand stores. Pass data as props to
+client components:
 
 ```typescript
 // app/comics/page.tsx (Server Component)
 export default async function ComicsPage() {
   const comics = await getComics();
-  
+
   return <ComicsClient comics={comics} />;
 }
 
@@ -225,18 +227,19 @@ export default async function ComicsPage() {
 
 export function ComicsClient({ comics }) {
   const { setComics } = useComics();
-  
+
   useEffect(() => {
     setComics(comics);
   }, [comics, setComics]);
-  
+
   return <ComicsList />;
 }
 ```
 
 ### Auth Synchronization
 
-The `AuthSync` component automatically synchronizes NextAuth session with the auth store:
+The `AuthSync` component automatically synchronizes NextAuth session with the
+auth store:
 
 ```typescript
 // app/Providers.tsx
@@ -260,30 +263,32 @@ Stores that persist data:
 4. **Reader Store** - Persists reader settings and history
 5. **UI Store** - Persists theme and UI preferences
 
-Persisted data is stored in `localStorage` and automatically restored on page load.
+Persisted data is stored in `localStorage` and automatically restored on page
+load.
 
 ## Testing
 
 ### Unit Testing Stores
 
 ```typescript
-import { renderHook, act } from '@testing-library/react';
-import { useAuth } from '@/hooks/useStores';
+import { renderHook, act } from "@testing-library/react";
+import { useAuth } from "@/hooks/useStores";
 
-test('should authenticate user', () => {
+test("should authenticate user", () => {
   const { result } = renderHook(() => useAuth());
-  
+
   act(() => {
-    result.current.setUser({ id: '1', name: 'Test' });
+    result.current.setUser({ id: "1", name: "Test" });
   });
-  
+
   expect(result.current.isAuthenticated).toBe(true);
 });
 ```
 
 ### Integration Testing
 
-See `src/__tests__/integration/stores.test.tsx` for comprehensive integration tests.
+See `src/__tests__/integration/stores.test.tsx` for comprehensive integration
+tests.
 
 ## Best Practices
 
@@ -295,10 +300,11 @@ See `src/__tests__/integration/stores.test.tsx` for comprehensive integration te
 2. **Performance**
    - Use selector functions for specific state
    - Avoid subscribing to entire store unnecessarily
+
    ```typescript
    // Good
-   const user = useAuthStore(state => state.user);
-   
+   const user = useAuthStore((state) => state.user);
+
    // Less optimal
    const { user, isAuthenticated, isLoading } = useAuth();
    ```
@@ -333,17 +339,17 @@ All stores use the `devtools` middleware for Redux DevTools integration:
 Enable logging in development:
 
 ```typescript
-import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
+import { create } from "zustand";
+import { devtools } from "zustand/middleware";
 
 export const useStore = create(
   devtools(
     (set) => ({
       // state
     }),
-    { 
-      name: 'my-store',
-      trace: true // Enable action tracing
+    {
+      name: "my-store",
+      trace: true, // Enable action tracing
     }
   )
 );
@@ -365,7 +371,7 @@ const { user } = useAuth();
 
 ```typescript
 // Before (Redux)
-const user = useSelector(state => state.auth.user);
+const user = useSelector((state) => state.auth.user);
 const dispatch = useDispatch();
 dispatch(setUser(userData));
 
@@ -385,13 +391,13 @@ const { success, error } = useNotifications();
 async function handleProgress(comicId, chapterId) {
   // Optimistic update
   updateProgress(comicId, chapterId);
-  
+
   try {
     await api.updateProgress(comicId, chapterId);
-    success('Progress saved');
+    success("Progress saved");
   } catch (err) {
     // Revert on error
-    error('Failed to save progress');
+    error("Failed to save progress");
   }
 }
 ```
@@ -402,9 +408,9 @@ async function handleProgress(comicId, chapterId) {
 function useFilteredBookmarks() {
   const { bookmarks } = useBookmarks();
   const { comics } = useComics();
-  
+
   return useMemo(() => {
-    return comics.filter(c => bookmarks.has(c.id));
+    return comics.filter((c) => bookmarks.has(c.id));
   }, [comics, bookmarks]);
 }
 ```
@@ -415,13 +421,13 @@ function useFilteredBookmarks() {
 // In store
 export const useComicStore = create((set, get) => ({
   // ... state
-  
+
   // Computed getter
   getPaginatedComics: () => {
     const { filteredComics, currentPage, itemsPerPage } = get();
     const start = (currentPage - 1) * itemsPerPage;
     return filteredComics.slice(start, start + itemsPerPage);
-  }
+  },
 }));
 ```
 
@@ -430,14 +436,14 @@ export const useComicStore = create((set, get) => ({
 ### Selector Memoization
 
 ```typescript
-import { useShallow } from 'zustand/react/shallow';
+import { useShallow } from "zustand/react/shallow";
 
 function MyComponent() {
   // Prevents re-renders when other state changes
   const { user, isAuthenticated } = useAuthStore(
-    useShallow(state => ({
+    useShallow((state) => ({
       user: state.user,
-      isAuthenticated: state.isAuthenticated
+      isAuthenticated: state.isAuthenticated,
     }))
   );
 }
@@ -448,12 +454,12 @@ function MyComponent() {
 ```typescript
 useEffect(() => {
   const unsubscribe = useAuthStore.subscribe(
-    state => state.user,
+    (state) => state.user,
     (user) => {
-      console.log('User changed:', user);
+      console.log("User changed:", user);
     }
   );
-  
+
   return unsubscribe;
 }, []);
 ```
@@ -486,4 +492,6 @@ useEffect(() => {
 
 ## Conclusion
 
-The Zustand store integration provides a robust, type-safe, and performant state management solution for ComicWise. All major components are integrated and tested, with comprehensive documentation for future development.
+The Zustand store integration provides a robust, type-safe, and performant state
+management solution for ComicWise. All major components are integrated and
+tested, with comprehensive documentation for future development.

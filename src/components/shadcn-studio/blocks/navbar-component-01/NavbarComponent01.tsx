@@ -7,9 +7,9 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/DropdownMenu";
 
-import Logo from "@/components/shadcn-studio/logo";
+import Logo from "@/assets/svg/logo";
 
 type NavigationItem = {
   title: string;

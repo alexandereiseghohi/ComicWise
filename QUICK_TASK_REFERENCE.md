@@ -1,16 +1,17 @@
 # ComicWise - Quick Task Reference
+
 **All Tasks Completed** ✅
 
 ## 🔐 Authentication Pages
 
-| Page | Route | Status |
-|------|-------|--------|
-| Sign In | `/sign-in` | ✅ |
-| Sign Up | `/sign-up` | ✅ |
-| Forgot Password | `/forgot-password` | ✅ |
-| Reset Password | `/reset-password` | ✅ |
-| Verify Email | `/verify-email` | ✅ |
-| Resend Verification | `/resend-verification` | ✅ |
+| Page                | Route                  | Status |
+| ------------------- | ---------------------- | ------ |
+| Sign In             | `/sign-in`             | ✅     |
+| Sign Up             | `/sign-up`             | ✅     |
+| Forgot Password     | `/forgot-password`     | ✅     |
+| Reset Password      | `/reset-password`      | ✅     |
+| Verify Email        | `/verify-email`        | ✅     |
+| Resend Verification | `/resend-verification` | ✅     |
 
 **Forms**: Generic auth form with React Hook Form + Zod validation
 
@@ -18,25 +19,26 @@
 
 ## 👤 User Profile Pages
 
-| Page | Route | Status |
-|------|-------|--------|
-| Profile View | `/profile` | ✅ |
-| Edit Profile | `/profile/edit` | ✅ |
-| Change Password | `/profile/change-password` | ✅ |
-| Settings | `/profile/settings` | ✅ |
+| Page            | Route                      | Status |
+| --------------- | -------------------------- | ------ |
+| Profile View    | `/profile`                 | ✅     |
+| Edit Profile    | `/profile/edit`            | ✅     |
+| Change Password | `/profile/change-password` | ✅     |
+| Settings        | `/profile/settings`        | ✅     |
 
 ---
 
 ## 📚 Comic Pages
 
-| Page | Route | Status |
-|------|-------|--------|
-| Comics List | `/comics` | ✅ |
-| Comic Details | `/comics/[slug]` | ✅ |
-| Chapter Reader | `/comics/[slug]/[chapterNumber]` | ✅ |
-| Bookmarks | `/bookmarks` | ✅ |
+| Page           | Route                            | Status |
+| -------------- | -------------------------------- | ------ |
+| Comics List    | `/comics`                        | ✅     |
+| Comic Details  | `/comics/[slug]`                 | ✅     |
+| Chapter Reader | `/comics/[slug]/[chapterNumber]` | ✅     |
+| Bookmarks      | `/bookmarks`                     | ✅     |
 
 **Features**:
+
 - ✅ Filtering by genre, type, status
 - ✅ Search functionality
 - ✅ Pagination
@@ -48,16 +50,16 @@
 
 ## 🛠️ Admin Panel Pages
 
-| Section | Route | CRUD | Status |
-|---------|-------|------|--------|
-| Dashboard | `/admin` | - | ✅ |
-| Comics | `/admin/comics` | ✅ | ✅ |
-| Chapters | `/admin/chapters` | ✅ | ✅ |
-| Users | `/admin/users` | ✅ | ✅ |
-| Artists | `/admin/artists` | ✅ | ✅ |
-| Authors | `/admin/authors` | ✅ | ✅ |
-| Genres | `/admin/genres` | ✅ | ✅ |
-| Types | `/admin/types` | ✅ | ✅ |
+| Section   | Route             | CRUD | Status |
+| --------- | ----------------- | ---- | ------ |
+| Dashboard | `/admin`          | -    | ✅     |
+| Comics    | `/admin/comics`   | ✅   | ✅     |
+| Chapters  | `/admin/chapters` | ✅   | ✅     |
+| Users     | `/admin/users`    | ✅   | ✅     |
+| Artists   | `/admin/artists`  | ✅   | ✅     |
+| Authors   | `/admin/authors`  | ✅   | ✅     |
+| Genres    | `/admin/genres`   | ✅   | ✅     |
+| Types     | `/admin/types`    | ✅   | ✅     |
 
 **Forms**: Generic BaseForm component with Zod validation
 
@@ -65,16 +67,17 @@
 
 ## 🔖 Bookmark Functionality
 
-| Feature | Status |
-|---------|--------|
-| Add Bookmark | ✅ |
-| Remove Bookmark | ✅ |
-| Bookmark List Page | ✅ |
-| Reading Progress | ✅ |
-| Zustand Integration | ✅ |
-| Server Actions | ✅ |
+| Feature             | Status |
+| ------------------- | ------ |
+| Add Bookmark        | ✅     |
+| Remove Bookmark     | ✅     |
+| Bookmark List Page  | ✅     |
+| Reading Progress    | ✅     |
+| Zustand Integration | ✅     |
+| Server Actions      | ✅     |
 
 **Components**:
+
 - `BookmarkButton.tsx` - Toggle button
 - `BookmarksList.tsx` - List display
 - `BookmarkActions.tsx` - Action handlers
@@ -83,16 +86,16 @@
 
 ## 🖼️ Image Gallery (Chapter Reader)
 
-| Feature | Status |
-|---------|--------|
-| Lightbox Viewer | ✅ |
-| Zoom (0.5x - 3x) | ✅ |
-| Fullscreen Mode | ✅ |
-| Keyboard Navigation | ✅ |
-| Touch Gestures | ✅ |
-| Page Thumbnails | ✅ |
-| Auto-hide UI | ✅ |
-| Vertical/Horizontal Modes | ✅ |
+| Feature                   | Status |
+| ------------------------- | ------ |
+| Lightbox Viewer           | ✅     |
+| Zoom (0.5x - 3x)          | ✅     |
+| Fullscreen Mode           | ✅     |
+| Keyboard Navigation       | ✅     |
+| Touch Gestures            | ✅     |
+| Page Thumbnails           | ✅     |
+| Auto-hide UI              | ✅     |
+| Vertical/Horizontal Modes | ✅     |
 
 **Package**: `yet-another-react-lightbox`
 
@@ -100,14 +103,14 @@
 
 ## 🏪 Zustand Stores
 
-| Store | Purpose | Status |
-|-------|---------|--------|
-| authStore | User authentication | ✅ |
-| comicStore | Comics data | ✅ |
-| bookmarkStore | Bookmarks management | ✅ |
-| readerStore | Reading preferences | ✅ |
-| notificationStore | Toast messages | ✅ |
-| uiStore | Theme & UI state | ✅ |
+| Store             | Purpose              | Status |
+| ----------------- | -------------------- | ------ |
+| authStore         | User authentication  | ✅     |
+| comicStore        | Comics data          | ✅     |
+| bookmarkStore     | Bookmarks management | ✅     |
+| readerStore       | Reading preferences  | ✅     |
+| notificationStore | Toast messages       | ✅     |
+| uiStore           | Theme & UI state     | ✅     |
 
 **Testing**: All stores have unit tests
 
@@ -115,23 +118,23 @@
 
 ## 🧪 Testing
 
-| Type | Framework | Status |
-|------|-----------|--------|
-| Unit Tests | Vitest | ✅ (81 tests) |
-| Integration Tests | Vitest | ✅ |
-| E2E Tests | Playwright | ✅ |
-| Store Tests | Vitest | ✅ |
-| Coverage | @vitest/coverage-v8 | ✅ |
+| Type              | Framework           | Status        |
+| ----------------- | ------------------- | ------------- |
+| Unit Tests        | Vitest              | ✅ (81 tests) |
+| Integration Tests | Vitest              | ✅            |
+| E2E Tests         | Playwright          | ✅            |
+| Store Tests       | Vitest              | ✅            |
+| Coverage          | @vitest/coverage-v8 | ✅            |
 
 ---
 
 ## 🚀 CI/CD
 
-| Workflow | Purpose | Status |
-|----------|---------|--------|
-| ci.yml | Lint, test, build | ✅ |
-| deploy.yml | Vercel deployment | ✅ |
-| security.yml | Security scans | ✅ |
+| Workflow     | Purpose           | Status |
+| ------------ | ----------------- | ------ |
+| ci.yml       | Lint, test, build | ✅     |
+| deploy.yml   | Vercel deployment | ✅     |
+| security.yml | Security scans    | ✅     |
 
 ---
 
@@ -180,20 +183,20 @@ comicwise info                   # Show project info
 
 ## 📦 Database Tables
 
-| Table | Purpose | Relations |
-|-------|---------|-----------|
-| users | User accounts | bookmarks, comments, ratings |
-| comics | Comic series | chapters, genres, types |
-| chapters | Chapter data | images, comic |
-| chapterImages | Page images | chapter |
-| artists | Comic artists | comics |
-| authors | Comic authors | comics |
-| genres | Genre taxonomy | comics |
-| types | Comic types | comics |
-| bookmarks | User bookmarks | user, comic |
-| comments | User comments | user, comic |
-| ratings | User ratings | user, comic |
-| readingHistory | Reading progress | user, comic, chapter |
+| Table          | Purpose          | Relations                    |
+| -------------- | ---------------- | ---------------------------- |
+| users          | User accounts    | bookmarks, comments, ratings |
+| comics         | Comic series     | chapters, genres, types      |
+| chapters       | Chapter data     | images, comic                |
+| chapterImages  | Page images      | chapter                      |
+| artists        | Comic artists    | comics                       |
+| authors        | Comic authors    | comics                       |
+| genres         | Genre taxonomy   | comics                       |
+| types          | Comic types      | comics                       |
+| bookmarks      | User bookmarks   | user, comic                  |
+| comments       | User comments    | user, comic                  |
+| ratings        | User ratings     | user, comic                  |
+| readingHistory | Reading progress | user, comic, chapter         |
 
 ---
 

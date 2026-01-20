@@ -1,4 +1,4 @@
-import { useConfirmDialog } from "@/components/admin/ConfirmDialog";
+import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useConfirmDialog } from "@/hooks/useConfirmDialog";
 import { ChevronLeft, ChevronRight, Edit2, Eye, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -61,7 +62,7 @@ export function ComicsTable({
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
-  const { confirm, ConfirmDialog: ConfirmDialogComponent } = useConfirmDialog();
+  const { confirm, isOpen, options, handleConfirm, handleCancel } = useConfirmDialog();
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -119,7 +120,18 @@ export function ComicsTable({
 
   return (
     <div className="space-y-4">
-      <ConfirmDialogComponent />
+      {options && (
+        <ConfirmDialog
+          open={isOpen}
+          onOpenChange={(open) => !open && handleCancel()}
+          title={options.title}
+          description={options.description}
+          confirmText={options.confirmText}
+          cancelText={options.cancelText}
+          variant={options.variant}
+          onConfirm={handleConfirm}
+        />
+      )}
       <Card>
         <CardHeader>
           <CardTitle>Comics</CardTitle>

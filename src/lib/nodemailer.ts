@@ -294,6 +294,34 @@ export async function sendNewChapterNotification(
   });
 }
 
+export async function sendCommentNotificationEmail(
+  email: string,
+  name: string,
+  comicTitle: string,
+  chapterTitle: string
+): Promise<EmailResult> {
+  const content = `
+    <h2>New Comment on Your Bookmarked Comic 💬</h2>
+    <p>Hi ${name},</p>
+    <p>Someone commented on a chapter in a comic you bookmarked:</p>
+    <div class="info-box">
+      <h3 style="margin: 0 0 8px 0;">${comicTitle}</h3>
+      <p style="margin: 0;"><strong>${chapterTitle}</strong></p>
+    </div>
+    <div style="text-align: center;">
+      <a href="${env.NEXT_PUBLIC_APP_URL}/bookmarks" class="button">View Bookmarks</a>
+    </div>
+    <p style="font-size: 12px; color: 6b7280; margin-top: 20px;">You can manage your notification preferences in your profile settings.</p>
+  `;
+
+  return sendEmail({
+    to: email,
+    subject: `New Comment: ${comicTitle}`,
+    html: getEmailTemplate("New Comment", content),
+    text: `Hi ${name},\n\nSomeone commented on "${comicTitle}" - ${chapterTitle}\n\nView your bookmarks at: ${env.NEXT_PUBLIC_APP_URL}/bookmarks`,
+  });
+}
+
 // ═══════════════════════════════════════════════════
 // EXPORTS
 // ═══════════════════════════════════════════════════
@@ -306,6 +334,7 @@ export const emailService = {
   sendPasswordChangedEmail,
   sendNewComicNotification,
   sendNewChapterNotification,
+  sendCommentNotificationEmail,
 };
 
 export default emailService;

@@ -36,6 +36,24 @@ export interface ActionError {
 export type ActionResult<T = unknown> = ActionSuccess<T> | ActionError;
 
 /**
+ * Type guard to check if an action result is successful
+ * @param result - The action result to check
+ * @returns True if the result is a success
+ */
+export function isActionSuccess<T>(result: ActionResult<T>): result is ActionSuccess<T> {
+  return result.success === true;
+}
+
+/**
+ * Type guard to check if an action result is an error
+ * @param result - The action result to check
+ * @returns True if the result is an error
+ */
+export function isActionError<T>(result: ActionResult<T>): result is ActionError {
+  return result.success === false;
+}
+
+/**
  * Simple response without data payload
  */
 export type SimpleActionResult = ActionSuccess<void> | ActionError;

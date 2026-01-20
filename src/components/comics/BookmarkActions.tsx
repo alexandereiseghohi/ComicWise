@@ -6,7 +6,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/DropdownMenu";
 import { addBookmark, removeBookmark, updateBookmarkStatus } from "@/lib/actions/bookmark";
 import { Bookmark, BookmarkCheck, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";

@@ -11,28 +11,25 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/AlertDialog";
 
-// Hook for easier use
-import { useState } from "react";
-
 interface ConfirmDialogProps {
   open: boolean;
   onOpenChange(open: boolean): void;
-  title?: string;
-  description?: string;
+  title: string;
+  description: string;
+  onConfirm(): void;
   confirmText?: string;
   cancelText?: string;
-  onConfirm(): void;
   variant?: "default" | "destructive";
 }
 
 export function ConfirmDialog({
   open,
   onOpenChange,
-  title = "Are you sure?",
-  description = "This action cannot be undone.",
-  confirmText = "Continue",
-  cancelText = "Cancel",
+  title,
+  description,
   onConfirm,
+  confirmText = "Confirm",
+  cancelText = "Cancel",
   variant = "default",
 }: ConfirmDialogProps) {
   return (
@@ -60,46 +57,4 @@ export function ConfirmDialog({
   );
 }
 
-export function useConfirmDialog() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [config, setConfig] = useState<{
-    title?: string;
-    description?: string;
-    confirmText?: string;
-    cancelText?: string;
-    variant?: "default" | "destructive";
-    onConfirm(): void;
-  }>({
-    onConfirm: () => {},
-  });
-
-  const confirm = (options: {
-    title?: string;
-    description?: string;
-    confirmText?: string;
-    cancelText?: string;
-    variant?: "default" | "destructive";
-    onConfirm(): void;
-  }) => {
-    setConfig(options);
-    setIsOpen(true);
-  };
-
-  const ConfirmDialogComponent = () => (
-    <ConfirmDialog
-      open={isOpen}
-      onOpenChange={setIsOpen}
-      title={config.title}
-      description={config.description}
-      confirmText={config.confirmText}
-      cancelText={config.cancelText}
-      variant={config.variant}
-      onConfirm={() => {
-        config.onConfirm();
-        setIsOpen(false);
-      }}
-    />
-  );
-
-  return { confirm, ConfirmDialog: ConfirmDialogComponent };
-}
+export default ConfirmDialog;

@@ -1,11 +1,11 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const comicSchema = z.object({
   title: z.string().min(1),
   slug: z.string().min(1),
   description: z.string().optional(),
   coverImage: z.string().url().optional(),
-  status: z.enum(['Ongoing', 'Completed', 'Hiatus', 'Cancelled']),
+  status: z.enum(["Ongoing", "Completed", "Hiatus", "Cancelled"]),
   authorId: z.number(),
   artistId: z.number(),
   typeId: z.number(),

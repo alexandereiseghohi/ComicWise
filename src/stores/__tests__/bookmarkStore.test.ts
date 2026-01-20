@@ -1,7 +1,7 @@
-import { renderHook, act } from '@testing-library/react';
-import { useBookmarkStore } from '../bookmarkStore';
+import { act, renderHook } from "@testing-library/react";
+import { useBookmarkStore } from "../bookmarkStore";
 
-describe('bookmarkStore', () => {
+describe("bookmarkStore", () => {
   beforeEach(() => {
     // Reset store before each test
     const { result } = renderHook(() => useBookmarkStore());
@@ -10,13 +10,13 @@ describe('bookmarkStore', () => {
     });
   });
 
-  it('should initialize with empty bookmarks', () => {
+  it("should initialize with empty bookmarks", () => {
     const { result } = renderHook(() => useBookmarkStore());
-    
+
     expect(result.current.bookmarks.size).toBe(0);
   });
 
-  it('should add a bookmark', () => {
+  it("should add a bookmark", () => {
     const { result } = renderHook(() => useBookmarkStore());
 
     act(() => {
@@ -27,7 +27,7 @@ describe('bookmarkStore', () => {
     expect(result.current.bookmarks.size).toBe(1);
   });
 
-  it('should remove a bookmark', () => {
+  it("should remove a bookmark", () => {
     const { result } = renderHook(() => useBookmarkStore());
 
     act(() => {
@@ -44,7 +44,7 @@ describe('bookmarkStore', () => {
     expect(result.current.bookmarks.size).toBe(0);
   });
 
-  it('should update reading progress', () => {
+  it("should update reading progress", () => {
     const { result } = renderHook(() => useBookmarkStore());
 
     act(() => {
@@ -54,7 +54,7 @@ describe('bookmarkStore', () => {
     expect(result.current.getProgress(1)).toBe(5);
   });
 
-  it('should update progress to latest chapter', () => {
+  it("should update progress to latest chapter", () => {
     const { result } = renderHook(() => useBookmarkStore());
 
     act(() => {
@@ -70,7 +70,7 @@ describe('bookmarkStore', () => {
     expect(result.current.getProgress(1)).toBe(7);
   });
 
-  it('should not update progress to earlier chapter', () => {
+  it("should not update progress to earlier chapter", () => {
     const { result } = renderHook(() => useBookmarkStore());
 
     act(() => {
@@ -84,7 +84,7 @@ describe('bookmarkStore', () => {
     expect(result.current.getProgress(1)).toBe(10);
   });
 
-  it('should handle multiple bookmarks', () => {
+  it("should handle multiple bookmarks", () => {
     const { result } = renderHook(() => useBookmarkStore());
 
     act(() => {
@@ -99,7 +99,7 @@ describe('bookmarkStore', () => {
     expect(result.current.isBookmarked(3)).toBe(true);
   });
 
-  it('should clear all bookmarks', () => {
+  it("should clear all bookmarks", () => {
     const { result } = renderHook(() => useBookmarkStore());
 
     act(() => {
@@ -118,7 +118,7 @@ describe('bookmarkStore', () => {
     expect(result.current.getProgress(1)).toBeUndefined();
   });
 
-  it('should persist bookmarks in localStorage', () => {
+  it("should persist bookmarks in localStorage", () => {
     const { result } = renderHook(() => useBookmarkStore());
 
     act(() => {
@@ -126,11 +126,11 @@ describe('bookmarkStore', () => {
       result.current.updateProgress(1, 5);
     });
 
-    const stored = localStorage.getItem('comicwise-bookmarks');
+    const stored = localStorage.getItem("comicwise-bookmarks");
     expect(stored).toBeTruthy();
   });
 
-  it('should return undefined for non-existent progress', () => {
+  it("should return undefined for non-existent progress", () => {
     const { result } = renderHook(() => useBookmarkStore());
 
     expect(result.current.getProgress(999)).toBeUndefined();

@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { useAuth } from "@/hooks/useStores";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 /**
  * Auth Sync Component

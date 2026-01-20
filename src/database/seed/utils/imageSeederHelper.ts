@@ -157,7 +157,7 @@ export class ImageCacheManager {
  * Handles various data formats
  * @param data
  */
-export function extractImageUrls(data: any): string[] {
+export function extractImageUrls<T>(data: T): string[] {
   const urls: string[] = [];
 
   // Direct cover/image URL

@@ -1,20 +1,21 @@
-'use client';
+"use client";
 
-import { GenericForm } from '@/components/shared/GenericForm';
-import { TextFormField, CheckboxFormField } from '@/components/shared/FormFields';
-import { signInSchema } from '@/schemas/authSchemas';
-import { signInAction } from '@/lib/actions/auth';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { CheckboxFormField, TextFormField } from "@/components/shared/FormFields";
+import { GenericForm } from "@/components/shared/GenericForm";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { signInUser } from "@/lib/actions/auth";
+import { signInSchema } from "@/schemas/authSchemas";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function SignInPage() {
   const router = useRouter();
 
   const handleSignIn = async (data: unknown) => {
-    const result = await signInAction(data);
+    const signInData = data as { email: string; password: string };
+    const result = await signInUser(signInData.email, signInData.password);
     if (result.success) {
-      router.push('/');
+      router.push("/");
     }
     return result;
   };
@@ -27,28 +28,17 @@ export default function SignInPage() {
           <CardDescription>Welcome back to ComicWise</CardDescription>
         </CardHeader>
         <CardContent>
-          <GenericForm
-            schema={signInSchema}
-            onSubmit={handleSignIn}
-            submitText="Sign In"
-          >
+          <GenericForm schema={signInSchema} onSubmit={handleSignIn} submitText="Sign In">
             {() => (
               <div className="space-y-4">
-                <TextFormField 
-                  name="email" 
-                  label="Email" 
+                <TextFormField
+                  name="email"
+                  label="Email"
                   type="email"
                   placeholder="john@example.com"
                 />
-                <TextFormField 
-                  name="password" 
-                  label="Password" 
-                  type="password" 
-                />
-                <CheckboxFormField 
-                  name="rememberMe" 
-                  label="Remember me" 
-                />
+                <TextFormField name="password" label="Password" type="password" />
+                <CheckboxFormField name="rememberMe" label="Remember me" />
               </div>
             )}
           </GenericForm>
@@ -57,7 +47,7 @@ export default function SignInPage() {
               Forgot password?
             </Link>
             <p className="text-muted-foreground">
-              Don't have an account?{' '}
+              Don't have an account?{" "}
               <Link href="/sign-up" className="text-primary hover:underline font-medium">
                 Sign Up
               </Link>

@@ -9,7 +9,7 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/DropdownMenu";
 import { Progress } from "@/components/ui/progress";
 
 const listItems = ["Share", "Update", "Refresh"];
@@ -80,22 +80,11 @@ const TotalEarningCard = ({
         </div>
         <div className="flex flex-1 flex-col justify-evenly gap-4">
           {earningData.map((earning, index) => (
-            <div
-              key={index}
-              className={`
-              flex items-center justify-between gap-2.5
-            `}
-            >
+            <div key={index} className={`flex items-center justify-between gap-2.5`}>
               <div className="flex items-center justify-between gap-2.5">
                 <Avatar className="size-11 rounded-sm">
                   <AvatarFallback className="shrink-0 rounded-sm bg-primary/10">
-                    <img
-                      src={earning.img}
-                      alt={earning.platform}
-                      className={`
-                      size-6
-                    `}
-                    />
+                    <img src={earning.img} alt={earning.platform} className={`size-6`} />
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col gap-1">

@@ -178,7 +178,7 @@ function ChartTooltipContent({
     >
       {!nestLabel ? tooltipLabel : null}
       <div className="grid gap-1.5">
-        {payload
+        {(payload as any)
           .filter((item: any) => item.type !== "none")
           .map((item: any, index: number) => {
             const key = `${nameKey || item.name || item.dataKey || "value"}`;

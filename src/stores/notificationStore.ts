@@ -1,6 +1,6 @@
 /**
  * Notification Store - Manages notifications and toasts
- * 
+ *
  * Features:
  * - Toast notifications
  * - System notifications
@@ -8,10 +8,10 @@
  * - Notification history
  */
 
-import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
+import { create } from "zustand";
+import { devtools } from "zustand/middleware";
 
-export type NotificationType = 'success' | 'error' | 'warning' | 'info';
+export type NotificationType = "success" | "error" | "warning" | "info";
 
 export interface Notification {
   id: string;
@@ -31,16 +31,16 @@ interface NotificationState {
   notifications: Notification[];
   toasts: Notification[];
   unreadCount: number;
-  
+
   // Actions
-  addNotification(notification: Omit<Notification, 'id' | 'timestamp' | 'read'>): void;
-  addToast(toast: Omit<Notification, 'id' | 'timestamp' | 'read'>): void;
+  addNotification(notification: Omit<Notification, "id" | "timestamp" | "read">): void;
+  addToast(toast: Omit<Notification, "id" | "timestamp" | "read">): void;
   removeNotification(id: string): void;
   removeToast(id: string): void;
   markAsRead(id: string): void;
   markAllAsRead(): void;
   clearAll(): void;
-  
+
   // Convenience methods
   success(title: string, message?: string, duration?: number): void;
   error(title: string, message?: string, duration?: number): void;
@@ -95,9 +95,8 @@ export const useNotificationStore = create<NotificationState>()(
           const notification = state.notifications.find((n) => n.id === id);
           return {
             notifications: state.notifications.filter((n) => n.id !== id),
-            unreadCount: notification && !notification.read
-              ? state.unreadCount - 1
-              : state.unreadCount,
+            unreadCount:
+              notification && !notification.read ? state.unreadCount - 1 : state.unreadCount,
           };
         }),
 
@@ -108,9 +107,7 @@ export const useNotificationStore = create<NotificationState>()(
 
       markAsRead: (id) =>
         set((state) => ({
-          notifications: state.notifications.map((n) =>
-            n.id === id ? { ...n, read: true } : n
-          ),
+          notifications: state.notifications.map((n) => (n.id === id ? { ...n, read: true } : n)),
           unreadCount: Math.max(0, state.unreadCount - 1),
         })),
 
@@ -129,17 +126,17 @@ export const useNotificationStore = create<NotificationState>()(
 
       // Convenience methods
       success: (title, message, duration) =>
-        get().addToast({ type: 'success', title, message, duration }),
+        get().addToast({ type: "success", title, message, duration }),
 
       error: (title, message, duration) =>
-        get().addToast({ type: 'error', title, message, duration }),
+        get().addToast({ type: "error", title, message, duration }),
 
       warning: (title, message, duration) =>
-        get().addToast({ type: 'warning', title, message, duration }),
+        get().addToast({ type: "warning", title, message, duration }),
 
       info: (title, message, duration) =>
-        get().addToast({ type: 'info', title, message, duration }),
+        get().addToast({ type: "info", title, message, duration }),
     }),
-    { name: 'comicwise-notifications' }
+    { name: "comicwise-notifications" }
   )
 );

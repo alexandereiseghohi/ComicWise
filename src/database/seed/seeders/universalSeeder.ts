@@ -326,7 +326,7 @@ export function normalizeComicData(comicData: Record<string, unknown>): Record<s
  * Reduces cognitive complexity by isolating image extraction logic
  * @param validatedComic
  */
-export function extractCoverImageUrl(validatedComic: any): string | null {
+export function extractCoverImageUrl<T>(validatedComic: T): string | null {
   if (validatedComic.coverImage) return validatedComic.coverImage;
   if (validatedComic.images?.length > 0) return validatedComic.images[0]?.url;
   if (validatedComic.image_urls?.length > 0) return validatedComic.image_urls[0];
@@ -338,7 +338,7 @@ export function extractCoverImageUrl(validatedComic: any): string | null {
  * Reduces cognitive complexity by consolidating image URL collection
  * @param validatedComic
  */
-export function extractComicImageUrls(validatedComic: any): string[] {
+export function extractComicImageUrls<T>(validatedComic: T): string[] {
   const comicImageUrls: string[] = [];
 
   if (Array.isArray(validatedComic.images)) {
@@ -365,7 +365,7 @@ export function extractComicImageUrls(validatedComic: any): string[] {
  * Reduces cognitive complexity by handling different author formats
  * @param validatedComic
  */
-export function extractAuthorName(validatedComic: any): string {
+export function extractAuthorName<T>(validatedComic: T): string {
   if (typeof validatedComic.author === "string") return validatedComic.author;
   if (validatedComic.author?.name) return validatedComic.author.name;
   return "Unknown Author";
@@ -375,7 +375,7 @@ export function extractAuthorName(validatedComic: any): string {
  * Extract artist name from various data formats
  * @param validatedComic
  */
-export function extractArtistName(validatedComic: any): string {
+export function extractArtistName<T>(validatedComic: T): string {
   if (typeof validatedComic.artist === "string") return validatedComic.artist;
   if (validatedComic.artist?.name) return validatedComic.artist.name;
   return "Unknown Artist";
@@ -460,9 +460,9 @@ export async function processComicRecord(
     }
 
     return { success: true, comicId };
-  } catch (error: any) {
+  } catch (error) {
     let errorDetails = `Failed to process comic: ${error}`;
-    if (error?.code === "23505") {
+    if (error && typeof error === "object" && "code" in error && error.code === "23505") {
       errorDetails = `Duplicate entry (unique constraint violation). Skipping.`;
     }
     return { success: false, error: errorDetails };
@@ -474,7 +474,7 @@ export async function processComicRecord(
  * Reduces cognitive complexity in seedChaptersFromJSON
  * @param validatedChapter
  */
-function extractChapterMetadata(validatedChapter: any): {
+function extractChapterMetadata(validatedChapter: z.infer<typeof ChapterSchema>): {
   chapterName: string;
   chapterTitle: string;
   chapterNumber: number;
@@ -498,7 +498,7 @@ function extractChapterMetadata(validatedChapter: any): {
     validatedChapter.comicslug ?? validatedChapter.comic?.slug ?? validatedChapter.comicSlug ?? "";
 
   const imageUrls =
-    validatedChapter.image_urls ?? validatedChapter.images?.map((img: any) => img.url) ?? [];
+    validatedChapter.image_urls ?? validatedChapter.images?.map((img) => img.url) ?? [];
 
   return { chapterName, chapterTitle, chapterNumber, chapterSlug, comicSlug, imageUrls };
 }
@@ -557,11 +557,13 @@ async function processChapterRecord(
     }
 
     return { success: true, chapterId };
-  } catch (error: any) {
+  } catch (error) {
     let errorDetails = `Failed to process chapter.`;
-    if (error?.code) errorDetails += ` Code: ${error.code}.`;
-    if (error?.constraint) errorDetails += ` Constraint: ${error.constraint}.`;
-    if (error?.detail) errorDetails += ` Detail: ${error.detail}.`;
+    if (error && typeof error === "object") {
+      if ("code" in error) errorDetails += ` Code: ${error.code}.`;
+      if ("constraint" in error) errorDetails += ` Constraint: ${error.constraint}.`;
+      if ("detail" in error) errorDetails += ` Detail: ${error.detail}.`;
+    }
     return { success: false, error: errorDetails };
   }
 }
@@ -667,7 +669,7 @@ async function findOrCreateGenre(genreName: string): Promise<number> {
  * @param validatedComic - The validated comic data
  * @returns The uploaded cover image URL or the original URL
  */
-async function processCoverImage(validatedComic: any): Promise<string | null> {
+async function processCoverImage<T>(validatedComic: T): Promise<string | null> {
   const coverImageUrl = extractCoverImageUrl(validatedComic);
   if (!coverImageUrl) return null;
 
@@ -687,7 +689,7 @@ async function processCoverImage(validatedComic: any): Promise<string | null> {
  * @param validatedComic - The validated comic data
  * @returns Array of processed image URLs
  */
-async function processComicImages(validatedComic: any): Promise<string[]> {
+async function processComicImages<T>(validatedComic: T): Promise<string[]> {
   const comicImageUrls = extractComicImageUrls(validatedComic);
   if (comicImageUrls.length === 0) return [];
 
@@ -712,7 +714,7 @@ async function processComicImages(validatedComic: any): Promise<string[]> {
  * @param validatedComic - The validated comic data
  * @returns Object containing IDs for author, artist, type, and genres
  */
-async function getOrCreateComicEntities(validatedComic: any): Promise<{
+async function getOrCreateComicEntities<T>(validatedComic: T): Promise<{
   authorId: number;
   artistId: number;
   typeId: number;
@@ -1026,7 +1028,7 @@ export async function seedComicsFromJSON(pattern: string = "comics*.json"): Prom
             fileStats.errors++;
             logger.error(`${result.error}`);
           }
-        } catch (error: any) {
+        } catch (error) {
           totalErrors++;
           fileStats.errors++;
           logger.error(
@@ -1098,7 +1100,9 @@ export async function seedChaptersFromJSON(pattern: string = "chapters*.json"): 
  * Process chapter images - Helper function to reduce complexity
  * @param metadata
  */
-async function processChapterImages(metadata: any): Promise<string[]> {
+async function processChapterImages(
+  metadata: ReturnType<typeof extractChapterMetadata>
+): Promise<string[]> {
   if (metadata.imageUrls.length === 0) return [];
 
   logger.info(
@@ -1209,7 +1213,7 @@ async function processSingleChapterFile(jsonFile: string, results: any): Promise
         } else {
           fileStats.errors++;
         }
-      } catch (error: any) {
+      } catch (error) {
         results.totalErrors++;
         fileStats.errors++;
         logger.error(`Failed to process chapter: ${error}`);
@@ -1231,7 +1235,7 @@ async function processSingleChapterFile(jsonFile: string, results: any): Promise
  * Log chapters seeding results - Extracted to reduce complexity
  * @param results
  */
-function logChaptersSeedingResults(results: any): void {
+function logChaptersSeedingResults<T>(results: T): void {
   logger.success(
     `✅ Chapters seeding complete: ${results.totalProcessed} processed, ${results.totalCreated} created, ${results.totalUpdated} updated, ${results.totalSkipped} skipped, ${results.totalErrors} errors`
   );

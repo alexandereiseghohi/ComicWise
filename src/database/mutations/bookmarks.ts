@@ -110,3 +110,26 @@ export async function updateBookmarkNotes(
 
   return updated;
 }
+
+/**
+ * Update bookmark status (Reading, PlanToRead, Completed, Dropped, OnHold)
+ * @param userId - User ID
+ * @param comicId - Comic ID
+ * @param status - New bookmark status
+ */
+export async function updateBookmarkStatus(
+  userId: string,
+  comicId: number,
+  status: string
+): Promise<typeof bookmark.$inferSelect | undefined> {
+  const [updated] = await database
+    .update(bookmark)
+    .set({
+      status,
+      updatedAt: new Date(),
+    })
+    .where(and(eq(bookmark.userId, userId), eq(bookmark.comicId, comicId)))
+    .returning();
+
+  return updated;
+}

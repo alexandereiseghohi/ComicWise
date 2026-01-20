@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 
 interface PaginationProps {
   currentPage: number;
@@ -17,7 +17,7 @@ export function Pagination({ currentPage, totalPages, baseUrl }: PaginationProps
 
   const createPageUrl = (page: number) => {
     const params = new URLSearchParams(searchParams);
-    params.set('page', page.toString());
+    params.set("page", page.toString());
     return `${baseUrl || pathname}?${params.toString()}`;
   };
 
@@ -25,12 +25,7 @@ export function Pagination({ currentPage, totalPages, baseUrl }: PaginationProps
 
   return (
     <div className="flex items-center justify-center gap-2 mt-8">
-      <Button
-        variant="outline"
-        size="sm"
-        asChild
-        disabled={currentPage <= 1}
-      >
+      <Button variant="outline" size="sm" asChild disabled={currentPage <= 1}>
         <Link href={createPageUrl(currentPage - 1)}>
           <ChevronLeft className="h-4 w-4 mr-1" />
           Previous
@@ -53,24 +48,17 @@ export function Pagination({ currentPage, totalPages, baseUrl }: PaginationProps
           return (
             <Button
               key={pageNumber}
-              variant={currentPage === pageNumber ? 'default' : 'outline'}
+              variant={currentPage === pageNumber ? "default" : "outline"}
               size="sm"
               asChild
             >
-              <Link href={createPageUrl(pageNumber)}>
-                {pageNumber}
-              </Link>
+              <Link href={createPageUrl(pageNumber)}>{pageNumber}</Link>
             </Button>
           );
         })}
       </div>
 
-      <Button
-        variant="outline"
-        size="sm"
-        asChild
-        disabled={currentPage >= totalPages}
-      >
+      <Button variant="outline" size="sm" asChild disabled={currentPage >= totalPages}>
         <Link href={createPageUrl(currentPage + 1)}>
           Next
           <ChevronRight className="h-4 w-4 ml-1" />

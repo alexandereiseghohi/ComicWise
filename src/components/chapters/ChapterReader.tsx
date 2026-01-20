@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useBookmarks, useReader } from "@/hooks/useStores";
 import { ChevronLeft, ChevronRight, Home, List, Maximize2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,7 +17,6 @@ import Lightbox from "yet-another-react-lightbox";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
-import { useReader, useBookmarks } from "@/hooks/useStores";
 
 interface Comic {
   id: number;
@@ -62,10 +62,10 @@ export function ChapterReader({
     toggleFullscreen,
     addToHistory,
     setZoom,
-    zoom
+    zoom,
   } = useReader();
   const { updateProgress } = useBookmarks();
-  
+
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -81,27 +81,27 @@ export function ChapterReader({
 
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {
-      case "ArrowRight": 
-      case " ":
-        e.preventDefault();
-        window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
-      
-      break;
-      
-      case "ArrowLeft":
-        e.preventDefault();
-        window.scrollBy({ top: -window.innerHeight, behavior: "smooth" });
-      
-      break;
-      
-      case "f": 
-      case "F":
-        e.preventDefault();
-        setLightboxOpen(true);
-      
-      break;
-      
-      // No default
+        case "ArrowRight":
+        case " ":
+          e.preventDefault();
+          window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
+
+          break;
+
+        case "ArrowLeft":
+          e.preventDefault();
+          window.scrollBy({ top: -window.innerHeight, behavior: "smooth" });
+
+          break;
+
+        case "f":
+        case "F":
+          e.preventDefault();
+          setLightboxOpen(true);
+
+          break;
+
+        // No default
       }
     };
 

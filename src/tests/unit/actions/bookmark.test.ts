@@ -52,7 +52,12 @@ describe("Bookmark Actions", () => {
 
       const result = await addBookmark(mockComicId, "Reading");
 
-      expect(mutations.addBookmark).toHaveBeenCalledWith(mockUserId, mockComicId, undefined, "Reading");
+      expect(mutations.addBookmark).toHaveBeenCalledWith(
+        mockUserId,
+        mockComicId,
+        undefined,
+        "Reading"
+      );
       expect(result).toEqual({ success: true });
     });
 

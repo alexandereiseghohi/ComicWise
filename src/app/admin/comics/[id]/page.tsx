@@ -1,11 +1,9 @@
-import { deleteComicAction, updateComicAction } from "@/app/actions/admin/comics";
+import { updateComicAction } from "@/app/actions/admin/comics";
 import { ComicForm } from "@/components/admin/ComicForm";
-import { useConfirmDialog } from "@/components/admin/ConfirmDialog";
-import { Button } from "@/components/ui/button";
+import { DeleteComicButton } from "@/components/admin/DeleteComicButton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getComicById } from "@/database/queries/adminComics";
 import { auth } from "auth";
-import { Trash2 } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import type { JSX } from "react";
@@ -74,39 +72,6 @@ async function ComicEditForm({ id }: { id: number }) {
         </CardContent>
       </Card>
     </div>
-  );
-}
-
-function DeleteComicButton({ comicId }: { comicId: number }) {
-  // ts-ignore - useConfirmDialog hook
-  const { confirm, ConfirmDialog } = useConfirmDialog();
-
-  return (
-    <>
-      <ConfirmDialog />
-      <Button
-        variant="destructive"
-        onClick={() =>
-          confirm({
-            title: "Delete Comic",
-            description:
-              "Are you sure you want to delete this comic? This will also delete all associated chapters and cannot be undone.",
-            confirmText: "Delete",
-            cancelText: "Cancel",
-            variant: "destructive",
-            onConfirm: async () => {
-              const result = await deleteComicAction(comicId);
-              if (result.success) {
-                redirect("/admin/comics");
-              }
-            },
-          })
-        }
-      >
-        <Trash2 className="mr-2 size-4" />
-        Delete Comic
-      </Button>
-    </>
   );
 }
 

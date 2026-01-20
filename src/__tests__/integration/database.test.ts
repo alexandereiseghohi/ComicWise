@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock('@/database/db', () => ({
+vi.mock("@/database/db", () => ({
   db: {
     query: vi.fn(),
     select: vi.fn(() => ({
@@ -13,79 +13,79 @@ vi.mock('@/database/db', () => ({
   },
 }));
 
-describe('Database Integration Tests', () => {
+describe("Database Integration Tests", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  describe('Queries', () => {
-    it('should execute comic queries', async () => {
+  describe("Queries", () => {
+    it("should execute comic queries", async () => {
       expect(true).toBe(true);
     });
 
-    it('should execute chapter queries', async () => {
+    it("should execute chapter queries", async () => {
       expect(true).toBe(true);
     });
 
-    it('should execute user queries', async () => {
+    it("should execute user queries", async () => {
       expect(true).toBe(true);
     });
 
-    it('should execute bookmark queries', async () => {
+    it("should execute bookmark queries", async () => {
       expect(true).toBe(true);
     });
 
-    it('should handle complex joins', async () => {
-      expect(true).toBe(true);
-    });
-  });
-
-  describe('Mutations', () => {
-    it('should insert records', async () => {
-      expect(true).toBe(true);
-    });
-
-    it('should update records', async () => {
-      expect(true).toBe(true);
-    });
-
-    it('should delete records', async () => {
-      expect(true).toBe(true);
-    });
-
-    it('should handle transactions', async () => {
+    it("should handle complex joins", async () => {
       expect(true).toBe(true);
     });
   });
 
-  describe('Relationships', () => {
-    it('should load comic with chapters', async () => {
+  describe("Mutations", () => {
+    it("should insert records", async () => {
       expect(true).toBe(true);
     });
 
-    it('should load comic with author and artist', async () => {
+    it("should update records", async () => {
       expect(true).toBe(true);
     });
 
-    it('should load comic with genres', async () => {
+    it("should delete records", async () => {
       expect(true).toBe(true);
     });
 
-    it('should load chapter with images', async () => {
+    it("should handle transactions", async () => {
       expect(true).toBe(true);
     });
   });
 
-  describe('Performance', () => {
-    it('should use indexes efficiently', async () => {
+  describe("Relationships", () => {
+    it("should load comic with chapters", async () => {
       expect(true).toBe(true);
     });
 
-    it('should batch queries', async () => {
+    it("should load comic with author and artist", async () => {
       expect(true).toBe(true);
     });
 
-    it('should cache results', async () => {
+    it("should load comic with genres", async () => {
+      expect(true).toBe(true);
+    });
+
+    it("should load chapter with images", async () => {
+      expect(true).toBe(true);
+    });
+  });
+
+  describe("Performance", () => {
+    it("should use indexes efficiently", async () => {
+      expect(true).toBe(true);
+    });
+
+    it("should batch queries", async () => {
+      expect(true).toBe(true);
+    });
+
+    it("should cache results", async () => {
       expect(true).toBe(true);
     });
   });

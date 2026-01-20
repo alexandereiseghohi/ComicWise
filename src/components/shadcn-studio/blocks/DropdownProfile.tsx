@@ -19,7 +19,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/DropdownMenu";
 
 interface Props {
   trigger: ReactNode;
@@ -32,11 +32,7 @@ const ProfileDropdown = ({ trigger, defaultOpen, align = "end" }: Props) => {
     <DropdownMenu defaultOpen={defaultOpen}>
       <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
       <DropdownMenuContent className="w-80" align={align || "end"}>
-        <DropdownMenuLabel
-          className={`
-          flex items-center gap-4 px-4 py-2.5 font-normal
-        `}
-        >
+        <DropdownMenuLabel className={`flex items-center gap-4 px-4 py-2.5 font-normal`}>
           <div className="relative">
             <Avatar className="size-10">
               <AvatarImage
@@ -94,12 +90,7 @@ const ProfileDropdown = ({ trigger, defaultOpen, align = "end" }: Props) => {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem
-          variant="destructive"
-          className={`
-          px-4 py-2.5 text-base
-        `}
-        >
+        <DropdownMenuItem variant="destructive" className={`px-4 py-2.5 text-base`}>
           <LogOutIcon className="size-5" />
           <span>Logout</span>
         </DropdownMenuItem>

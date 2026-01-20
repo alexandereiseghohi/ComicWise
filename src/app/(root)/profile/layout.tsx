@@ -1,13 +1,11 @@
-import { ReactNode } from 'react';
-import Link from 'next/link';
-import { cn } from '@/lib/utils';
-import { usePathname } from 'next/navigation';
+import Link from "next/link";
+import type { ReactNode } from "react";
 
 const profileLinks = [
-  { href: '/profile', label: 'Profile' },
-  { href: '/profile/edit', label: 'Edit Profile' },
-  { href: '/profile/change-password', label: 'Change Password' },
-  { href: '/profile/settings', label: 'Settings' },
+  { href: "/profile", label: "Profile" },
+  { href: "/profile/edit", label: "Edit Profile" },
+  { href: "/profile/change-password", label: "Change Password" },
+  { href: "/profile/settings", label: "Settings" },
 ];
 
 export default function ProfileLayout({ children }: { children: ReactNode }) {
@@ -24,9 +22,7 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
             ))}
           </nav>
         </aside>
-        <main className="md:col-span-3">
-          {children}
-        </main>
+        <main className="md:col-span-3">{children}</main>
       </div>
     </div>
   );
@@ -35,10 +31,7 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
 function ProfileLink({ href, children }: { href: string; children: ReactNode }) {
   // This would use usePathname in client component
   return (
-    <Link 
-      href={href}
-      className="px-4 py-2 rounded-md hover:bg-accent transition-colors"
-    >
+    <Link href={href} className="px-4 py-2 rounded-md hover:bg-accent transition-colors">
       {children}
     </Link>
   );

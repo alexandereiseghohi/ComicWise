@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock('@/database/db', () => ({
+vi.mock("@/database/db", () => ({
   db: {
     query: vi.fn(),
     select: vi.fn(() => ({
@@ -28,129 +28,129 @@ vi.mock('@/database/db', () => ({
   },
 }));
 
-describe('API Integration Tests', () => {
+describe("API Integration Tests", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  describe('Comics API', () => {
-    it('should fetch comics list', async () => {
+  describe("Comics API", () => {
+    it("should fetch comics list", async () => {
       expect(true).toBe(true);
     });
 
-    it('should fetch single comic', async () => {
+    it("should fetch single comic", async () => {
       expect(true).toBe(true);
     });
 
-    it('should create comic (admin)', async () => {
+    it("should create comic (admin)", async () => {
       expect(true).toBe(true);
     });
 
-    it('should update comic (admin)', async () => {
+    it("should update comic (admin)", async () => {
       expect(true).toBe(true);
     });
 
-    it('should delete comic (admin)', async () => {
-      expect(true).toBe(true);
-    });
-  });
-
-  describe('Chapters API', () => {
-    it('should fetch chapters for comic', async () => {
-      expect(true).toBe(true);
-    });
-
-    it('should fetch single chapter', async () => {
-      expect(true).toBe(true);
-    });
-
-    it('should track chapter views', async () => {
+    it("should delete comic (admin)", async () => {
       expect(true).toBe(true);
     });
   });
 
-  describe('Bookmarks API', () => {
-    it('should add bookmark', async () => {
+  describe("Chapters API", () => {
+    it("should fetch chapters for comic", async () => {
       expect(true).toBe(true);
     });
 
-    it('should remove bookmark', async () => {
+    it("should fetch single chapter", async () => {
       expect(true).toBe(true);
     });
 
-    it('should list user bookmarks', async () => {
-      expect(true).toBe(true);
-    });
-
-    it('should update reading progress', async () => {
+    it("should track chapter views", async () => {
       expect(true).toBe(true);
     });
   });
 
-  describe('Auth API', () => {
-    it('should handle sign in', async () => {
+  describe("Bookmarks API", () => {
+    it("should add bookmark", async () => {
       expect(true).toBe(true);
     });
 
-    it('should handle sign up', async () => {
+    it("should remove bookmark", async () => {
       expect(true).toBe(true);
     });
 
-    it('should handle password reset', async () => {
+    it("should list user bookmarks", async () => {
       expect(true).toBe(true);
     });
 
-    it('should verify email', async () => {
-      expect(true).toBe(true);
-    });
-  });
-
-  describe('Admin API', () => {
-    it('should require authentication', async () => {
-      expect(true).toBe(true);
-    });
-
-    it('should require admin role', async () => {
-      expect(true).toBe(true);
-    });
-
-    it('should handle bulk operations', async () => {
+    it("should update reading progress", async () => {
       expect(true).toBe(true);
     });
   });
 
-  describe('Search API', () => {
-    it('should search comics', async () => {
+  describe("Auth API", () => {
+    it("should handle sign in", async () => {
       expect(true).toBe(true);
     });
 
-    it('should filter by genre', async () => {
+    it("should handle sign up", async () => {
       expect(true).toBe(true);
     });
 
-    it('should filter by type', async () => {
+    it("should handle password reset", async () => {
       expect(true).toBe(true);
     });
 
-    it('should sort results', async () => {
+    it("should verify email", async () => {
       expect(true).toBe(true);
     });
   });
 
-  describe('Upload API', () => {
-    it('should upload comic cover', async () => {
+  describe("Admin API", () => {
+    it("should require authentication", async () => {
       expect(true).toBe(true);
     });
 
-    it('should upload chapter images', async () => {
+    it("should require admin role", async () => {
       expect(true).toBe(true);
     });
 
-    it('should validate file types', async () => {
+    it("should handle bulk operations", async () => {
+      expect(true).toBe(true);
+    });
+  });
+
+  describe("Search API", () => {
+    it("should search comics", async () => {
       expect(true).toBe(true);
     });
 
-    it('should validate file sizes', async () => {
+    it("should filter by genre", async () => {
+      expect(true).toBe(true);
+    });
+
+    it("should filter by type", async () => {
+      expect(true).toBe(true);
+    });
+
+    it("should sort results", async () => {
+      expect(true).toBe(true);
+    });
+  });
+
+  describe("Upload API", () => {
+    it("should upload comic cover", async () => {
+      expect(true).toBe(true);
+    });
+
+    it("should upload chapter images", async () => {
+      expect(true).toBe(true);
+    });
+
+    it("should validate file types", async () => {
+      expect(true).toBe(true);
+    });
+
+    it("should validate file sizes", async () => {
       expect(true).toBe(true);
     });
   });

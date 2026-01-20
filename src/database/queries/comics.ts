@@ -1,5 +1,14 @@
 import { db as database } from "@/database/db";
-import { artist, author, bookmark, chapter, comic, comicToGenre, genre, type } from "@/database/schema";
+import {
+  artist,
+  author,
+  bookmark,
+  chapter,
+  comic,
+  comicToGenre,
+  genre,
+  type,
+} from "@/database/schema";
 import type { ComicFilters, ComicWithDetails, Genre, PaginatedResponse } from "@/types";
 import type { SQL } from "drizzle-orm";
 import { and, asc, desc, eq, gte, inArray, like, or, sql } from "drizzle-orm";

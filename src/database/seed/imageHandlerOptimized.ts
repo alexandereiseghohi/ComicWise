@@ -1,262 +1,234 @@
 /**
- * 🌱 Image Service Wrapper - Integration with existing imageService.ts
  * ═══════════════════════════════════════════════════════════════════════════
- * Handles image downloads with caching and deduplication
+ * OPTIMIZED IMAGE HANDLER - Smart image downloading with deduplication
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ * Features:
+ * - Prevents duplicate downloads via in-memory cache
+ * - Filesystem check before download
+ * - Fallback image support
+ * - Concurrent download control
+ * - Comprehensive error handling
  */
 
-import { logger } from "@/database/seed/logger";
+import { logger } from "@/database/seed/LoggerOptimized";
 import { ImageService } from "@/services/imageService";
 import fs from "fs/promises";
 import path from "path";
 
-// ═══════════════════════════════════════════════════════════════════════════
-// IMAGE DOWNLOAD RESULT
-// ═══════════════════════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────────────────────
+// CONFIGURATION
+// ─────────────────────────────────────────────────────────────────────────
 
-export interface ImageDownloadResult {
-  original: string;
-  local?: string;
-  cached: boolean;
-  success: boolean;
-  error?: string;
+const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
+const PLACEHOLDER_IMAGE = "/public/placeholder-comic.jpg";
+const FALLBACK_USER_IMAGE = "/public/shadcn.jpg";
+const CONCURRENT_DOWNLOADS = 5;
+
+// ─────────────────────────────────────────────────────────────────────────
+// IMAGE CACHE - In-memory deduplication
+// ─────────────────────────────────────────────────────────────────────────
+
+interface ImageCache {
+  url: string;
+  localPath: string;
+  timestamp: number;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// IMAGE HANDLER SINGLETON
-// ═══════════════════════════════════════════════════════════════════════════
+class ImageCache {
+  private cache = new Map<string, ImageCache>();
+  private fsChecked = new Set<string>();
 
-let imageService: ImageService | null = null;
-const downloadCache = new Map<string, string>();
-const fileSystemCache = new Set<string>();
-
-/**
- * Get or initialize image service
- */
-export async function getImageHandler(): Promise<ImageService> {
-  imageService ??= new ImageService();
-  return imageService;
-}
-
-/**
- * Build file path for upload directory
- * @param filename
- */
-export function getUploadPath(filename: string): string {
-  return path.join(process.cwd(), "public", "uploads", filename);
-}
-
-/**
- * Check if file exists locally
- * @param filePath
- */
-export async function fileExists(filePath: string): Promise<boolean> {
-  try {
-    await fs.access(filePath);
-    return true;
-  } catch {
-    return false;
+  set(url: string, localPath: string): void {
+    this.cache.set(url, {
+      url,
+      localPath,
+      timestamp: Date.now(),
+    } as any);
   }
-}
 
-/**
- * Load file system cache on startup
- */
-async function initializeFileSystemCache(): Promise<void> {
-  try {
-    const uploadsDirectory = path.join(process.cwd(), "public", "uploads");
-    const files = await fs.readdir(uploadsDirectory, { withFileTypes: true });
+  get(url: string): string | undefined {
+    return this.cache.get(url)?.localPath;
+  }
 
-    files.forEach((file) => {
-      if (file.isFile()) {
-        fileSystemCache.add(file.name);
-      }
-    });
+  markChecked(localPath: string): void {
+    this.fsChecked.add(localPath);
+  }
 
-    logger.debug(`Initialized file system cache with ${fileSystemCache.size} files`);
-  } catch (error) {
-    logger.warn(`Failed to initialize file system cache: ${error}`);
+  isChecked(localPath: string): boolean {
+    return this.fsChecked.has(localPath);
+  }
+
+  size(): number {
+    return this.cache.size;
+  }
+
+  clear(): void {
+    this.cache.clear();
+    this.fsChecked.clear();
   }
 }
 
-/**
- * Extract filename from URL
- * @param url
- */
-function extractFilename(url: string): string {
-  try {
-    const urlPath = new URL(url).pathname;
-    return path.basename(urlPath);
-  } catch {
-    return "";
-  }
-}
+// ─────────────────────────────────────────────────────────────────────────
+// OPTIMIZED IMAGE HANDLER
+// ─────────────────────────────────────────────────────────────────────────
 
-// ═══════════════════════════════════════════════════════════════════════════
-// DOWNLOAD IMAGE WITH CACHING
-// ═══════════════════════════════════════════════════════════════════════════
-
-/**
- * Download image with 3-layer caching strategy:
- * 1. Session cache (in-memory) - fastest, prevents re-processing within session
- * 2. File system check - prevents re-downloading existing files
- * 3. Remote download via imageService - only if needed
- *
- * Implements DRY principle: each image URL downloaded maximum once per session
- * @param url - Remote image URL
- * @param subDirectory - Storage subdirectory
- */
-export async function downloadImage(
-  url: string,
-  subDirectory: string = "uploads"
-): Promise<ImageDownloadResult> {
-  if (!url) {
-    return {
-      original: url,
-      success: false,
-      cached: false,
-      error: "Empty URL",
-    };
-  }
-
-  // Check if it's a local path (starts with / or relative path) - no download needed
-  if (url.startsWith("/") || (!url.startsWith("http://") && !url.startsWith("https://"))) {
-    downloadCache.set(url, url);
-    return {
-      original: url,
-      local: url,
-      success: true,
-      cached: true,
-    };
-  }
-
-  // Layer 1: Session cache - prevents re-downloading within the same seed operation
-  if (downloadCache.has(url)) {
-    const cached = downloadCache.get(url);
-    if (cached) {
-      return {
-        original: url,
-        local: cached,
-        success: true,
-        cached: true,
-      };
-    }
-  }
-
-  try {
-    // Layer 2: File system cache - prevents re-downloading files that exist
-    const filename = extractFilename(url);
-    if (filename && fileSystemCache.has(filename)) {
-      const localPath = `/uploads/${filename}`;
-      downloadCache.set(url, localPath);
-      return {
-        original: url,
-        local: localPath,
-        success: true,
-        cached: true,
-      };
-    }
-
-    // Layer 3: Download via imageService - only if not in cache
-    const imageHandler = await getImageHandler();
-    const result = await imageHandler.downloadImage(url, subDirectory);
-
-    if (result.success && result.localPath) {
-      downloadCache.set(url, result.localPath);
-      fileSystemCache.add(path.basename(result.localPath));
-      return {
-        original: url,
-        local: result.localPath,
-        success: true,
-        cached: false,
-      };
-    } else {
-      return {
-        original: url,
-        success: false,
-        cached: false,
-        error: result.error ?? "Download failed",
-      };
-    }
-  } catch (error) {
-    logger.warn(`Failed to download image: ${url.slice(0, 80)}... - ${error}`);
-    return {
-      original: url,
-      success: false,
-      cached: false,
-      error: String(error),
-    };
-  }
-}
-
-/**
- * Download multiple images with concurrency control
- * @param urls - Array of image URLs
- * @param folder - Optional folder path for storage
- * @param concurrency - Maximum parallel downloads
- */
-export async function downloadImages(
-  urls: string[],
-  folder?: string | number,
-  concurrency?: number
-): Promise<ImageDownloadResult[]> {
-  const results: ImageDownloadResult[] = [];
-  const chunks: string[][] = [];
-
-  // Handle overloading: if folder is a number, it's concurrency
-  let actualFolder = "uploads";
-  let actualConcurrency = 3;
-
-  if (typeof folder === "number") {
-    actualConcurrency = folder;
-  } else if (typeof folder === "string") {
-    actualFolder = folder;
-    if (typeof concurrency === "number") {
-      actualConcurrency = concurrency;
-    }
-  }
-
-  for (let i = 0; i < urls.length; i += actualConcurrency) {
-    chunks.push(urls.slice(i, i + actualConcurrency));
-  }
-
-  for (const chunk of chunks) {
-    const chunkResults = await Promise.all(chunk.map((url) => downloadImage(url, actualFolder)));
-    results.push(...chunkResults);
-  }
-
-  return results;
-}
-
-/**
- * Initialize image handler
- */
-export async function initializeImageHandler(): Promise<void> {
-  await getImageHandler();
-  await initializeFileSystemCache();
-  logger.info("Image handler initialized");
-}
-
-/**
- * Get image statistics
- */
-export function getImageStats(): {
-  sessionCached: number;
-  fileSystemCached: number;
-  totalUnique: number;
-} {
-  return {
-    sessionCached: downloadCache.size,
-    fileSystemCached: fileSystemCache.size,
-    totalUnique: downloadCache.size + fileSystemCache.size,
+export class OptimizedImageHandler {
+  private imageService: ImageService;
+  private cache = new ImageCache();
+  private downloadStats = {
+    total: 0,
+    downloaded: 0,
+    cached: 0,
+    failed: 0,
+    skipped: 0,
   };
+
+  constructor() {
+    this.imageService = new ImageService();
+  }
+
+  /**
+   * Initialize upload directory
+   */
+  async initialize(): Promise<void> {
+    try {
+      await fs.mkdir(UPLOAD_DIR, { recursive: true });
+      logger.success("Upload directory ready", { path: UPLOAD_DIR });
+    } catch (error) {
+      logger.warn(
+        `Could not create upload directory: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
+  }
+
+  /**
+   * Process single image with smart caching and deduplication
+   * @param imageUrl
+   * @param type
+   */
+  async processImage(imageUrl: string, type: "comic" | "user" = "comic"): Promise<string> {
+    if (!imageUrl || imageUrl.length === 0) {
+      return type === "user" ? FALLBACK_USER_IMAGE : PLACEHOLDER_IMAGE;
+    }
+
+    this.downloadStats.total++;
+
+    // Check in-memory cache
+    const cached = this.cache.get(imageUrl);
+    if (cached) {
+      this.downloadStats.cached++;
+      logger.debug(`Cache hit: ${imageUrl}`);
+      return cached;
+    }
+
+    try {
+      // Attempt to download and store
+      const result = await this.imageService.downloadImage(
+        imageUrl,
+        type === "user" ? "avatars" : "comics",
+        2 // retries
+      );
+
+      if (result.success && result.localPath) {
+        this.downloadStats.downloaded++;
+        this.cache.set(imageUrl, result.localPath);
+        logger.debug(`Downloaded image: ${imageUrl}`, {
+          component: "ImageHandler",
+          localPath: result.localPath,
+        });
+        return result.localPath;
+      }
+
+      throw new Error(result.error || "Unknown error");
+    } catch (error) {
+      this.downloadStats.failed++;
+      logger.warn(`Failed to download image: ${imageUrl}`, {
+        component: "ImageHandler",
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return type === "user" ? FALLBACK_USER_IMAGE : PLACEHOLDER_IMAGE;
+    }
+  }
+
+  /**
+   * Process multiple images concurrently with rate limiting
+   * @param imageUrls
+   * @param type
+   */
+  async processImages(imageUrls: string[], type: "comic" | "user" = "comic"): Promise<string[]> {
+    if (!imageUrls || imageUrls.length === 0) {
+      return [];
+    }
+
+    const results: string[] = [];
+
+    // Process in batches to control concurrency
+    for (let i = 0; i < imageUrls.length; i += CONCURRENT_DOWNLOADS) {
+      const batch = imageUrls.slice(i, i + CONCURRENT_DOWNLOADS);
+      const batchResults = await Promise.all(batch.map((url) => this.processImage(url, type)));
+      results.push(...batchResults);
+
+      // Rate limiting between batches
+      if (i + CONCURRENT_DOWNLOADS < imageUrls.length) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+    }
+
+    return results;
+  }
+
+  /**
+   * Get cache statistics
+   */
+  getStats() {
+    return {
+      ...this.downloadStats,
+      cacheSize: this.cache.size(),
+    };
+  }
+
+  /**
+   * Reset statistics
+   */
+  resetStats(): void {
+    this.downloadStats = {
+      total: 0,
+      downloaded: 0,
+      cached: 0,
+      failed: 0,
+      skipped: 0,
+    };
+  }
+
+  /**
+   * Clear all caches
+   */
+  clearCache(): void {
+    this.cache.clear();
+  }
 }
 
-/**
- * Reset image handler
- */
-export function resetImageHandler(): void {
-  imageService = null;
-  downloadCache.clear();
-  fileSystemCache.clear();
-  logger.debug("Image handler reset");
+// Export singleton instance
+let handler: OptimizedImageHandler | null = null;
+
+export async function getImageHandler(): Promise<OptimizedImageHandler> {
+  if (!handler) {
+    handler = new OptimizedImageHandler();
+    await handler.initialize();
+  }
+  return handler;
+}
+
+export async function resetImageHandler(): Promise<void> {
+  if (handler) {
+    handler.clearCache();
+    handler.resetStats();
+    handler = null;
+  }
+}
+
+export async function getImageStats() {
+  const h = await getImageHandler();
+  return h.getStats();
 }

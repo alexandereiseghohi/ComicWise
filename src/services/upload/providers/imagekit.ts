@@ -5,7 +5,7 @@
 
 import { env } from "@/appConfig";
 import { logger } from "@/database/seed/logger";
-import type { UploadOptions, UploadProvider, UploadResult } from "@/services/upload/index";
+import type { UploadOptions, UploadProvider, UploadResult } from "@/services/upload/types";
 import ImageKit from "imagekit";
 
 // Validate ImageKit configuration

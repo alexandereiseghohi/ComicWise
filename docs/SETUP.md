@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Node.js 20+ 
+- Node.js 20+
 - pnpm 9+
 - PostgreSQL 16+
 - Redis 7+ (optional but recommended)
@@ -10,23 +10,27 @@
 ## Quick Start
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd comicwise
    ```
 
 2. **Install dependencies**
+
    ```bash
    pnpm install
    ```
 
 3. **Setup environment variables**
+
    ```bash
    cp .env.example .env.local
    # Edit .env.local with your values
    ```
 
 4. **Setup database**
+
    ```bash
    pnpm db:push
    pnpm db:seed
@@ -89,17 +93,20 @@ See `.env.example` for all available environment variables.
 ### Common Issues
 
 **Database connection failed**
+
 - Ensure PostgreSQL is running
 - Check DATABASE_URL is correct
 
 **Module not found**
+
 - Run `pnpm install`
 - Clear cache: `pnpm clean && pnpm install`
 
 **TypeScript errors**
+
 - Run `pnpm type-check` to see all errors
 - Update `tsconfig.json` if needed
 
 ---
 
-*Last updated: 2026-01-19T19:55:57.770Z*
+_Last updated: 2026-01-20T04:24:35.781Z_

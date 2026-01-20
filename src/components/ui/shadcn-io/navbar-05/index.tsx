@@ -10,13 +10,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/DropdownMenu";
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-} from "@/components/ui/navigation-menu";
+} from "@/components/ui/NavigationMenu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { BellIcon, ChevronDownIcon, HelpCircleIcon } from "lucide-react";
 import * as React from "react";

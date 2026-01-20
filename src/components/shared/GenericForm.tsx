@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, type FieldValues, type UseFormReturn } from 'react-hook-form';
-import { type z } from 'zod';
-import { Form } from '@/components/ui/form';
-import { Button } from '@/components/ui/button';
-import { useTransition } from 'react';
-import { toast } from 'sonner';
+import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useTransition } from "react";
+import { useForm, type FieldValues, type UseFormReturn } from "react-hook-form";
+import { toast } from "sonner";
+import { type z } from "zod";
 
 interface GenericFormProps<T extends FieldValues> {
   schema: z.ZodSchema<T>;
@@ -24,15 +24,15 @@ export function GenericForm<T extends FieldValues>({
   onSubmit,
   defaultValues,
   children,
-  submitText = 'Submit',
-  cancelText = 'Cancel',
+  submitText = "Submit",
+  cancelText = "Cancel",
   onCancel,
   className,
 }: GenericFormProps<T>) {
   const [isPending, startTransition] = useTransition();
-  
+
   const form = useForm<T>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema as any),
     defaultValues: defaultValues as never,
   });
 
@@ -40,10 +40,10 @@ export function GenericForm<T extends FieldValues>({
     startTransition(async () => {
       const result = await onSubmit(data);
       if (result.success) {
-        toast.success('Success!');
+        toast.success("Success!");
         form.reset();
       } else {
-        toast.error(result.error || 'An error occurred');
+        toast.error(result.error || "An error occurred");
       }
     });
   };
@@ -54,7 +54,7 @@ export function GenericForm<T extends FieldValues>({
         {children(form)}
         <div className="flex gap-4 mt-6">
           <Button type="submit" disabled={isPending}>
-            {isPending ? 'Submitting...' : submitText}
+            {isPending ? "Submitting..." : submitText}
           </Button>
           {onCancel && (
             <Button type="button" variant="outline" onClick={onCancel} disabled={isPending}>

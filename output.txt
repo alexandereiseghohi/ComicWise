@@ -1,0 +1,121 @@
+
+> comicwise@0.1.0 prebuild C:\Users\Alexa\Desktop\SandBox\comicwise
+> pnpm clean:cache && pnpm typegen
+
+
+> comicwise@0.1.0 clean:cache C:\Users\Alexa\Desktop\SandBox\comicwise
+> rimraf .next/cache
+
+
+> comicwise@0.1.0 typegen C:\Users\Alexa\Desktop\SandBox\comicwise
+> next typegen
+
+Generating route types...
+Γ£ô Types generated successfully
+
+> comicwise@0.1.0 build C:\Users\Alexa\Desktop\SandBox\comicwise
+> next build
+
+Γû▓ Next.js 16.1.3 (Turbopack)
+- Environments: .env.local
+- Experiments (use with caution):
+  ┬╖ optimizePackageImports
+  ┬╖ serverActions
+  ┬╖ staleTimes
+  ┬╖ staticGenerationMaxConcurrency: 16
+  ┬╖ staticGenerationRetryCount: 3
+  Γ£ô typedEnv
+
+ΓÜá The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+
+[1.51ms] [@tailwindcss/postcss] src\app\ibmplexsans_344ab582.module.css
+[0.99ms]   Γå│ Quick bail check
+
+
+[0.06ms] [@tailwindcss/postcss] src\app\martianmono_d4e9dc31.module.css
+[0.04ms]   Γå│ Quick bail check
+
+
+[0.33ms] [@tailwindcss/postcss] src\app\firamono_2dd64605.module.css
+[0.30ms]   Γå│ Quick bail check
+
+
+[0.05ms] [@tailwindcss/postcss] src\app\schibstedgrotesk_a73a592d.module.css
+[0.03ms]   Γå│ Quick bail check
+
+
+[0.12ms] [@tailwindcss/postcss] src\app\firasans_b9cc4c64.module.css
+[0.06ms]   Γå│ Quick bail check
+
+
+[11440.62ms] [@tailwindcss/postcss] src\styles\globals.css
+[    0.14ms]   Γå│ Quick bail check
+[ 3046.15ms]   Γå│ Setup compiler
+[    2.83ms]     Γå│ PostCSS AST -> Tailwind CSS AST
+[ 3043.25ms]     Γå│ Create compiler
+[    1.21ms]   Γå│ Register full rebuild paths
+[   77.26ms]   Γå│ Setup scanner
+[ 4253.96ms]   Γå│ Scan for candidates
+[ 3364.47ms]   Γå│ Register dependency messages
+[  424.53ms]   Γå│ Build utilities
+[  242.86ms]   Γå│ Optimization
+[    6.66ms]     Γå│ AST -> CSS
+[  146.03ms]     Γå│ Lightning CSS
+[   90.07ms]     Γå│ CSS -> PostCSS AST
+[   13.89ms]   Γå│ Update PostCSS AST
+
+
+[0.93ms] [@tailwindcss/postcss] src\app\bebasneue_1e2c1499.module.css
+[0.85ms]   Γå│ Quick bail check
+
+Turbopack build encountered 1 warnings:
+./src/services/upload/providers/local.ts:93:24
+The file pattern (<dynamic> '/' <dynamic> '/' <dynamic> | <dynamic> '/' <dynamic> | <dynamic> '/general/' <dynamic> | <dynamic> 'general/' <dynamic> | <dynamic> '/' <dynamic> | <dynamic> | <dynamic> '/general' <dynamic> | <dynamic> 'general' <dynamic>) matches 15446 files in [project]/
+  91 |
+  92 |       // Save file
+> 93 |       const filePath = path.join(uploadPath, filename);
+     |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  94 |       await fs.writeFile(filePath, buffer);
+  95 |
+  96 |       // Get file stats
+
+Overly broad patterns can lead to build performance issues and over bundling.
+
+Import traces:
+  #1 [App Route]:
+    ./src/services/upload/providers/local.ts
+    ./src/database/seed/seeders/comicSeeder.ts
+    ./src/app/api/seed/route.ts
+
+  #2 [Server Component]:
+    ./src/services/upload/providers/local.ts
+    ./src/services/upload/factory.ts
+    ./src/services/upload/index.ts
+    ./src/lib/actions/avatar.ts
+
+  #3 [App Route]:
+    ./src/services/upload/providers/local.ts
+    ./src/services/upload/factory.ts
+    ./src/services/imageService.ts
+    ./src/database/seed/utils/imageSeederHelper.ts
+    ./src/database/seed/seeders/userSeeder.ts
+    ./src/app/api/seed/route.ts
+
+
+Γ£ô Compiled successfully in 101s
+  Running TypeScript ...
+Failed to compile.
+
+./src/app/(root)/comics/page.tsx:308:66
+Type error: Not all code paths return a value.
+
+  306 |
+  307 |                 {/* Page Numbers */}
+> 308 |                 {Array.from({ length: Math.min(5, data.pages) }, (_, i) => {
+      |                                                                  ^
+  309 |                   const pageNum = Math.max(1, page - 2) + i;
+  310 |                   if (pageNum <= data.pages) {
+  311 |                     return (
+Next.js build worker exited with code: 1 and signal: null
+ΓÇëELIFECYCLEΓÇë Command failed with exit code 1.

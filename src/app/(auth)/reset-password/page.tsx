@@ -1,25 +1,26 @@
-'use client';
+"use client";
 
-import { GenericForm } from '@/components/shared/GenericForm';
-import { TextFormField } from '@/components/shared/FormFields';
-import { resetPasswordSchema } from '@/schemas/authSchemas';
-import { resetPasswordAction } from '@/lib/actions/auth';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Suspense } from 'react';
+import { TextFormField } from "@/components/shared/FormFields";
+import { GenericForm } from "@/components/shared/GenericForm";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { resetPassword } from "@/lib/actions/auth";
+import { resetPasswordSchema } from "@/schemas/authSchemas";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const token = searchParams.get('token');
+  const token = searchParams.get("token");
 
   const handleResetPassword = async (data: unknown) => {
     if (!token) {
-      return { success: false, error: 'Invalid reset token' };
+      return { success: false, error: "Invalid reset token" };
     }
-    const result = await resetPasswordAction(token, data);
+    const resetData = { ...(data as any), token };
+    const result = await resetPassword(resetData);
     if (result.success) {
-      router.push('/sign-in?message=Password reset successfully. Please sign in.');
+      router.push("/sign-in?message=Password reset successfully. Please sign in.");
     }
     return result;
   };
@@ -48,17 +49,13 @@ function ResetPasswordForm() {
         >
           {() => (
             <div className="space-y-4">
-              <TextFormField 
-                name="password" 
-                label="New Password" 
+              <TextFormField
+                name="password"
+                label="New Password"
                 type="password"
                 description="Min 8 characters with uppercase, lowercase, number, and special character"
               />
-              <TextFormField 
-                name="confirmPassword" 
-                label="Confirm Password" 
-                type="password" 
-              />
+              <TextFormField name="confirmPassword" label="Confirm Password" type="password" />
             </div>
           )}
         </GenericForm>

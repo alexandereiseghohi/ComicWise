@@ -3,11 +3,11 @@
  *
  * POST: Seed specified entities
  * DELETE: Clear all seed data
+ *
+ * IMPORTANT: This is a server-only route. All imports are dynamic to prevent
+ * bundling seed utilities into the client bundle.
  */
 
-import { seedChaptersFromFiles } from "@/database/seed/seeders/chapterSeeder";
-import { seedComicsFromFiles } from "@/database/seed/seeders/comicSeeder";
-import { seedUsersFromFiles } from "@/database/seed/seeders/userSeeder";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -68,6 +68,11 @@ export async function POST(request: Request) {
         result,
       });
     }
+
+    // Dynamic imports prevent seed utilities from bundling into client
+    const { seedUsersFromFiles } = await import("@/database/seed/seeders/userSeeder");
+    const { seedComicsFromFiles } = await import("@/database/seed/seeders/comicSeeder");
+    const { seedChaptersFromFiles } = await import("@/database/seed/seeders/chapterSeeder");
 
     switch (entities) {
       case "all":
