@@ -1,117 +1,76 @@
-"use client";
+'use client';
 
-// ═══════════════════════════════════════════════════
-// SIGN UP PAGE (Next.js 16 + React 19)
-// ═══════════════════════════════════════════════════
+import { GenericForm } from '@/components/shared/GenericForm';
+import { TextFormField, CheckboxFormField } from '@/components/shared/FormFields';
+import { signUpSchema } from '@/schemas/authSchemas';
+import { signUpAction } from '@/lib/actions/auth';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-import { signIn } from "next-auth/react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
-import { toast } from "sonner";
-
-import { AuthForm, EmailField, NameField, PasswordField } from "@/components/auth";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { registerUser } from "@/lib/actions/auth";
-import type { SignUpInput } from "@/lib/validations";
-import { signUpSchema } from "@/lib/validations";
-
-const SignUp = () => {
-  const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState<string | null>(null);
+export default function SignUpPage() {
   const router = useRouter();
 
-  const onSubmit = async (data: SignUpInput) => {
-    setError(null);
-
-    startTransition(async () => {
-      try {
-        const result = await registerUser(data);
-
-        if (result?.success) {
-          toast.success("Account created! Please check your email to verify your account.");
-          router.push("/verify-request");
-        } else {
-          setError(result.error || "Failed to create account");
-          toast.error(result.error || "Failed to create account");
-        }
-      } catch (error_) {
-        console.error("Sign up error:", error_);
-        setError("An unexpected error occurred. Please try again.");
-        toast.error("Failed to create account");
-      }
-    });
-  };
-
-  const handleGoogleSignIn = () => {
-    startTransition(async () => {
-      try {
-        await signIn("google", { callbackUrl: "/" });
-      } catch {
-        toast.error("Failed to sign in with Google");
-      }
-    });
+  const handleSignUp = async (data: unknown) => {
+    const result = await signUpAction(data);
+    if (result.success) {
+      router.push('/sign-in?message=Account created successfully. Please sign in.');
+    }
+    return result;
   };
 
   return (
-    <AuthForm
-      title="Sign Up to ComicWise"
-      description="Create your account to get started"
-      schema={signUpSchema}
-      defaultValues={{ name: "", email: "", password: "", confirmPassword: "" }}
-      onSubmit={onSubmit}
-      error={error}
-      isLoading={isPending}
-      submitLabel="Sign Up"
-      footer={
-        <>
-          <p className="text-center text-muted-foreground">
-            Already have an account?{" "}
-            <Link
-              href="/sign-in"
-              className={`
-                text-card-foreground
-                hover:underline
-              `}
-            >
-              Sign in instead
+    <div className="container max-w-md mx-auto py-12">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-3xl font-bold">Sign Up</CardTitle>
+          <CardDescription>Create your ComicWise account</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <GenericForm
+            schema={signUpSchema}
+            onSubmit={handleSignUp}
+            submitText="Create Account"
+          >
+            {() => (
+              <div className="space-y-4">
+                <TextFormField 
+                  name="name" 
+                  label="Full Name" 
+                  placeholder="John Doe" 
+                />
+                <TextFormField 
+                  name="email" 
+                  label="Email" 
+                  type="email" 
+                  placeholder="john@example.com" 
+                />
+                <TextFormField 
+                  name="password" 
+                  label="Password" 
+                  type="password"
+                  description="Min 8 characters with uppercase, lowercase, number, and special character" 
+                />
+                <TextFormField 
+                  name="confirmPassword" 
+                  label="Confirm Password" 
+                  type="password" 
+                />
+                <CheckboxFormField 
+                  name="agreeToTerms" 
+                  label="I agree to the Terms and Conditions" 
+                />
+              </div>
+            )}
+          </GenericForm>
+          <p className="mt-4 text-center text-sm text-muted-foreground">
+            Already have an account?{' '}
+            <Link href="/sign-in" className="text-primary hover:underline font-medium">
+              Sign In
             </Link>
           </p>
-          <div className="flex items-center gap-4">
-            <Separator className="flex-1" />
-            <p>or</p>
-            <Separator className="flex-1" />
-          </div>
-          <Button
-            type="button"
-            variant="ghost"
-            className="w-full"
-            onClick={handleGoogleSignIn}
-            disabled={isPending}
-          >
-            Sign in with Google
-          </Button>
-        </>
-      }
-    >
-      <NameField disabled={isPending} />
-      <EmailField disabled={isPending} />
-      <PasswordField
-        name="password"
-        label="Password"
-        autoComplete="new-password"
-        disabled={isPending}
-        helperText="Must contain uppercase, lowercase, and number"
-      />
-      <PasswordField
-        name="confirmPassword"
-        label="Confirm Password"
-        autoComplete="new-password"
-        disabled={isPending}
-      />
-    </AuthForm>
+        </CardContent>
+      </Card>
+    </div>
   );
-};
-
-export default SignUp;
+}

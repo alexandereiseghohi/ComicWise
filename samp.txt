@@ -89,4 +89,24 @@ Lastly After completing all Tasks, respond with "All tasks have been completed s
 Then create a list of your recommendations for this project and await further instructions at @recommendations-list.
 
 
-Read and understand @sample.txt, @recommendations-list.md, @samp.txt, @Prompts.prompt.txt, @*.txt, @*.md  then create an optimized Initial_Setup_Prompt.md   include prompts for completely setting up all root pages at src/app/(root)/,all  auth pages at src/app/(auth)/ ,all admin pages at src/app/admin/ for all   database tables ,bookmarks listing pages at src/app/(root)/bookmarks,user profile pages at src/app/(root)/profile, comic listing page  at src/app/(root)/comics,        comic details pages at src/app/(root)/comics/[slug]/, chapter details pages at src/app/(root)/comics/[slug]/[chapterNumber]/, for auth pages create a generic           form and any additional form components,actions with zod schemas and react hook forms, for admin pages create a generic form and any additional form   components,actions with zod schemas and react hook forms, for comic details pages create addtobookmark and removefrombookmark functionality, for chapters listing       pages create an image gallery use any third packages, Optimize the exists folder structure, create,update,delete any required file or folders, for refactoring          use, prefer AST-based codemods using `jscodeshift` or `ts-morph`, Optimize scripts to a complete command-line interface for managing all aspects of the ComicWise       platform, Provides unified access to development, database, testing, deployment, and maintenance operations, scaffold an optimized version of existing files all        recommended stores for state management using zustand at  src\stor    an a complete optimized setup of this project
+Read and understand @sample.txt, @recommendations-list.md, @samp.txt, @Prompts.prompt.txt, @*.txt, @*.md  then create or update  an optimized SetupPrompt.md using DRY and include all content,tasks,recommendations from @sample.txt, @recommendations-list.md, @samp.txt, @Prompts.prompt.txt, @*.txt, @*.md  as github copilot prompts and also include github copilot prompts for:
+ - completely setting up seeding system
+ - completely setting up all root pages at src/app/(root)/,
+ - completely setting up all  auth pages at src/app/(auth)/ ,
+ - completely setting up all admin pages at src/app/admin/ for all   database tables ,
+ - completely setting up all bookmarks listing pages at src/app/(root)/bookmarks,
+ - completely setting up all user profile pages at src/app/(root)/profile,
+ - completely setting up all comic listing page  at src/app/(root)/comics,
+ - completely setting up all comic details pages at src/app/(root)/comics/[slug]/,
+ - completely setting up all chapter details pages at src/app/(root)/comics/[slug]/[chapterNumber]/,
+ - for auth pages create a generic form and any additional form components,actions with zod schemas and react hook forms,
+ - for admin pages create a generic form and any additional form   components,actions with zod schemas and react hook forms,
+ - for comic details pages create addtobookmark and removefrombookmark functionality,
+ - for chapters listing       pages create an image gallery use any third packages,
+ - Optimize the exists folder structure,
+ - create,update,delete any required file or folders,
+ - for refactoring use, prefer AST-based codemods using `jscodeshift` or `ts-morph`,
+ - Optimize scripts to a complete command-line interface for managing all aspects of the ComicWise       platform, Provides unified access to development, database, testing, deployment, and maintenance operations,
+ - create scaffolds for an optimized version of all existing files
+ - Create and Implement all        recommended stores for state management using zustand at  src\stores
+ - Complete optimized setup of this project
