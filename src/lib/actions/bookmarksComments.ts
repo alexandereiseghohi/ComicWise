@@ -241,13 +241,24 @@ export async function createComment(
     });
 
     // Notify users who bookmarked this comic
-    if (chapterData?.comic?.bookmarks) {
-      for (const bookmark of chapterData.comic.bookmarks) {
-        if (bookmark.userId !== validated.userId && bookmark.user.email) {
+    // Type assertion needed because Drizzle relations aren't fully defined
+    const comicData = chapterData?.comic as
+      | {
+          title: string;
+          bookmarks?: Array<{
+            userId: string;
+            user: { email: string | null; name: string | null };
+          }>;
+        }
+      | undefined;
+
+    if (comicData?.bookmarks) {
+      for (const bookmarkItem of comicData.bookmarks) {
+        if (bookmarkItem.userId !== validated.userId && bookmarkItem.user.email) {
           await sendCommentNotificationEmail(
-            bookmark.user.email,
-            bookmark.user.name || "User",
-            chapterData.comic.title,
+            bookmarkItem.user.email,
+            bookmarkItem.user.name || "User",
+            comicData.title,
             chapterData.title
           ).catch((err) => console.error("Failed to send notification:", err));
         }

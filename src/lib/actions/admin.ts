@@ -1,7 +1,7 @@
 "use server";
 
 import * as mutations from "@/database/mutations";
-import { ActionResult } from "@/dto";
+import type { ActionResult } from "@/dto";
 import { error, success } from "@/lib/actions/utils";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
@@ -53,7 +53,7 @@ export async function updateUserRoleAsAdmin(
     }
 
     // Update user role
-    await mutations.updateUserRole(userId, role);
+    await mutations.updateUser(userId, { role });
     revalidatePath("/admin/users");
 
     return success(void 0, `User role updated to ${role}`);

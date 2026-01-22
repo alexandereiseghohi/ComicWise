@@ -1,7 +1,8 @@
+import type { Comic } from "@/types/database";
 import { act, renderHook } from "@testing-library/react";
 import { useComicStore } from "../comicStore";
 
-const mockComics = [
+const mockComics: Comic[] = [
   {
     id: 1,
     title: "Test Comic 1",
@@ -9,11 +10,17 @@ const mockComics = [
     description: "A test comic description",
     coverImage: "/test1.jpg",
     status: "Ongoing",
+    publicationDate: new Date("2023-01-01"),
     rating: "4.5",
     views: 1000,
+    url: null,
+    serialization: null,
+    authorId: null,
+    artistId: null,
     typeId: 1,
     createdAt: new Date("2024-01-01"),
     updatedAt: new Date("2024-01-10"),
+    searchVector: null,
   },
   {
     id: 2,
@@ -22,11 +29,17 @@ const mockComics = [
     description: "Another test comic",
     coverImage: "/test2.jpg",
     status: "Completed",
+    publicationDate: new Date("2023-02-01"),
     rating: "4.0",
     views: 500,
+    url: null,
+    serialization: null,
+    authorId: null,
+    artistId: null,
     typeId: 2,
     createdAt: new Date("2024-01-02"),
     updatedAt: new Date("2024-01-09"),
+    searchVector: null,
   },
 ];
 
@@ -71,7 +84,7 @@ describe("comicStore", () => {
     });
 
     expect(result.current.filteredComics.length).toBe(1);
-    expect(result.current.filteredComics[0].title).toBe("Another Comic");
+    expect(result.current.filteredComics[0]!.title).toBe("Another Comic");
   });
 
   it("should filter comics by type", () => {
@@ -86,7 +99,7 @@ describe("comicStore", () => {
     });
 
     expect(result.current.filteredComics.length).toBe(1);
-    expect(result.current.filteredComics[0].typeId).toBe(1);
+    expect(result.current.filteredComics[0]!.typeId).toBe(1);
   });
 
   it("should filter comics by status", () => {
@@ -101,7 +114,7 @@ describe("comicStore", () => {
     });
 
     expect(result.current.filteredComics.length).toBe(1);
-    expect(result.current.filteredComics[0].status).toBe("Completed");
+    expect(result.current.filteredComics[0]!.status).toBe("Completed");
   });
 
   it("should filter comics by minimum rating", () => {
@@ -116,7 +129,7 @@ describe("comicStore", () => {
     });
 
     expect(result.current.filteredComics.length).toBe(1);
-    expect(result.current.filteredComics[0].rating).toBe("4.5");
+    expect(result.current.filteredComics[0]!.rating).toBe("4.5");
   });
 
   it("should sort comics by title ascending", () => {
@@ -130,8 +143,8 @@ describe("comicStore", () => {
       result.current.setSorting("title", "asc");
     });
 
-    expect(result.current.filteredComics[0].title).toBe("Another Comic");
-    expect(result.current.filteredComics[1].title).toBe("Test Comic 1");
+    expect(result.current.filteredComics[0]!.title).toBe("Another Comic");
+    expect(result.current.filteredComics[1]!.title).toBe("Test Comic 1");
   });
 
   it("should sort comics by rating descending", () => {
@@ -145,8 +158,8 @@ describe("comicStore", () => {
       result.current.setSorting("rating", "desc");
     });
 
-    expect(result.current.filteredComics[0].rating).toBe("4.5");
-    expect(result.current.filteredComics[1].rating).toBe("4.0");
+    expect(result.current.filteredComics[0]!.rating).toBe("4.5");
+    expect(result.current.filteredComics[1]!.rating).toBe("4.0");
   });
 
   it("should sort comics by views", () => {
@@ -160,8 +173,8 @@ describe("comicStore", () => {
       result.current.setSorting("views", "desc");
     });
 
-    expect(result.current.filteredComics[0].views).toBe(1000);
-    expect(result.current.filteredComics[1].views).toBe(500);
+    expect(result.current.filteredComics[0]!.views).toBe(1000);
+    expect(result.current.filteredComics[1]!.views).toBe(500);
   });
 
   it("should track recently viewed comics", () => {
@@ -216,7 +229,7 @@ describe("comicStore", () => {
     const manyComics = Array.from({ length: 50 }, (_, i) => ({
       ...mockComics[0],
       id: i + 1,
-    }));
+    })) as Comic[];
 
     act(() => {
       result.current.setComics(manyComics);
@@ -252,6 +265,6 @@ describe("comicStore", () => {
     });
 
     expect(result.current.filteredComics.length).toBe(1);
-    expect(result.current.filteredComics[0].status).toBe("Ongoing");
+    expect(result.current.filteredComics[0]!.status).toBe("Ongoing");
   });
 });

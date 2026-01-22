@@ -232,3 +232,32 @@ export async function getImageStats() {
   const h = await getImageHandler();
   return h.getStats();
 }
+
+/**
+ * Initialize the image handler
+ */
+export async function initializeImageHandler(): Promise<void> {
+  await getImageHandler();
+}
+
+/**
+ * Download a single image - wrapper for seeder compatibility
+ */
+export async function downloadImage(
+  imageUrl: string,
+  type: "comic" | "user" = "comic"
+): Promise<string> {
+  const h = await getImageHandler();
+  return h.processImage(imageUrl, type);
+}
+
+/**
+ * Download multiple images - wrapper for seeder compatibility
+ */
+export async function downloadImages(
+  imageUrls: string[],
+  type: "comic" | "user" = "comic"
+): Promise<string[]> {
+  const h = await getImageHandler();
+  return h.processImages(imageUrls, type);
+}

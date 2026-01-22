@@ -3,7 +3,7 @@
 // Use dynamic imports to avoid bundling all providers into client bundles
 // ═══════════════════════════════════════════════════════════════════════════
 
-import type { UploadProvider } from "@/services/upload/types";
+import type { UploadProvider, UploadProviderType } from "@/services/upload/types";
 
 /**
  * Get the upload provider instance based on environment configuration
@@ -46,20 +46,22 @@ export async function getUploadProvider(): Promise<UploadProvider> {
 }
 
 /**
- * Get the currently configured provider type
- * returns The provider type from environment
+ * Get the currently configured provider type (async - requires env)
+ * @returns The provider type from environment
  */
-export function getConfiguredProvider(): UploadProviderType {
+export async function getConfiguredProvider(): Promise<UploadProviderType> {
+  const { env } = await import("appConfig");
   return (env.UPLOAD_PROVIDER || "local") as UploadProviderType;
 }
 
 /**
- * Check if a provider is available
- * param providerType - Provider to check
- * returns true if provider credentials are configured
- * @param providerType
+ * Check if a provider is available (async - requires env)
+ * @param providerType - Provider to check
+ * @returns true if provider credentials are configured
  */
-export function isProviderAvailable(providerType: UploadProviderType): boolean {
+export async function isProviderAvailable(providerType: UploadProviderType): Promise<boolean> {
+  const { env } = await import("appConfig");
+
   switch (providerType) {
     case "cloudinary":
       return !!(env.CLOUDINARY_CLOUD_NAME && env.CLOUDINARY_API_KEY && env.CLOUDINARY_API_SECRET);
@@ -76,10 +78,18 @@ export function isProviderAvailable(providerType: UploadProviderType): boolean {
 }
 
 /**
- * Get all available providers
- * returns Array of available provider types
+ * Get all available providers (async - requires env)
+ * @returns Array of available provider types
  */
-export function getAvailableProviders(): UploadProviderType[] {
+export async function getAvailableProviders(): Promise<UploadProviderType[]> {
   const allProviders: UploadProviderType[] = ["local", "imagekit", "cloudinary"];
-  return allProviders.filter(isProviderAvailable);
+  const available: UploadProviderType[] = [];
+
+  for (const provider of allProviders) {
+    if (await isProviderAvailable(provider)) {
+      available.push(provider);
+    }
+  }
+
+  return available;
 }

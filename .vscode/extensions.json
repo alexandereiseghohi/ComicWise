@@ -32,7 +32,7 @@
 
     "github.copilot",
     "github.copilot-chat",
-    "GitHub.copilot-mcp",
+
     "visualstudioexptteam.vscodeintellicode",
 
     "usernamehw.errorlens",
@@ -63,7 +63,6 @@
 
     "mikestead.dotenv",
     "tamasfe.even-better-toml",
-    "trond-snokke.local-env-switcher",
 
     "humao.rest-client",
     "rangav.vscode-thunder-client",

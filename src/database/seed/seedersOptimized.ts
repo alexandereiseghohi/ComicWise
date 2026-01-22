@@ -29,7 +29,7 @@ import type {
   ChapterSeedData,
   ComicSeedData,
   UserSeedData,
-} from "@/database/seed/schemas-optimized";
+} from "@/database/seed/schemasOptimized";
 import { eq } from "drizzle-orm";
 
 // ─────────────────────────────────────────────────────────────────────────

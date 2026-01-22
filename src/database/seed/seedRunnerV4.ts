@@ -30,7 +30,7 @@
  *   pnpm db:seed:chapters           - Chapters only
  */
 
-import { env } from "@/lib/env";
+import { db } from "@/database/db";
 import {
   artist,
   author,
@@ -42,8 +42,10 @@ import {
   type as comicType,
   genre,
   user,
-} from "database/schema";
-import { db } from "db";
+} from "@/database/schema";
+import { hashPassword as hashPasswordHelper } from "@/database/seed/helpers/passwordHasher";
+import { SeedLogger } from "@/database/seed/LoggerOptimized";
+import { env } from "@/lib/env";
 import { eq } from "drizzle-orm";
 import * as fs from "fs/promises";
 import * as path from "path";
@@ -59,8 +61,8 @@ const UserSeedSchema = z.object({
   name: z.string(),
   role: z
     .enum(["user", "admin", "moderator", "USER", "ADMIN", "MODERATOR"])
-    .transform((val) => val.toUpperCase() as "USER" | "ADMIN" | "MODERATOR")
-    .default("USER"),
+    .transform((val) => val.toLowerCase() as "user" | "admin" | "moderator")
+    .default("user"),
   image: z.string().optional(),
   emailVerified: z
     .union([z.string(), z.date()])
@@ -80,7 +82,11 @@ const ComicSeedSchema = z.object({
   title: z.string(),
   slug: z.string(),
   description: z.string(),
-  status: z.string(),
+  status: z
+    .string()
+    .transform(
+      (val) => val as "Ongoing" | "Hiatus" | "Completed" | "Dropped" | "Season End" | "Coming Soon"
+    ),
   rating: z.union([z.string(), z.number()]).optional(),
   url: z.string().optional(),
   serialization: z.string().optional(),
@@ -662,7 +668,8 @@ async function seedChapters() {
 
 async function main() {
   // Initialize logger first
-  logger = createLogger(ARGS.VERBOSE);
+  logger = new SeedLogger();
+  logger.setVerbose(ARGS.VERBOSE);
 
   const totalStart = Date.now();
 

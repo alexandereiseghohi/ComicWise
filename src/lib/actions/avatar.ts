@@ -56,7 +56,7 @@ export async function uploadAvatar(formData: FormData): Promise<ActionResult<{ u
     const buffer = Buffer.from(bytes);
 
     // Get upload provider
-    const { getUploadProvider } = await import("@/services/upload");
+    const { getUploadProvider } = await import("@/services/upload/factory");
     const provider = await getUploadProvider();
 
     // Generate filename

@@ -107,6 +107,7 @@ const nextConfig: NextConfig = {
   // Security headers
   poweredByHeader: false,
   compress: true,
+  cacheComponents: true,
 
   // Security headers
   headers: async () => [

@@ -1,0 +1,115 @@
+
+> comicwise@0.1.0 type-check C:\Users\Alexa\Desktop\SandBox\comicwise
+> tsc --noEmit
+
+src/__tests__/components/profile/EditProfileForm.test.tsx(95,22): error TS2532: Object is possibly 'undefined'.
+src/__tests__/integration/stores.test.tsx(152,14): error TS2532: Object is possibly 'undefined'.
+src/__tests__/integration/stores.test.tsx(168,14): error TS2532: Object is possibly 'undefined'.
+src/__tests__/integration/stores.test.tsx(183,14): error TS2532: Object is possibly 'undefined'.
+src/__tests__/lib/actions/bookmark.test.ts(47,19): error TS2345: Argument of type '{ success: boolean; error: string; } | { success: boolean; error?: undefined; }' is not assignable to parameter of type 'ActionResult<unknown>'.
+  Type '{ success: boolean; error?: undefined; }' is not assignable to type 'ActionResult<unknown>'.
+    Type '{ success: boolean; error?: undefined; }' is not assignable to type 'ActionError'.
+      Types of property 'success' are incompatible.
+        Type 'boolean' is not assignable to type 'false'.
+src/__tests__/lib/actions/bookmark.test.ts(58,20): error TS2345: Argument of type '{ success: boolean; error: string; } | { success: boolean; error?: undefined; }' is not assignable to parameter of type 'ActionResult<unknown>'.
+  Type '{ success: boolean; error?: undefined; }' is not assignable to type 'ActionResult<unknown>'.
+    Type '{ success: boolean; error?: undefined; }' is not assignable to type 'ActionError'.
+      Types of property 'success' are incompatible.
+        Type 'boolean' is not assignable to type 'false'.
+src/__tests__/lib/actions/bookmark.test.ts(79,52): error TS2345: Argument of type '"InvalidStatus"' is not assignable to parameter of type 'BookmarkStatus'.
+src/__tests__/lib/actions/users.test.ts(55,39): error TS2345: Argument of type 'null' is not assignable to parameter of type 'NextMiddleware'.
+src/__tests__/lib/actions/users.test.ts(60,7): error TS2322: Type 'null' is not assignable to type 'string | undefined'.
+src/__tests__/lib/actions/users.test.ts(65,19): error TS2339: Property 'error' does not exist on type 'ActionResult<unknown>'.
+  Property 'error' does not exist on type 'ActionSuccess<unknown>'.
+src/__tests__/lib/actions/users.test.ts(76,7): error TS2322: Type 'null' is not assignable to type 'string | undefined'.
+src/__tests__/lib/actions/users.test.ts(81,19): error TS2339: Property 'error' does not exist on type 'ActionResult<unknown>'.
+  Property 'error' does not exist on type 'ActionSuccess<unknown>'.
+src/__tests__/lib/actions/users.test.ts(94,7): error TS2322: Type 'null' is not assignable to type 'string | undefined'.
+src/__tests__/lib/actions/users.test.ts(114,7): error TS2353: Object literal may only specify known properties, and 'darkMode' does not exist in type '{ emailNotifications?: boolean | undefined; newChapterAlerts?: boolean | undefined; commentReplies?: boolean | undefined; profileVisibility?: boolean | undefined; readingHistoryVisibility?: boolean | undefined; }'.
+src/__tests__/lib/actions/users.test.ts(121,39): error TS2345: Argument of type 'null' is not assignable to parameter of type 'NextMiddleware'.
+src/__tests__/lib/actions/users.test.ts(125,7): error TS2353: Object literal may only specify known properties, and 'darkMode' does not exist in type '{ emailNotifications?: boolean | undefined; newChapterAlerts?: boolean | undefined; commentReplies?: boolean | undefined; profileVisibility?: boolean | undefined; readingHistoryVisibility?: boolean | undefined; }'.
+src/__tests__/lib/actions/users.test.ts(129,19): error TS2339: Property 'error' does not exist on type 'ActionResult<unknown>'.
+  Property 'error' does not exist on type 'ActionSuccess<unknown>'.
+src/__tests__/lib/actions/users.test.ts(149,39): error TS2345: Argument of type 'null' is not assignable to parameter of type 'NextMiddleware'.
+src/__tests__/lib/actions/users.test.ts(154,19): error TS2339: Property 'error' does not exist on type 'ActionResult<unknown>'.
+  Property 'error' does not exist on type 'ActionSuccess<unknown>'.
+src/database/queries/passwordResetToken.ts(9,75): error TS2551: Property 'expiresAt' does not exist on type 'PgTableWithColumns<{ name: "passwordResetToken"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "passwordResetToken"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; ... 7 more ...; generated: undefined; }, {}, {}>; email: PgColumn<...>; token: PgColum...'. Did you mean 'expires'?
+src/database/seed/helpers/imageDeduplicator.ts(87,22): error TS2532: Object is possibly 'undefined'.
+src/database/seed/helpers/imageDeduplicator.ts(90,44): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string | URL'.
+  Type 'undefined' is not assignable to type 'string | URL'.
+src/database/seed/helpers/index.ts(14,1): error TS2308: Module "./passwordHasher" has already exported a member named 'hashPassword'. Consider explicitly re-exporting to resolve the ambiguity.
+src/database/seed/helpers/seedLogger.ts(326,7): error TS2532: Object is possibly 'undefined'.
+src/database/seed/helpers/validateAndInsert.ts(90,13): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/database/seed/helpers/validateAndInsert.ts(90,29): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/database/seed/run.ts(219,52): error TS2339: Property 'sessionCached' does not exist on type 'Promise<{ cacheSize: number; total: number; downloaded: number; cached: number; failed: number; skipped: number; }>'.
+src/database/seed/run.ts(220,56): error TS2339: Property 'fileSystemCached' does not exist on type 'Promise<{ cacheSize: number; total: number; downloaded: number; cached: number; failed: number; skipped: number; }>'.
+src/database/seed/run.ts(221,57): error TS2339: Property 'totalUnique' does not exist on type 'Promise<{ cacheSize: number; total: number; downloaded: number; cached: number; failed: number; skipped: number; }>'.
+src/database/seed/seeders/seedChaptersOptimized.ts(48,43): error TS2554: Expected 0 arguments, but got 1.
+src/database/seed/seeders/seedChaptersOptimized.ts(221,7): error TS2554: Expected 1-2 arguments, but got 3.
+src/database/seed/seeders/seedChaptersOptimized.ts(230,31): error TS2339: Property 'success' does not exist on type 'string'.
+src/database/seed/seeders/seedChaptersOptimized.ts(230,49): error TS2339: Property 'local' does not exist on type 'string'.
+src/database/seed/seeders/seedChaptersOptimized.ts(230,64): error TS2339: Property 'local' does not exist on type 'string'.
+src/database/seed/seeders/seedChaptersOptimized.ts(243,58): error TS2339: Property 'success' does not exist on type 'string'.
+src/database/seed/seeders/seedComicsOptimized.ts(58,41): error TS2554: Expected 0 arguments, but got 1.
+src/database/seed/seeders/seedComicsOptimized.ts(251,62): error TS2345: Argument of type '"comics/covers"' is not assignable to parameter of type '"user" | "comic" | undefined'.
+src/database/seed/seeders/seedComicsOptimized.ts(252,23): error TS2339: Property 'success' does not exist on type 'string'.
+src/database/seed/seeders/seedComicsOptimized.ts(252,46): error TS2339: Property 'local' does not exist on type 'string'.
+src/database/seed/seeders/seedComicsOptimized.ts(253,37): error TS2339: Property 'local' does not exist on type 'string'.
+src/database/seed/seeders/seedComicsOptimized.ts(375,56): error TS2345: Argument of type '3' is not assignable to parameter of type '"user" | "comic" | undefined'.
+src/database/seed/seeders/seedComicsOptimized.ts(383,18): error TS2339: Property 'success' does not exist on type 'string'.
+src/database/seed/seeders/seedComicsOptimized.ts(383,36): error TS2339: Property 'local' does not exist on type 'string'.
+src/database/seed/seeders/seedComicsOptimized.ts(388,30): error TS2339: Property 'local' does not exist on type 'string'.
+src/database/seed/seeders/seedUsersOptimized.ts(46,40): error TS2554: Expected 0 arguments, but got 1.
+src/database/seed/seeders/seedUsersOptimized.ts(119,59): error TS2345: Argument of type '"avatars"' is not assignable to parameter of type '"user" | "comic" | undefined'.
+src/database/seed/seeders/seedUsersOptimized.ts(120,23): error TS2339: Property 'success' does not exist on type 'string'.
+src/database/seed/seeders/seedUsersOptimized.ts(120,46): error TS2339: Property 'local' does not exist on type 'string'.
+src/database/seed/seeders/seedUsersOptimized.ts(121,33): error TS2339: Property 'local' does not exist on type 'string'.
+src/database/seed/seeders/universalSeeder.ts(330,22): error TS4111: Property 'coverImage' comes from an index signature, so it must be accessed with ['coverImage'].
+src/database/seed/seeders/universalSeeder.ts(330,56): error TS4111: Property 'coverImage' comes from an index signature, so it must be accessed with ['coverImage'].
+src/database/seed/seeders/universalSeeder.ts(331,22): error TS4111: Property 'images' comes from an index signature, so it must be accessed with ['images'].
+src/database/seed/seeders/universalSeeder.ts(331,64): error TS4111: Property 'images' comes from an index signature, so it must be accessed with ['images'].
+src/database/seed/seeders/universalSeeder.ts(332,22): error TS4111: Property 'image_urls' comes from an index signature, so it must be accessed with ['image_urls'].
+src/database/seed/seeders/universalSeeder.ts(332,68): error TS4111: Property 'image_urls' comes from an index signature, so it must be accessed with ['image_urls'].
+src/database/seed/seeders/universalSeeder.ts(344,36): error TS4111: Property 'images' comes from an index signature, so it must be accessed with ['images'].
+src/database/seed/seeders/universalSeeder.ts(345,38): error TS4111: Property 'images' comes from an index signature, so it must be accessed with ['images'].
+src/database/seed/seeders/universalSeeder.ts(352,36): error TS4111: Property 'image_urls' comes from an index signature, so it must be accessed with ['image_urls'].
+src/database/seed/seeders/universalSeeder.ts(353,38): error TS4111: Property 'image_urls' comes from an index signature, so it must be accessed with ['image_urls'].
+src/database/seed/seeders/universalSeeder.ts(369,29): error TS4111: Property 'author' comes from an index signature, so it must be accessed with ['author'].
+src/database/seed/seeders/universalSeeder.ts(369,72): error TS4111: Property 'author' comes from an index signature, so it must be accessed with ['author'].
+src/database/seed/seeders/universalSeeder.ts(370,22): error TS4111: Property 'author' comes from an index signature, so it must be accessed with ['author'].
+src/database/seed/seeders/universalSeeder.ts(370,58): error TS4111: Property 'author' comes from an index signature, so it must be accessed with ['author'].
+src/database/seed/seeders/universalSeeder.ts(379,29): error TS4111: Property 'artist' comes from an index signature, so it must be accessed with ['artist'].
+src/database/seed/seeders/universalSeeder.ts(379,72): error TS4111: Property 'artist' comes from an index signature, so it must be accessed with ['artist'].
+src/database/seed/seeders/universalSeeder.ts(380,22): error TS4111: Property 'artist' comes from an index signature, so it must be accessed with ['artist'].
+src/database/seed/seeders/universalSeeder.ts(380,58): error TS4111: Property 'artist' comes from an index signature, so it must be accessed with ['artist'].
+src/database/seed/seeders/universalSeeder.ts(682,23): error TS4111: Property 'slug' comes from an index signature, so it must be accessed with ['slug'].
+src/database/seed/seeders/universalSeeder.ts(697,83): error TS4111: Property 'title' comes from an index signature, so it must be accessed with ['title'].
+src/database/seed/seeders/universalSeeder.ts(702,30): error TS4111: Property 'slug' comes from an index signature, so it must be accessed with ['slug'].
+src/database/seed/seeders/universalSeeder.ts(725,43): error TS4111: Property 'title' comes from an index signature, so it must be accessed with ['title'].
+src/database/seed/seeders/universalSeeder.ts(731,43): error TS4111: Property 'title' comes from an index signature, so it must be accessed with ['title'].
+src/database/seed/seeders/universalSeeder.ts(735,35): error TS4111: Property 'type' comes from an index signature, so it must be accessed with ['type'].
+src/database/seed/seeders/universalSeeder.ts(735,64): error TS4111: Property 'category' comes from an index signature, so it must be accessed with ['category'].
+src/database/seed/seeders/universalSeeder.ts(738,43): error TS4111: Property 'title' comes from an index signature, so it must be accessed with ['title'].
+src/database/seed/seeders/universalSeeder.ts(743,38): error TS4111: Property 'genres' comes from an index signature, so it must be accessed with ['genres'].
+src/database/seed/seeders/universalSeeder.ts(748,45): error TS4111: Property 'title' comes from an index signature, so it must be accessed with ['title'].
+src/database/seed/seeders/universalSeeder.ts(1240,45): error TS4111: Property 'totalProcessed' comes from an index signature, so it must be accessed with ['totalProcessed'].
+src/database/seed/seeders/universalSeeder.ts(1240,82): error TS4111: Property 'totalCreated' comes from an index signature, so it must be accessed with ['totalCreated'].
+src/database/seed/seeders/universalSeeder.ts(1240,115): error TS4111: Property 'totalUpdated' comes from an index signature, so it must be accessed with ['totalUpdated'].
+src/database/seed/seeders/universalSeeder.ts(1240,148): error TS4111: Property 'totalSkipped' comes from an index signature, so it must be accessed with ['totalSkipped'].
+src/database/seed/seeders/universalSeeder.ts(1240,181): error TS4111: Property 'totalErrors' comes from an index signature, so it must be accessed with ['totalErrors'].
+src/database/seed/seeders/universalSeeder.ts(1243,27): error TS4111: Property 'fileResults' comes from an index signature, so it must be accessed with ['fileResults'].
+src/database/seed/seeders/universalSeeder.ts(1245,56): error TS4111: Property 'fileResults' comes from an index signature, so it must be accessed with ['fileResults'].
+src/database/seed/utils/imageSeederHelper.ts(164,12): error TS4111: Property 'coverImage' comes from an index signature, so it must be accessed with ['coverImage'].
+src/database/seed/utils/imageSeederHelper.ts(164,38): error TS4111: Property 'coverImage' comes from an index signature, so it must be accessed with ['coverImage'].
+src/database/seed/utils/imageSeederHelper.ts(165,20): error TS4111: Property 'coverImage' comes from an index signature, so it must be accessed with ['coverImage'].
+src/database/seed/utils/imageSeederHelper.ts(168,12): error TS4111: Property 'image' comes from an index signature, so it must be accessed with ['image'].
+src/database/seed/utils/imageSeederHelper.ts(168,33): error TS4111: Property 'image' comes from an index signature, so it must be accessed with ['image'].
+src/database/seed/utils/imageSeederHelper.ts(169,20): error TS4111: Property 'image' comes from an index signature, so it must be accessed with ['image'].
+src/database/seed/utils/imageSeederHelper.ts(173,26): error TS4111: Property 'images' comes from an index signature, so it must be accessed with ['images'].
+src/database/seed/utils/imageSeederHelper.ts(174,28): error TS4111: Property 'images' comes from an index signature, so it must be accessed with ['images'].
+src/database/seed/utils/imageSeederHelper.ts(184,26): error TS4111: Property 'image_urls' comes from an index signature, so it must be accessed with ['image_urls'].
+src/database/seed/utils/imageSeederHelper.ts(185,28): error TS4111: Property 'image_urls' comes from an index signature, so it must be accessed with ['image_urls'].
+src/database/seed/utils/imageSeederHelper.ts(193,26): error TS4111: Property 'pages' comes from an index signature, so it must be accessed with ['pages'].
+src/database/seed/utils/imageSeederHelper.ts(194,29): error TS4111: Property 'pages' comes from an index signature, so it must be accessed with ['pages'].
+src/lib/actions/bookmarksComments.ts(262,13): error TS18048: 'chapterData' is possibly 'undefined'.
+ΓÇëELIFECYCLEΓÇë Command failed with exit code 1.

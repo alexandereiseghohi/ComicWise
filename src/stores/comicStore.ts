@@ -12,9 +12,11 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 
+import type { Comic } from "@/types/database";
+
 interface ComicState {
-  comics: unknown[];
-  filteredComics: unknown[];
+  comics: Comic[];
+  filteredComics: Comic[];
   filters: {
     search: string;
     genreIds: number[];
@@ -30,7 +32,7 @@ interface ComicState {
   recentlyViewed: number[];
 
   // Actions
-  setComics(comics: unknown[]): void;
+  setComics(comics: Comic[]): void;
   applyFilters(filters: Partial<ComicState["filters"]>): void;
   setSorting(sortBy: ComicState["sortBy"], sortOrder: ComicState["sortOrder"]): void;
   setPage(page: number): void;

@@ -65,6 +65,7 @@ describe("Rate Limiting Service", () => {
     it("creates standardized error response", () => {
       const result = {
         success: false,
+        allowed: false,
         limit: 10,
         remaining: 0,
         reset: Date.now() + 60000,
@@ -83,6 +84,7 @@ describe("Rate Limiting Service", () => {
     it("displays correct retry time in minutes", () => {
       const result = {
         success: false,
+        allowed: false,
         limit: 10,
         remaining: 0,
         reset: Date.now() + 120000, // 2 minutes
@@ -97,6 +99,7 @@ describe("Rate Limiting Service", () => {
     it("uses singular form for 1 minute", () => {
       const result = {
         success: false,
+        allowed: false,
         limit: 10,
         remaining: 0,
         reset: Date.now() + 30000, // Less than 1 minute, rounds to 1

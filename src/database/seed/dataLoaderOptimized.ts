@@ -14,13 +14,13 @@ import type {
   ComicSeedData,
   UserSeedData,
   ValidationResult,
-} from "@/database/seed/schemas-optimized";
+} from "@/database/seed/schemasOptimized";
 import {
   chapterSeedSchema,
   comicSeedSchema,
   userSeedSchema,
   validateArray,
-} from "@/database/seed/schemas-optimized";
+} from "@/database/seed/schemasOptimized";
 import fs from "fs/promises";
 import { glob } from "glob";
 import path from "path";

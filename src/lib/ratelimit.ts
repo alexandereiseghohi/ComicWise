@@ -8,10 +8,10 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
-// Initialize Redis client
+// Initialize Redis client using bracket notation for index signature access
 const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL!,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+  url: process.env["UPSTASH_REDIS_REST_URL"]!,
+  token: process.env["UPSTASH_REDIS_REST_TOKEN"]!,
 });
 
 /**
@@ -124,6 +124,8 @@ export const rateLimitConfigs = {
  */
 export type RateLimitResult = {
   success: boolean;
+  /** Alias for success - for backward compatibility */
+  allowed: boolean;
   limit: number;
   remaining: number;
   reset: number;
@@ -131,20 +133,87 @@ export type RateLimitResult = {
 };
 
 /**
- * Check rate limit for a specific identifier and limiter
+ * Options for simple rate limiting
+ */
+export type SimpleRateLimitOptions = {
+  limit?: number;
+  window?: string;
+};
+
+/**
+ * Default rate limit configuration
+ */
+const DEFAULT_RATE_LIMIT = 100;
+const DEFAULT_WINDOW = "1m";
+
+/**
+ * Cache for dynamically created rate limiters
+ */
+const dynamicLimiters = new Map<string, Ratelimit>();
+
+/**
+ * Get or create a rate limiter for dynamic rate limiting
+ */
+function getOrCreateLimiter(limit: number, window: string, identifier: string): Ratelimit {
+  const key = `${limit}:${window}`;
+
+  if (!dynamicLimiters.has(key)) {
+    dynamicLimiters.set(
+      key,
+      new Ratelimit({
+        redis,
+        limiter: Ratelimit.slidingWindow(
+          limit,
+          window as `${number}${"ms" | "s" | "m" | "h" | "d"}`
+        ),
+        analytics: true,
+        prefix: `ratelimit:dynamic:${key}`,
+      })
+    );
+  }
+
+  return dynamicLimiters.get(key)!;
+}
+
+/**
+ * Check rate limit - supports two calling patterns:
  *
- * @param limiter - The Ratelimit instance to use
- * @param identifier - Unique identifier (usually userId or IP address)
+ * 1. With Ratelimit instance (recommended for production):
+ *    `checkRateLimit(rateLimitConfigs.auth.signin, "user:123")`
+ *
+ * 2. With identifier and options (simple usage):
+ *    `checkRateLimit("user:123", { limit: 10, window: "1m" })`
+ *
+ * @param limiterOrIdentifier - Either a Ratelimit instance or an identifier string
+ * @param identifierOrOptions - Either an identifier string or options object
  * @returns Rate limit result with success status and metadata
  */
 export async function checkRateLimit(
-  limiter: Ratelimit,
-  identifier: string
+  limiterOrIdentifier: Ratelimit | string,
+  identifierOrOptions?: string | SimpleRateLimitOptions
 ): Promise<RateLimitResult> {
+  let limiter: Ratelimit;
+  let identifier: string;
+
+  // Determine which calling pattern is being used
+  if (typeof limiterOrIdentifier === "string") {
+    // Simple pattern: checkRateLimit("user:123", { limit: 10, window: "1m" })
+    identifier = limiterOrIdentifier;
+    const options = (identifierOrOptions as SimpleRateLimitOptions) || {};
+    const limit = options.limit ?? DEFAULT_RATE_LIMIT;
+    const window = options.window ?? DEFAULT_WINDOW;
+    limiter = getOrCreateLimiter(limit, window, identifier);
+  } else {
+    // Production pattern: checkRateLimit(rateLimitConfigs.auth.signin, "user:123")
+    limiter = limiterOrIdentifier;
+    identifier = identifierOrOptions as string;
+  }
+
   const result = await limiter.limit(identifier);
 
   return {
     success: result.success,
+    allowed: result.success, // Alias for backward compatibility
     limit: result.limit,
     remaining: result.remaining,
     reset: result.reset,

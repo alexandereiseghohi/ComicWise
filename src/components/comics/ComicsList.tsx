@@ -2,33 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import { useComics } from "@/hooks/useStores";
+import type { Comic, Genre, Type } from "@/types/database";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
 import { ComicCard } from "./ComicCard";
 import { ComicFilters } from "./ComicFilters";
-
-interface Comic {
-  id: number;
-  title: string;
-  slug: string;
-  description: string;
-  coverImage: string;
-  status: string;
-  rating: string | null;
-  views: number;
-  publicationDate: Date;
-}
-
-interface Type {
-  id: number;
-  name: string;
-}
-
-interface Genre {
-  id: number;
-  name: string;
-}
 
 interface ComicsListProps {
   comics: Comic[];

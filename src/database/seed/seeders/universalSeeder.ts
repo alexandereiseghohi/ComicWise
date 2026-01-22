@@ -326,10 +326,10 @@ export function normalizeComicData(comicData: Record<string, unknown>): Record<s
  * Reduces cognitive complexity by isolating image extraction logic
  * @param validatedComic
  */
-export function extractCoverImageUrl<T>(validatedComic: T): string | null {
-  if (validatedComic.coverImage) return validatedComic.coverImage;
-  if (validatedComic.images?.length > 0) return validatedComic.images[0]?.url;
-  if (validatedComic.image_urls?.length > 0) return validatedComic.image_urls[0];
+export function extractCoverImageUrl(validatedComic: Record<string, any>): string | null {
+  if (validatedComic["coverImage"]) return validatedComic["coverImage"];
+  if (validatedComic["images"]?.length > 0) return validatedComic["images"][0]?.url;
+  if (validatedComic["image_urls"]?.length > 0) return validatedComic["image_urls"][0];
   return null;
 }
 
@@ -338,19 +338,19 @@ export function extractCoverImageUrl<T>(validatedComic: T): string | null {
  * Reduces cognitive complexity by consolidating image URL collection
  * @param validatedComic
  */
-export function extractComicImageUrls<T>(validatedComic: T): string[] {
+export function extractComicImageUrls(validatedComic: Record<string, any>): string[] {
   const comicImageUrls: string[] = [];
 
-  if (Array.isArray(validatedComic.images)) {
-    for (const img of validatedComic.images) {
+  if (Array.isArray(validatedComic["images"])) {
+    for (const img of validatedComic["images"]) {
       if (img?.url && !comicImageUrls.includes(img.url)) {
         comicImageUrls.push(img.url);
       }
     }
   }
 
-  if (Array.isArray(validatedComic.image_urls)) {
-    for (const url of validatedComic.image_urls) {
+  if (Array.isArray(validatedComic["image_urls"])) {
+    for (const url of validatedComic["image_urls"]) {
       if (url && !comicImageUrls.includes(url)) {
         comicImageUrls.push(url);
       }
@@ -365,9 +365,9 @@ export function extractComicImageUrls<T>(validatedComic: T): string[] {
  * Reduces cognitive complexity by handling different author formats
  * @param validatedComic
  */
-export function extractAuthorName<T>(validatedComic: T): string {
-  if (typeof validatedComic.author === "string") return validatedComic.author;
-  if (validatedComic.author?.name) return validatedComic.author.name;
+export function extractAuthorName(validatedComic: Record<string, any>): string {
+  if (typeof validatedComic["author"] === "string") return validatedComic["author"];
+  if (validatedComic["author"]?.name) return validatedComic["author"].name;
   return "Unknown Author";
 }
 
@@ -375,9 +375,9 @@ export function extractAuthorName<T>(validatedComic: T): string {
  * Extract artist name from various data formats
  * @param validatedComic
  */
-export function extractArtistName<T>(validatedComic: T): string {
-  if (typeof validatedComic.artist === "string") return validatedComic.artist;
-  if (validatedComic.artist?.name) return validatedComic.artist.name;
+export function extractArtistName(validatedComic: Record<string, any>): string {
+  if (typeof validatedComic["artist"] === "string") return validatedComic["artist"];
+  if (validatedComic["artist"]?.name) return validatedComic["artist"].name;
   return "Unknown Artist";
 }
 
@@ -669,7 +669,7 @@ async function findOrCreateGenre(genreName: string): Promise<number> {
  * @param validatedComic - The validated comic data
  * @returns The uploaded cover image URL or the original URL
  */
-async function processCoverImage<T>(validatedComic: T): Promise<string | null> {
+async function processCoverImage(validatedComic: Record<string, any>): Promise<string | null> {
   const coverImageUrl = extractCoverImageUrl(validatedComic);
   if (!coverImageUrl) return null;
 
@@ -689,17 +689,17 @@ async function processCoverImage<T>(validatedComic: T): Promise<string | null> {
  * @param validatedComic - The validated comic data
  * @returns Array of processed image URLs
  */
-async function processComicImages<T>(validatedComic: T): Promise<string[]> {
+async function processComicImages(validatedComic: Record<string, any>): Promise<string[]> {
   const comicImageUrls = extractComicImageUrls(validatedComic);
   if (comicImageUrls.length === 0) return [];
 
   logger.info(
-    `   📸 Processing ${comicImageUrls.length} images for comic: ${validatedComic.title}`
+    `   📸 Processing ${comicImageUrls.length} images for comic: ${validatedComic["title"]}`
   );
 
   const uploadedImages = await downloadAndUploadImages(
     comicImageUrls,
-    `comics/${validatedComic.slug}`,
+    `comics/${validatedComic["slug"]}`,
     5
   );
 
@@ -714,7 +714,7 @@ async function processComicImages<T>(validatedComic: T): Promise<string[]> {
  * @param validatedComic - The validated comic data
  * @returns Object containing IDs for author, artist, type, and genres
  */
-async function getOrCreateComicEntities<T>(validatedComic: T): Promise<{
+async function getOrCreateComicEntities(validatedComic: Record<string, any>): Promise<{
   authorId: number;
   artistId: number;
   typeId: number;
@@ -722,30 +722,30 @@ async function getOrCreateComicEntities<T>(validatedComic: T): Promise<{
 } | null> {
   const authorId = await findOrCreateAuthor(extractAuthorName(validatedComic));
   if (!authorId) {
-    logger.error(`Comic '${validatedComic.title}': Author not found or could not be created.`);
+    logger.error(`Comic '${validatedComic["title"]}': Author not found or could not be created.`);
     return null;
   }
 
   const artistId = await findOrCreateArtist(extractArtistName(validatedComic));
   if (!artistId) {
-    logger.error(`Comic '${validatedComic.title}': Artist not found or could not be created.`);
+    logger.error(`Comic '${validatedComic["title"]}': Artist not found or could not be created.`);
     return null;
   }
 
-  const typeName = validatedComic.type?.name ?? validatedComic.category ?? "Unknown Type";
+  const typeName = validatedComic["type"]?.name ?? validatedComic["category"] ?? "Unknown Type";
   const typeId = await findOrCreateType(typeName);
   if (!typeId) {
-    logger.error(`Comic '${validatedComic.title}': Type not found or could not be created.`);
+    logger.error(`Comic '${validatedComic["title"]}': Type not found or could not be created.`);
     return null;
   }
 
   const genreIds: number[] = [];
-  for (const genre of validatedComic.genres ?? []) {
+  for (const genre of validatedComic["genres"] ?? []) {
     if (!genre) continue;
     const genreName = typeof genre === "string" ? genre : genre.name;
     const genreId = await findOrCreateGenre(genreName);
     if (!genreId) {
-      logger.error(`Comic '${validatedComic.title}': Genre not found or could not be created.`);
+      logger.error(`Comic '${validatedComic["title"]}': Genre not found or could not be created.`);
       continue;
     }
     genreIds.push(genreId);
@@ -1235,16 +1235,16 @@ async function processSingleChapterFile(jsonFile: string, results: any): Promise
  * Log chapters seeding results - Extracted to reduce complexity
  * @param results
  */
-function logChaptersSeedingResults<T>(results: T): void {
+function logChaptersSeedingResults(results: Record<string, any>): void {
   logger.success(
-    `✅ Chapters seeding complete: ${results.totalProcessed} processed, ${results.totalCreated} created, ${results.totalUpdated} updated, ${results.totalSkipped} skipped, ${results.totalErrors} errors`
+    `✅ Chapters seeding complete: ${results["totalProcessed"]} processed, ${results["totalCreated"]} created, ${results["totalUpdated"]} updated, ${results["totalSkipped"]} skipped, ${results["totalErrors"]} errors`
   );
 
-  if (Object.keys(results.fileResults).length > 0) {
+  if (Object.keys(results["fileResults"]).length > 0) {
     logger.info("\n📊 Detailed File Results:");
-    for (const [file, stats] of Object.entries(results.fileResults)) {
+    for (const [file, stats] of Object.entries(results["fileResults"])) {
       logger.info(
-        `   ${file}: ${(stats as any).processed} processed, ${(stats as any).created} created, ${(stats as any).updated} updated, ${(stats as any).skipped} skipped, ${(stats as any).errors} errors`
+        `   ${file}: ${(stats as any)["processed"]} processed, ${(stats as any)["created"]} created, ${(stats as any)["updated"]} updated, ${(stats as any)["skipped"]} skipped, ${(stats as any)["errors"]} errors`
       );
     }
   }

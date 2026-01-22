@@ -112,12 +112,12 @@ export async function requestPasswordReset(email: string): Promise<ActionResult<
 
     // Generate reset token
     const token = crypto.randomBytes(32).toString("hex");
-    const expiresAt = new Date(Date.now() + 3600000); // 1 hour
+    const expires = new Date(Date.now() + 3600000); // 1 hour
 
     await mutations.createPasswordResetToken({
       email,
       token,
-      expiresAt,
+      expires,
     });
 
     // Send reset email

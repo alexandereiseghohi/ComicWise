@@ -33,8 +33,8 @@ export async function registerWorkflow(formData: FormData): Promise<ActionRespon
           : 10,
       window:
         typeof appConfig.rateLimit.auth === "object" && appConfig.rateLimit.auth !== null
-          ? ((appConfig.rateLimit.auth as { window?: number }).window ?? 60)
-          : 60,
+          ? `${(appConfig.rateLimit.auth as { window?: number }).window ?? 60}s`
+          : "60s",
     });
     if (!rateLimit.allowed) {
       return error("Too many registration attempts. Please try again later.");
@@ -104,8 +104,8 @@ export async function forgotPasswordWorkflow(formData: FormData): Promise<Action
           : 10,
       window:
         typeof appConfig.rateLimit.email === "object" && appConfig.rateLimit.email !== null
-          ? ((appConfig.rateLimit.email as { window?: number }).window ?? 60)
-          : 60,
+          ? `${(appConfig.rateLimit.email as { window?: number }).window ?? 60}s`
+          : "60s",
     });
     if (!rateLimit.allowed) {
       return error("Too many reset attempts. Please try again later.");
@@ -232,8 +232,8 @@ export async function resendVerificationEmail(email: string): Promise<ActionResp
           : 10,
       window:
         typeof appConfig.rateLimit.email === "object" && appConfig.rateLimit.email !== null
-          ? ((appConfig.rateLimit.email as { window?: number }).window ?? 60)
-          : 60,
+          ? `${(appConfig.rateLimit.email as { window?: number }).window ?? 60}s`
+          : "60s",
     });
     if (!rateLimit.allowed) {
       return error("Too many requests. Please try again later.");

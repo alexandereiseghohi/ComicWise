@@ -3,8 +3,8 @@
 // ═══════════════════════════════════════════════════
 
 import { deleteComic, updateComic } from "@/database/mutations/comics";
-import { getComicById } from "@/database/queries/adminComics";
-import { comicIdSchema, updateComicSchema } from "@/lib/validations";
+import { getComicBySlug } from "@/database/queries/adminComics";
+import { comicIdSchema, comicSlugSchema, updateComicSchema } from "@/lib/validations";
 import { auth } from "auth";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
@@ -13,20 +13,23 @@ import { NextResponse } from "next/server";
 // GET - Get Comic by ID
 // ═══════════════════════════════════════════════════
 
-export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(
+  _request: NextRequest,
+  { params }: { params: Promise<{ slug: string }> }
+) {
   try {
-    const { id } = await params;
+    const { slug } = await params;
 
-    const validation = comicIdSchema.safeParse({ id: Number.parseInt(id) });
+    const validation = comicSlugSchema.safeParse({ slug });
 
     if (!validation.success) {
       return NextResponse.json(
-        { error: "Invalid comic ID", details: validation.error.issues },
+        { error: "Invalid comic slug", details: validation.error.issues },
         { status: 400 }
       );
     }
 
-    const comic = await getComicById(validation.data.id);
+    const comic = await getComicBySlug(validation.data.slug);
 
     if (!comic) {
       return NextResponse.json({ error: "Comic not found" }, { status: 404 });
@@ -52,7 +55,10 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
 // PATCH - Update Comic
 // ═══════════════════════════════════════════════════
 
-export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ slug: string }> }
+) {
   try {
     const session = await auth();
 
@@ -60,14 +66,14 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { id } = await params;
+    const { slug } = await params;
     const body = await request.json();
 
-    const idValidation = comicIdSchema.safeParse({ id: Number.parseInt(id) });
+    const slugValidation = comicIdSchema.safeParse({ id: slug });
 
-    if (!idValidation.success) {
+    if (!slugValidation.success) {
       return NextResponse.json(
-        { error: "Invalid comic ID", details: idValidation.error.issues },
+        { error: "Invalid comic ID", details: slugValidation.error.issues },
         { status: 400 }
       );
     }
@@ -81,7 +87,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       );
     }
 
-    const updatedComic = await updateComic(idValidation.data.id, {
+    const updatedComic = await updateComic(slugValidation.data.id, {
       title: validation.data.title,
       description: validation.data.description,
       coverImage: validation.data.coverImage,
@@ -120,7 +126,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
 export async function DELETE(
   _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     const session = await auth();
@@ -129,9 +135,9 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { id } = await params;
+    const { slug } = await params;
 
-    const validation = comicIdSchema.safeParse({ id: Number.parseInt(id) });
+    const validation = comicIdSchema.safeParse({ id: slug });
 
     if (!validation.success) {
       return NextResponse.json(

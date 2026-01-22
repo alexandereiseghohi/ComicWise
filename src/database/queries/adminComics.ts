@@ -60,6 +60,29 @@ export async function getComicById(id: number) {
 
   return result || null;
 }
+export async function getComicBySlug(slug: string) {
+  const [result] = await database
+    .select({
+      id: comic.id,
+      title: comic.title,
+      slug: comic.slug,
+      description: comic.description,
+      coverImage: comic.coverImage,
+      status: comic.status,
+      publicationDate: comic.publicationDate,
+      views: comic.views,
+      rating: comic.rating,
+      authorId: comic.authorId,
+      artistId: comic.artistId,
+      typeId: comic.typeId,
+      createdAt: comic.createdAt,
+      updatedAt: comic.updatedAt,
+    })
+    .from(comic)
+    .where(eq(comic.slug, slug));
+
+  return result || null;
+}
 
 export async function searchComics(query: string) {
   const searchTerm = `%${query}%`;
