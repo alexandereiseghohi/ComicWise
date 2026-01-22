@@ -1,4 +1,4 @@
-import { DataTable } from "@/components/admin/DataTable";
+import { DataTable } from "@/components/admin/data-table";
 import { Button } from "@/components/ui/button";
 import { db } from "@/database/db";
 import { chapter, comic } from "@/database/schema";

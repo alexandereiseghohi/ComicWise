@@ -1,22 +1,9 @@
-// Auto-generated barrel export for components
-// Ensures TypeScript can resolve components/* imports
+/**
+ * Layout Components - Re-exports
+ * @fileoverview Layout and shared UI components
+ */
 
-// Main components
-export { AppNavbar } from "./AppNavbar";
-export { BookmarkButton } from "./BookmarkButton";
-export { ChapterReader } from "./ChapterReader";
-export { default as ClientDate } from "./ClientDate";
-export { ComicCard } from "./ComicCard";
-export { default as CurrentYear } from "./CurrentYear";
-export { DataTable } from "./DataTable";
-export { Filters } from "./Filters";
-export { Pagination } from "./Pagination";
-
-// UI components (re-export)
-export * from "../ui";
-
-// Auth components
-export * from "../auth";
-
-// Admin components
-// Admin components have their own barrel export;
+export { DataTable } from "./data-table";
+export { Filters } from "./filters";
+export { Pagination } from "./pagination";
+// Add other layout component exports as needed

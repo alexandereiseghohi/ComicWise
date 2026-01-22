@@ -1,4 +1,4 @@
-import EditChapterForm from "@/components/admin/EditChapterForm";
+import EditChapterForm from "@/components/admin/edit-chapter-form";
 import { Suspense } from "react";
 
 export default function EditChapterPage({ params }: { params: { id: string } }) {

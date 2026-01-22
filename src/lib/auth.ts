@@ -1,7 +1,7 @@
 import appConfig from "@/appConfig";
 import { db as database } from "@/database/db";
 import { user } from "@/database/schema";
-import { authOptions } from "authConfig";
+import { authOptions } from "@/lib/auth-config";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import type { Session } from "next-auth";

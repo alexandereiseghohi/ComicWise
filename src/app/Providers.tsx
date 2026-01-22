@@ -1,6 +1,6 @@
 "use client";
 
-import { AuthSync } from "@/components/auth/AuthSync";
+import { AuthSync } from "@/components/auth/auth-sync";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";

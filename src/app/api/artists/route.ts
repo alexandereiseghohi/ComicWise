@@ -4,7 +4,7 @@
 
 import { createArtist } from "@/database/mutations/artists";
 import { getAllArtists } from "@/database/queries/artists";
-import { createGenericEntity, listGenericEntity, zodToValidationResult } from "@/lib/genericCrud";
+import { createGenericEntity, listGenericEntity, zodToValidationResult } from "@/lib/generic-crud";
 import { artistFilterSchema, createArtistSchema } from "@/lib/validations";
 import type { NextRequest } from "next/server";
 

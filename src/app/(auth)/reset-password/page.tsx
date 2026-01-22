@@ -1,10 +1,10 @@
 "use client";
 
-import { TextFormField } from "@/components/shared/FormFields";
-import { GenericForm } from "@/components/shared/GenericForm";
+import { TextFormField } from "@/components/shared/form-fields";
+import { GenericForm } from "@/components/shared/generic-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { resetPassword } from "@/lib/actions/auth";
-import { resetPasswordSchema } from "@/schemas/authSchemas";
+import { resetPasswordSchema } from "@/schemas/auth-schemas";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 

@@ -5,12 +5,12 @@
  * import { useAuthStore, useComicStore } from '@/stores';
  */
 
-export { useAuthStore } from "./authStore";
-export { useBookmarkStore } from "./bookmarkStore";
-export { useComicStore } from "./comicStore";
-export { useNotificationStore } from "./notificationStore";
-export { useReaderStore } from "./readerStore";
-export { useUIStore } from "./uiStore";
+export { useAuthStore } from "./auth-store";
+export { useBookmarkStore } from "./bookmark-store";
+export { useComicStore } from "./comic-store";
+export { useNotificationStore } from "./notification-store";
+export { useReaderStore } from "./reader-store";
+export { useUIStore } from "./ui-store";
 
 // Re-export types
-export type { Notification, NotificationType } from "./notificationStore";
+export type { Notification, NotificationType } from "./notification-store";

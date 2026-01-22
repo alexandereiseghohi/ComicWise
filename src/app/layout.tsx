@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 
-import { Providers } from "@/app/Providers";
-import { ToastContainer } from "@/components/ui/ToastContainer";
+import { Providers } from "@/app/providers";
+import { ToastContainer } from "@/components/ui/toast-container";
 import "@/styles/globals.css";
 import localFont from "next/font/local";
 // Primary Font: IBM Plex Sans (Variable)

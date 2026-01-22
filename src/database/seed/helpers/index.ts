@@ -4,12 +4,12 @@
  * ═══════════════════════════════════════════════════════════════════════════
  */
 
-export * from "./batchProcessor";
-export * from "./dataValidator";
-export * from "./imageDeduplicator";
-export * from "./imageDownloader";
-export * from "./passwordHasher";
-export * from "./progressTracker";
-export * from "./seedLogger";
-export * from "./validateAndInsert";
-export * from "./validationSchemas";
+export * from "./batch-processor";
+export * from "./data-validator";
+export * from "./image-deduplicator";
+export * from "./image-downloader";
+export * from "./password-hasher";
+export * from "./progress-tracker";
+export * from "./seed-logger";
+export * from "./validate-and-insert";
+export * from "./validation-schemas";

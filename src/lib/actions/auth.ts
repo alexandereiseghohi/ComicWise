@@ -11,7 +11,7 @@ import {
   sendVerificationEmail,
   sendWelcomeEmail,
 } from "@/lib/email";
-import { checkRateLimit } from "@/lib/rateLimit";
+import { checkRateLimit } from "@/lib/rate-limit";
 import type {
   ForgotPasswordInput,
   ResendVerificationEmailInput,

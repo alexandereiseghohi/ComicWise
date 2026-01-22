@@ -11,7 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { registerUser } from "@/dto/usersDto";
+import { registerUser } from "@/dto/users-dto";
 import { signUpSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";

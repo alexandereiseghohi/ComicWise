@@ -31,17 +31,19 @@ const report: ConversionReport = {
  * @param str
  */
 function toKebabCase(str: string): string {
-  return str
-    // Insert hyphen before uppercase letters
-    .replaceAll(/([a-z])([A-Z])/g, "$1-$2")
-    // Replace spaces and underscores with hyphens
-    .replaceAll(/[\s_]+/g, "-")
-    // Convert to lowercase
-    .toLowerCase()
-    // Remove multiple consecutive hyphens
-    .replaceAll(/-+/g, "-")
-    // Remove leading/trailing hyphens
-    .replaceAll(/^-+|-+$/g, "");
+  return (
+    str
+      // Insert hyphen before uppercase letters
+      .replaceAll(/([a-z])([A-Z])/g, "$1-$2")
+      // Replace spaces and underscores with hyphens
+      .replaceAll(/[\s_]+/g, "-")
+      // Convert to lowercase
+      .toLowerCase()
+      // Remove multiple consecutive hyphens
+      .replaceAll(/-+/g, "-")
+      // Remove leading/trailing hyphens
+      .replaceAll(/^-+|-+$/g, "")
+  );
 }
 
 /**
@@ -100,10 +102,12 @@ async function renameFiles(dir: string = "src", dryRun: boolean = true): Promise
           const nameWithoutExt = basename(entry.name, ext);
 
           // Skip files that are already in kebab-case or special files
-          if (isKebabCase(nameWithoutExt) ||
-              entry.name.startsWith(".") ||
-              entry.name === "README.md" ||
-              entry.name === "LICENSE") {
+          if (
+            isKebabCase(nameWithoutExt) ||
+            entry.name.startsWith(".") ||
+            entry.name === "README.md" ||
+            entry.name === "LICENSE"
+          ) {
             continue;
           }
 
@@ -172,7 +176,8 @@ function renameFunctions(project: Project, dryRun: boolean = true): void {
 
       // Convert to camelCase if it's PascalCase or has underscores
       if (isPascalCase || currentName.includes("_")) {
-        const newName = currentName.charAt(0).toLowerCase() + currentName.slice(1).replaceAll('_', "");
+        const newName =
+          currentName.charAt(0).toLowerCase() + currentName.slice(1).replaceAll("_", "");
 
         if (newName !== currentName) {
           if (!dryRun) {
@@ -197,7 +202,9 @@ function renameFunctions(project: Project, dryRun: boolean = true): void {
     }
   }
 
-  console.log(chalk.green(`\n✓ ${dryRun ? "Found" : "Renamed"} ${report.functionsRenamed} functions\n`));
+  console.log(
+    chalk.green(`\n✓ ${dryRun ? "Found" : "Renamed"} ${report.functionsRenamed} functions\n`)
+  );
 }
 
 /**
@@ -219,7 +226,10 @@ function updateImports(project: Project): void {
 
       // Check if this import needs updating
       for (const [oldPath, newPath] of report.renames.entries()) {
-        if (moduleSpecifier.includes(oldPath) || moduleSpecifier.includes(basename(oldPath, extname(oldPath)))) {
+        if (
+          moduleSpecifier.includes(oldPath) ||
+          moduleSpecifier.includes(basename(oldPath, extname(oldPath)))
+        ) {
           const newModuleSpecifier = moduleSpecifier.replace(
             basename(oldPath, extname(oldPath)),
             basename(newPath, extname(newPath))
@@ -252,7 +262,7 @@ function printReport() {
 
   if (report.errors.length > 0) {
     console.log(chalk.bold.red("Errors:\n"));
-    report.errors.forEach(err => console.log(chalk.red(`  - ${err}`)));
+    report.errors.forEach((err) => console.log(chalk.red(`  - ${err}`)));
     console.log();
   }
 
@@ -303,7 +313,9 @@ async function main() {
     printReport();
 
     if (dryRun) {
-      console.log(chalk.yellow("\n💡 Review the changes above and run with --no-dry-run to apply\n"));
+      console.log(
+        chalk.yellow("\n💡 Review the changes above and run with --no-dry-run to apply\n")
+      );
     }
   } catch (error) {
     console.error(chalk.red("\n✗ Error:"), error);

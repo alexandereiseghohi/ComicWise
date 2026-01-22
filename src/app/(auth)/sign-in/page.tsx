@@ -1,10 +1,10 @@
 "use client";
 
-import { CheckboxFormField, TextFormField } from "@/components/shared/FormFields";
-import { GenericForm } from "@/components/shared/GenericForm";
+import { CheckboxFormField, TextFormField } from "@/components/shared/form-fields";
+import { GenericForm } from "@/components/shared/generic-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { signInUser } from "@/lib/actions/auth";
-import { signInSchema } from "@/schemas/authSchemas";
+import { signInSchema } from "@/schemas/auth-schemas";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 

@@ -6,7 +6,7 @@ import {
   updateComic as updateComicMutation,
 } from "@/database/mutations";
 import { getAllComics } from "@/database/queries";
-import { getComicById as getComicByIdQuery } from "@/database/queries/adminComics";
+import { getComicById as getComicByIdQuery } from "@/database/queries/admin-comics";
 import type { createComicSchema, updateComicSchema } from "@/lib/validations";
 import type { ComicFilters } from "@/types";
 import { auth } from "auth";

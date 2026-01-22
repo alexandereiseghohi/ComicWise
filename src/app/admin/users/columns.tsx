@@ -9,14 +9,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/DropdownMenu";
+} from "@/components/ui/dropdown-menu";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal, Pencil, Trash } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 
 import type { user } from "@/database/schema";
-import { deleteUser } from "@/dto/usersDto";
+import { deleteUser } from "@/dto/users-dto";
 
 export type User = typeof user.$inferSelect;
 

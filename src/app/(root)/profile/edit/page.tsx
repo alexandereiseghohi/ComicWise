@@ -1,4 +1,4 @@
-import { EditProfileForm } from "@/components/profile/EditProfileForm";
+import { EditProfileForm } from "@/components/profile/edit-profile-form";
 import { auth } from "auth";
 import { redirect } from "next/navigation";
 

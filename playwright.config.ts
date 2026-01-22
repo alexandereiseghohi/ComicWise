@@ -1,19 +1,20 @@
-import appConfig from "@/appConfig";
 import { env } from "@/lib/env";
 import { defineConfig, devices } from "@playwright/test";
+
+const isCI = process.env["CI"] === "true";
 
 export default defineConfig({
   testDir: "./src/tests/e2e",
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!appConfig.ci,
+  forbidOnly: !!isCI,
   /* Retry on CI only */
-  retries: appConfig.ci ? 2 : 0,
+  retries: isCI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: appConfig.ci ? 1 : undefined,
+  workers: isCI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: appConfig.ci ? [["html"], ["list"], ["github"]] : [["html"], ["list"]],
+  reporter: isCI ? [["html"], ["list"], ["github"]] : [["html"], ["list"]],
   /* Maximum time one test can run */
   timeout: 30_000,
   expect: {
@@ -49,7 +50,7 @@ export default defineConfig({
   webServer: {
     command: "pnpm dev",
     url: "http://localhost:3000",
-    reuseExistingServer: !appConfig.ci,
+    reuseExistingServer: !isCI,
     timeout: 120_000,
   },
 });

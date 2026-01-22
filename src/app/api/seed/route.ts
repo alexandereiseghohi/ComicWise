@@ -109,9 +109,9 @@ export async function POST(request: Request) {
     }
 
     // Dynamic imports prevent seed utilities from bundling into client (using V4 seeders)
-    const { seedUsersV4 } = await import("@/database/seed/seeders/userSeederV4");
-    const { seedComicsV4 } = await import("@/database/seed/seeders/comicSeederV4");
-    const { seedChaptersV4 } = await import("@/database/seed/seeders/chapterSeederV4");
+    const { seedUsersV4 } = await import("@/database/seed/seeders/user-seeder-v4");
+    const { seedComicsV4 } = await import("@/database/seed/seeders/comic-seeder-v4");
+    const { seedChaptersV4 } = await import("@/database/seed/seeders/chapter-seeder-v4");
 
     switch (entities) {
       case "all":

@@ -6,7 +6,7 @@
 
 import appConfig from "@/appConfig";
 import emailService, { sendEmail } from "@/lib/email";
-import { checkRateLimit } from "@/lib/rateLimit";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { z } from "zod";
 
 // ═══════════════════════════════════════════════════

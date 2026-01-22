@@ -1,5 +1,5 @@
-import { ComicsListContent } from "@/components/admin/ComicsListContent";
-import { getComicsWithPagination, searchComics } from "@/database/queries/adminComics";
+import { ComicsListContent } from "@/components/admin/comics-list-content";
+import { getComicsWithPagination, searchComics } from "@/database/queries/admin-comics";
 import { Suspense } from "react";
 
 interface ComicsPageProps {

@@ -2,9 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
-import AuthBackgroundShape from "@/assets/svg/authBackgroundShape";
+import AuthBackgroundShape from "@/assets/svg/auth-background-shape";
 import Logo from "@/assets/svg/logo";
-import RegisterForm from "@/components/shadcn-studio/blocks/register-01/RegisterForm";
+import RegisterForm from "@/components/shadcn-studio/blocks/register-01/register-form";
 
 const Register = () => {
   return (

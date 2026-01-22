@@ -3,12 +3,12 @@
 // ═══════════════════════════════════════════════════
 
 import appConfig, { isDevelopment } from "@/appConfig";
-import AccountUpdatedEmail from "@/components/emails/AccountUpdatedEmail";
-import CommentNotificationEmail from "@/components/emails/CommentNotificationEmail";
-import NewChapterEmail from "@/components/emails/NewChapterEmail";
-import PasswordResetEmail from "@/components/emails/PasswordResetEmail";
-import VerificationEmail from "@/components/emails/VerificationEmail";
-import WelcomeEmail from "@/components/emails/WelcomeEmail";
+import AccountUpdatedEmail from "@/components/emails/account-updated-email";
+import CommentNotificationEmail from "@/components/emails/comment-notification-email";
+import NewChapterEmail from "@/components/emails/new-chapter-email";
+import PasswordResetEmail from "@/components/emails/password-reset-email";
+import VerificationEmail from "@/components/emails/verification-email";
+import WelcomeEmail from "@/components/emails/welcome-email";
 import { render } from "@react-email/components";
 import nodemailer from "nodemailer";
 

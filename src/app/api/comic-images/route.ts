@@ -7,8 +7,8 @@ import {
   createComicImages,
   deleteComicImage,
   updateComicImage,
-} from "@/database/mutations/comicImages";
-import { getComicImages } from "@/database/queries/comicImages";
+} from "@/database/mutations/comic-images";
+import { getComicImages } from "@/database/queries/comic-images";
 import {
   batchCreateComicImagesSchema,
   batchDeleteSchema,

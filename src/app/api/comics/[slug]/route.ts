@@ -3,7 +3,7 @@
 // ═══════════════════════════════════════════════════
 
 import { deleteComic, updateComic } from "@/database/mutations/comics";
-import { getComicBySlug } from "@/database/queries/adminComics";
+import { getComicBySlug } from "@/database/queries/admin-comics";
 import { comicIdSchema, comicSlugSchema, updateComicSchema } from "@/lib/validations";
 import { auth } from "auth";
 import type { NextRequest } from "next/server";

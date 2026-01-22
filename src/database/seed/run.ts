@@ -31,11 +31,11 @@ import {
   getImageStats,
   initializeImageHandler,
   resetImageHandler,
-} from "@/database/seed/imageHandlerOptimized";
+} from "@/database/seed/image-handler-optimized";
 import { logger } from "@/database/seed/logger";
-import { seedChaptersV4 } from "@/database/seed/seeders/chapterSeederV4";
-import { seedComicsV4 } from "@/database/seed/seeders/comicSeederV4";
-import { seedUsersV4 } from "@/database/seed/seeders/userSeederV4";
+import { seedChaptersV4 } from "@/database/seed/seeders/chapter-seeder-v4";
+import { seedComicsV4 } from "@/database/seed/seeders/comic-seeder-v4";
+import { seedUsersV4 } from "@/database/seed/seeders/user-seeder-v4";
 import { sql } from "drizzle-orm";
 
 // ═══════════════════════════════════════════════════════════════════════════

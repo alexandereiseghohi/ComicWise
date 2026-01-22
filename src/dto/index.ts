@@ -1,10 +1,14 @@
 /**
  * DTO Exports
- * Generated: 2026-01-18
+ * Generated: 2026-01-22
  */
 
-export * from "./actionResponseDto";
-export * from "./artistsDto";
+// Action Response DTOs
+export * from "./action-response-dto";
+export { type ActionResult, type SimpleActionResult } from "./action-response-dto";
+
+// Entity DTOs
+export * from "./artists-dto";
 export {
   type AuthResponseDto,
   type RequestPasswordResetDto,
@@ -13,15 +17,15 @@ export {
   type SignInDto,
   type SignUpDto,
   type VerifyEmailDto,
-} from "./authDto";
-export * from "./authorsDto";
-export * from "./bookmarkDto";
-export * from "./chaptersDto";
-export * from "./comicsDto";
-export * from "./commentDto";
-export * from "./genresDto";
-export * from "./genresTypesDto";
-export * from "./seedDto";
+} from "./auth-dto";
+export * from "./authors-dto";
+export * from "./bookmark-dto";
+export * from "./chapters-dto";
+export * from "./comics-dto";
+export * from "./comment-dto";
+export * from "./genres-dto";
+export * from "./genres-types-dto";
+export * from "./seed-dto";
 export {
   CreateChapterSchema,
   CreateComicSchema,
@@ -56,6 +60,6 @@ export {
   type ToggleBookmarkOutput,
   type UpdateProfileInput,
   type UpdateProfileOutput,
-} from "./serverActions.dto";
-export * from "./typesDto";
-export { type SafeUserDto, type UserListDto, type UserWithBookmarksDto } from "./usersDto";
+} from "./server-actions.dto";
+export * from "./types-dto";
+export { type SafeUserDto, type UserListDto, type UserWithBookmarksDto } from "./users-dto";

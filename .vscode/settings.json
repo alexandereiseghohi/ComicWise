@@ -11,6 +11,9 @@
     "editor.formatOnSave": true
   },
 
+  "[powershell]": {
+    "editor.defaultFormatter": "ms-vscode.powershell"
+  },
   "[scss]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
   "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
   "[typescriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
@@ -66,7 +69,7 @@
   "files.exclude": {
     "**/.git": true,
     "**/.next": true,
-    "**/node_modules": true,
+    "**/node_modules": false,
     "**/.turbo": true,
     "**/dist": true,
     "**/build": true

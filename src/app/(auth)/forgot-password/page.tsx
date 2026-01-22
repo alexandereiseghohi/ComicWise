@@ -1,10 +1,10 @@
 "use client";
 
-import { TextFormField } from "@/components/shared/FormFields";
-import { GenericForm } from "@/components/shared/GenericForm";
+import { TextFormField } from "@/components/shared/form-fields";
+import { GenericForm } from "@/components/shared/generic-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { forgotPassword } from "@/lib/actions/auth";
-import { forgotPasswordSchema } from "@/schemas/authSchemas";
+import { forgotPasswordSchema } from "@/schemas/auth-schemas";
 import Link from "next/link";
 
 export default function ForgotPasswordPage() {

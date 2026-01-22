@@ -134,7 +134,7 @@ function checkPackageUsage(project: Project, dependencies: DependencyInfo[]) {
       const packageName = getPackageNameFromImport(moduleSpecifier);
 
       if (packageName) {
-        const dep = dependencies.find(d => d.name === packageName);
+        const dep = dependencies.find((d) => d.name === packageName);
         if (dep) {
           dep.isUsed = true;
           dep.importedIn.push(filePath);
@@ -151,7 +151,7 @@ function checkPackageUsage(project: Project, dependencies: DependencyInfo[]) {
         const matchedImport = match?.[1];
         if (matchedImport) {
           const packageName = getPackageNameFromImport(matchedImport);
-          const dep = dependencies.find(d => d.name === packageName);
+          const dep = dependencies.find((d) => d.name === packageName);
           if (dep) {
             dep.isUsed = true;
             dep.importedIn.push(filePath);
@@ -162,7 +162,9 @@ function checkPackageUsage(project: Project, dependencies: DependencyInfo[]) {
     }
   }
 
-  console.log(chalk.green(`✓ Scanned ${sourceFiles.length} files, found ${totalImports} imports\n`));
+  console.log(
+    chalk.green(`✓ Scanned ${sourceFiles.length} files, found ${totalImports} imports\n`)
+  );
 }
 
 /**
@@ -198,8 +200,8 @@ async function generateRemovalScripts(unusedDeps: DependencyInfo[]) {
 
   console.log(chalk.blue("\n📝 Generating removal scripts...\n"));
 
-  const regularDeps = unusedDeps.filter(d => d.type === "dependencies");
-  const devDeps = unusedDeps.filter(d => d.type === "devDependencies");
+  const regularDeps = unusedDeps.filter((d) => d.type === "dependencies");
+  const devDeps = unusedDeps.filter((d) => d.type === "devDependencies");
 
   // PowerShell script
   const psScript = `# Remove Unused Dependencies - PowerShell Script
@@ -207,12 +209,20 @@ async function generateRemovalScripts(unusedDeps: DependencyInfo[]) {
 
 Write-Host "Removing unused dependencies..." -ForegroundColor Yellow
 
-${regularDeps.length > 0 ? `# Regular Dependencies (${regularDeps.length})
-pnpm remove ${regularDeps.map(d => d.name).join(" ")}
-` : ""}
-${devDeps.length > 0 ? `# Dev Dependencies (${devDeps.length})
-pnpm remove -D ${devDeps.map(d => d.name).join(" ")}
-` : ""}
+${
+  regularDeps.length > 0
+    ? `# Regular Dependencies (${regularDeps.length})
+pnpm remove ${regularDeps.map((d) => d.name).join(" ")}
+`
+    : ""
+}
+${
+  devDeps.length > 0
+    ? `# Dev Dependencies (${devDeps.length})
+pnpm remove -D ${devDeps.map((d) => d.name).join(" ")}
+`
+    : ""
+}
 Write-Host "Done!" -ForegroundColor Green
 `;
 
@@ -223,12 +233,20 @@ Write-Host "Done!" -ForegroundColor Green
 
 echo "Removing unused dependencies..."
 
-${regularDeps.length > 0 ? `# Regular Dependencies (${regularDeps.length})
-pnpm remove ${regularDeps.map(d => d.name).join(" ")}
-` : ""}
-${devDeps.length > 0 ? `# Dev Dependencies (${devDeps.length})
-pnpm remove -D ${devDeps.map(d => d.name).join(" ")}
-` : ""}
+${
+  regularDeps.length > 0
+    ? `# Regular Dependencies (${regularDeps.length})
+pnpm remove ${regularDeps.map((d) => d.name).join(" ")}
+`
+    : ""
+}
+${
+  devDeps.length > 0
+    ? `# Dev Dependencies (${devDeps.length})
+pnpm remove -D ${devDeps.map((d) => d.name).join(" ")}
+`
+    : ""
+}
 echo "Done!"
 `;
 
@@ -246,8 +264,8 @@ echo "Done!"
  * @param dependencies
  */
 function printReport(dependencies: DependencyInfo[]) {
-  const unused = dependencies.filter(d => !d.isUsed && !excludedPackages.has(d.name));
-  const used = dependencies.filter(d => d.isUsed || excludedPackages.has(d.name));
+  const unused = dependencies.filter((d) => !d.isUsed && !excludedPackages.has(d.name));
+  const used = dependencies.filter((d) => d.isUsed || excludedPackages.has(d.name));
 
   console.log(chalk.bold("\n" + "═".repeat(60)));
   console.log(chalk.bold.cyan("   DEPENDENCY USAGE REPORT"));
@@ -259,12 +277,12 @@ function printReport(dependencies: DependencyInfo[]) {
   if (unused.length > 0) {
     console.log(chalk.bold.yellow("Unused Dependencies:\n"));
 
-    const regularDeps = unused.filter(d => d.type === "dependencies");
-    const devDeps = unused.filter(d => d.type === "devDependencies");
+    const regularDeps = unused.filter((d) => d.type === "dependencies");
+    const devDeps = unused.filter((d) => d.type === "devDependencies");
 
     if (regularDeps.length > 0) {
       console.log(chalk.white("  Regular Dependencies:"));
-      regularDeps.forEach(d => {
+      regularDeps.forEach((d) => {
         console.log(chalk.gray(`    - ${d.name} (${d.version})`));
       });
       console.log();
@@ -272,7 +290,7 @@ function printReport(dependencies: DependencyInfo[]) {
 
     if (devDeps.length > 0) {
       console.log(chalk.white("  Dev Dependencies:"));
-      devDeps.forEach(d => {
+      devDeps.forEach((d) => {
         console.log(chalk.gray(`    - ${d.name} (${d.version})`));
       });
       console.log();

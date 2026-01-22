@@ -1,5 +1,5 @@
 import { createComicAction } from "@/app/actions/admin/comics";
-import { ComicForm } from "@/components/admin/ComicForm";
+import { ComicForm } from "@/components/admin/comic-form";
 import { auth } from "auth";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";

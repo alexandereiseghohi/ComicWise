@@ -1,4 +1,4 @@
-import EditTypeForm from "@/components/admin/EditTypeForm";
+import EditTypeForm from "@/components/admin/edit-type-form";
 import { Suspense } from "react";
 
 export default function Page({ params }: { params: { id: string } }) {

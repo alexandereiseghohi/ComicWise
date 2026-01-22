@@ -1,4 +1,4 @@
-import { ChangePasswordForm } from "@/components/profile/ChangePasswordForm";
+import { ChangePasswordForm } from "@/components/profile/change-password-form";
 import { auth } from "auth";
 import { redirect } from "next/navigation";
 

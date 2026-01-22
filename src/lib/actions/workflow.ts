@@ -5,7 +5,7 @@ import { db as database } from "@/database/db";
 import { passwordResetToken, user, verificationToken } from "@/database/schema";
 import { error } from "@/lib/actions/utils";
 import { sendPasswordResetEmail, sendVerificationEmail, sendWelcomeEmail } from "@/lib/nodemailer";
-import { checkRateLimit } from "@/lib/rateLimit";
+import { checkRateLimit } from "@/lib/rate-limit";
 import {
   forgotPasswordSchema,
   resetPasswordSchema,

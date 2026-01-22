@@ -1,6 +1,11 @@
-export * from "./authForm";
-export * from "./emailField";
-export { FormAlert, FormErrorAlert } from "./FormErrorAlert";
-export * from "./nameField";
-export { OAuthProviders } from "./OAuthProviders";
-export { PasswordStrengthMeter } from "./PasswordStrengthMeter";
+/**
+ * Auth Components - Re-exports
+ * @fileoverview Authentication form components and utilities
+ */
+
+export { AuthForm } from "./auth-form";
+export { AuthSync } from "./auth-sync";
+export { EmailField } from "./email-field";
+export { FormErrorAlert } from "./form-error-alert";
+export { NameField } from "./name-field";
+export { OAuthProviders } from "./oauth-providers";

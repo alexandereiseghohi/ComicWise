@@ -78,11 +78,11 @@ Tasks:
 31 - Create or Modify and Validate #file:scripts/*.ts to Delete all duplicate or unused zod schemas, all duplicate or unused components,functions, types, interfaces, classes, empty folders, blank files, all files that contains .backup.
 32 - Create or Modify and Validate a PowerShell,Bash scripts at #file:scripts/*.ts which  Uninstall all unused packages with pnpm.
 33 - modify tsconfig.json to ensure all project custom path alias paths are configured at tsconfig.json then modify scripts/replaceImportsEnhanced.ts to ensure all imports are exports are updated then run pnpm imports:check to verify and then run pnpm imports:optimize if not errors are found.
-33 - modify #file:eslint.config.ts to use Kebab case convention.
-34 - create  a script to Convert all filenames and functions to Kebab case and ensure all imports are exports are updated then run the created scripts.
-35 - modify  scripts/cleanup.ts to ensure all unused *.md, *.txt, *.logs are being deleted then run pnpm cleanup.
-36 - run pnpm validate:quick and get a lists of all errors and warnings then  fix the list of  all errors and warnings and then verify the list of  all errors and warnings are fixed.
-37 - run pnpm build only if pnpm validate:quick has no errors and fix all errors and warnings and then verify all errors and warnings are fixed.
+34 - then modify #file:eslint.config.ts to use either Kebab case or Pascal case convention.
+35 - create  a script to Convert all filenames and functions to Kebab case or Pascal case convention and ensure all project imports are exports are updated to the new naming convention then run the created scripts in dry-run and fix all errors then run the created scripts to implement changes only if no errors are found
+36 - modify  scripts/cleanup.ts to ensure all unused *.md, *.txt, *.logs are being deleted then run pnpm cleanup.
+37 - run pnpm validate:quick and get a lists of all errors and warnings then  fix the list of  all errors and warnings and then verify the list of  all errors and warnings are fixed.
+38 - run pnpm build only if pnpm validate:quick has no errors and fix all errors and warnings and then verify all errors and warnings are fixed.
 the list of  all errors
-38 - @workspace /explain  and implement all your suggestions, recommendations for this project.
+39 - @workspace /explain  and implement all your suggestions, recommendations for this project.
 Ensure all tasks and phases are completed

@@ -101,7 +101,7 @@ function backupFile(filePath: string): boolean {
 // TASK IMPLEMENTATIONS
 // ═══════════════════════════════════════════════════════════════════════════
 
-async function task1_Setup() {
+async function task1Setup() {
   section("Task 1: Project Setup & Dependencies");
   const startTime = Date.now();
 
@@ -125,7 +125,7 @@ async function task1_Setup() {
   }
 }
 
-async function task2_MigrateSchemas() {
+async function task2MigrateSchemas() {
   section("Task 2: Database Migrations");
   const startTime = Date.now();
 
@@ -148,7 +148,7 @@ async function task2_MigrateSchemas() {
   }
 }
 
-async function task3_RunSeed() {
+async function task3RunSeed() {
   section("Task 3: Database Seeding");
   const startTime = Date.now();
 
@@ -173,7 +173,7 @@ async function task3_RunSeed() {
   }
 }
 
-async function task10_FixLinting() {
+async function task10FixLinting() {
   section("Task 10: Fix TypeScript & Linting Errors");
   const startTime = Date.now();
 
@@ -204,7 +204,7 @@ async function task10_FixLinting() {
   }
 }
 
-async function task11_ProjectCleanup() {
+async function task11ProjectCleanup() {
   section("Task 11: Project Cleanup");
   const startTime = Date.now();
 
@@ -230,7 +230,7 @@ async function task11_ProjectCleanup() {
   }
 }
 
-async function task14_ValidationChecks() {
+async function task14ValidationChecks() {
   section("Task 14: Comprehensive Validation");
   const startTime = Date.now();
 
@@ -282,12 +282,12 @@ async function main() {
   const overallStartTime = Date.now();
 
   // Execute tasks in sequence
-  await task1_Setup();
-  await task2_MigrateSchemas();
-  await task3_RunSeed();
-  await task10_FixLinting();
-  await task11_ProjectCleanup();
-  await task14_ValidationChecks();
+  await task1Setup();
+  await task2MigrateSchemas();
+  await task3RunSeed();
+  await task10FixLinting();
+  await task11ProjectCleanup();
+  await task14ValidationChecks();
 
   // ═══════════════════════════════════════════════════════════════════════════
   // FINAL REPORT

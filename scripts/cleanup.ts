@@ -1,11 +1,19 @@
+/* eslint-disable security/detect-non-literal-fs-filename */
 /**
  * Cleanup Script - Unused Files and Dependencies
  *
  * Removes temporary files, old backups, and unused dependencies.
  */
 
-import { readdir, rm, stat } from "fs/promises";
+import { mkdir, readdir, rm, stat } from "fs/promises";
 import { join } from "path";
+
+interface ErrnoException extends Error {
+  errno?: number;
+  code?: string;
+  path?: string;
+  syscall?: string;
+}
 
 interface CleanupStats {
   filesRemoved: number;
@@ -22,7 +30,7 @@ const stats: CleanupStats = {
 /**
  * Remove old database backups (older than 30 days)
  */
-async function cleanupOldBackups() {
+async function cleanupOldBackups(): Promise<void> {
   console.log("\n📦 Cleaning up old database backups...");
 
   const backupDir = join(process.cwd(), "backups");
@@ -37,6 +45,7 @@ async function cleanupOldBackups() {
       }
 
       const filePath = join(backupDir, file);
+
       const fileStat = await stat(filePath);
 
       if (fileStat.mtimeMs < thirtyDaysAgo) {
@@ -50,9 +59,11 @@ async function cleanupOldBackups() {
       }
     }
   } catch (error) {
-    if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
-      stats.errors.push(`Backup cleanup failed: ${error}`);
-      console.error(`  ✗ Error: ${error}`);
+    const nodeError = error as ErrnoException;
+    if (nodeError.code !== "ENOENT") {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      stats.errors.push(`Backup cleanup failed: ${errorMessage}`);
+      console.error(`  ✗ Error: ${errorMessage}`);
     }
   }
 }
@@ -60,7 +71,7 @@ async function cleanupOldBackups() {
 /**
  * Remove Next.js build artifacts
  */
-async function cleanupBuildArtifacts() {
+async function cleanupBuildArtifacts(): Promise<void> {
   console.log("\n🏗️  Cleaning up build artifacts...");
 
   const directories = [".next", ".turbo", "out", ".vercel"];
@@ -69,7 +80,6 @@ async function cleanupBuildArtifacts() {
     const dirPath = join(process.cwd(), dir);
 
     try {
-      const dirStat = await stat(dirPath);
       const size = await getDirSize(dirPath);
 
       await rm(dirPath, { recursive: true, force: true });
@@ -79,9 +89,11 @@ async function cleanupBuildArtifacts() {
 
       console.log(`  ✓ Removed ${dir}/ (${(size / 1024 / 1024).toFixed(2)} MB)`);
     } catch (error) {
-      if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
-        stats.errors.push(`Failed to remove ${dir}: ${error}`);
-        console.error(`  ✗ Error removing ${dir}: ${error}`);
+      const nodeError = error as ErrnoException;
+      if (nodeError.code !== "ENOENT") {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        stats.errors.push(`Failed to remove ${dir}: ${errorMessage}`);
+        console.error(`  ✗ Error removing ${dir}: ${errorMessage}`);
       }
     }
   }
@@ -90,7 +102,7 @@ async function cleanupBuildArtifacts() {
 /**
  * Remove temporary files
  */
-async function cleanupTempFiles() {
+async function cleanupTempFiles(): Promise<void> {
   console.log("\n🗑️  Cleaning up temporary files...");
 
   const patterns = ["*.log", "*.tmp", ".DS_Store", "Thumbs.db", "*.swp", "*.swo", "*~"];
@@ -103,7 +115,7 @@ async function cleanupTempFiles() {
 /**
  * Remove unused documentation and log files
  */
-async function cleanupDocumentationFiles() {
+async function cleanupDocumentationFiles(): Promise<void> {
   console.log("\n📝 Cleaning up unused documentation and log files...");
 
   const excludedFiles = new Set([
@@ -146,19 +158,21 @@ async function cleanupDocumentationFiles() {
           console.log(`  ✓ Removed ${file}`);
         }
       } catch (error) {
-        stats.errors.push(`Failed to process ${file}: ${error}`);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        stats.errors.push(`Failed to process ${file}: ${errorMessage}`);
       }
     }
   } catch (error) {
-    stats.errors.push(`Documentation cleanup failed: ${error}`);
-    console.error(`  ✗ Error: ${error}`);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    stats.errors.push(`Documentation cleanup failed: ${errorMessage}`);
+    console.error(`  ✗ Error: ${errorMessage}`);
   }
 }
 
 /**
  * Remove node_modules (optional, requires confirmation)
  */
-async function cleanupNodeModules() {
+async function cleanupNodeModules(): Promise<void> {
   if (!process.argv.includes("--deep")) {
     return;
   }
@@ -177,9 +191,11 @@ async function cleanupNodeModules() {
     console.log(`  ✓ Removed node_modules/ (${(size / 1024 / 1024).toFixed(2)} MB)`);
     console.log("  ℹ️  Run 'pnpm install' to reinstall dependencies");
   } catch (error) {
-    if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
-      stats.errors.push(`Failed to remove node_modules: ${error}`);
-      console.error(`  ✗ Error: ${error}`);
+    const nodeError = error as ErrnoException;
+    if (nodeError.code !== "ENOENT") {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      stats.errors.push(`Failed to remove node_modules: ${errorMessage}`);
+      console.error(`  ✗ Error: ${errorMessage}`);
     }
   }
 }
@@ -187,7 +203,7 @@ async function cleanupNodeModules() {
 /**
  * Remove uploaded files in development
  */
-async function cleanupUploads() {
+async function cleanupUploads(): Promise<void> {
   if (process.env.NODE_ENV === "production") {
     console.log("\n⚠️  Skipping upload cleanup in production");
     return;
@@ -208,19 +224,22 @@ async function cleanupUploads() {
 
       try {
         await rm(subdirPath, { recursive: true, force: true });
-        await import("fs/promises").then((fs) => fs.mkdir(subdirPath, { recursive: true }));
+        await mkdir(subdirPath, { recursive: true });
 
         console.log(`  ✓ Cleared ${subdir}/`);
       } catch (error) {
-        stats.errors.push(`Failed to clear ${subdir}: ${error}`);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        stats.errors.push(`Failed to clear ${subdir}: ${errorMessage}`);
       }
     }
 
     stats.bytesFreed += size;
   } catch (error) {
-    if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
-      stats.errors.push(`Upload cleanup failed: ${error}`);
-      console.error(`  ✗ Error: ${error}`);
+    const nodeError = error as ErrnoException;
+    if (nodeError.code !== "ENOENT") {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      stats.errors.push(`Upload cleanup failed: ${errorMessage}`);
+      console.error(`  ✗ Error: ${errorMessage}`);
     }
   }
 }
@@ -241,8 +260,10 @@ async function getDirSize(dirPath: string): Promise<number> {
 
       size += fileStat.isDirectory() ? await getDirSize(filePath) : fileStat.size;
     }
-  } catch {
-    // Ignore errors
+  } catch (error) {
+    // Log error if needed for debugging
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error(`  ✗ Error getting directory size: ${errorMessage}`);
   }
 
   return size;
@@ -253,9 +274,11 @@ async function getDirSize(dirPath: string): Promise<number> {
  * @param dirPath
  * @param pattern
  */
-async function removeFilesByPattern(dirPath: string, pattern: string) {
+async function removeFilesByPattern(dirPath: string, pattern: string): Promise<void> {
   try {
     const files = await readdir(dirPath);
+    // Pattern is from controlled list in cleanupTempFiles, safe to use
+    // eslint-disable-next-line security/detect-non-literal-regexp
     const regex = new RegExp(pattern.replaceAll("*", ".*"));
 
     for (const file of files) {
@@ -274,15 +297,17 @@ async function removeFilesByPattern(dirPath: string, pattern: string) {
         console.log(`  ✓ Removed ${file}`);
       }
     }
-  } catch {
-    // Ignore errors
+  } catch (error) {
+    // Log error if needed for debugging
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error(`  ✗ Error in removeFilesByPattern: ${errorMessage}`);
   }
 }
 
 /**
  * Print cleanup summary
  */
-function printSummary() {
+function printSummary(): void {
   console.log("\n" + "=".repeat(50));
   console.log("📊 Cleanup Summary");
   console.log("=".repeat(50));
@@ -300,7 +325,7 @@ function printSummary() {
 /**
  * Main cleanup function
  */
-async function cleanup() {
+async function cleanup(): Promise<void> {
   console.log("🧹 Starting cleanup...");
   console.log("Current directory:", process.cwd());
 
@@ -345,7 +370,9 @@ async function cleanup() {
 }
 
 // Run cleanup
-cleanup().catch((error) => {
+try {
+  await cleanup();
+} catch (error) {
   console.error("Fatal error during cleanup:", error);
   process.exit(1);
-});
+}

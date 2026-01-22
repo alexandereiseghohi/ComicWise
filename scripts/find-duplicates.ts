@@ -58,11 +58,10 @@ function findDuplicateZodSchemas(project: Project) {
     if (filePath.includes("node_modules")) continue;
 
     // Find z.object() calls
-    const zodObjects = sourceFile.getDescendantsOfKind(SyntaxKind.CallExpression)
-      .filter(call => {
-        const expr = call.getExpression().getText();
-        return expr.includes("z.object");
-      });
+    const zodObjects = sourceFile.getDescendantsOfKind(SyntaxKind.CallExpression).filter((call) => {
+      const expr = call.getExpression().getText();
+      return expr.includes("z.object");
+    });
 
     for (const zodObj of zodObjects) {
       const schemaText = zodObj.getText();
@@ -99,12 +98,13 @@ function findDuplicateComponents(project: Project) {
 
     // Find function components
     const functionDeclarations = sourceFile.getFunctions();
-    const arrowFunctions = sourceFile.getDescendantsOfKind(SyntaxKind.VariableDeclaration)
-      .filter(v => v.getInitializer()?.getKind() === SyntaxKind.ArrowFunction);
+    const arrowFunctions = sourceFile
+      .getDescendantsOfKind(SyntaxKind.VariableDeclaration)
+      .filter((v) => v.getInitializer()?.getKind() === SyntaxKind.ArrowFunction);
 
     const allFunctions = [
-      ...functionDeclarations.map(f => f.getName()),
-      ...arrowFunctions.map(v => v.getName()),
+      ...functionDeclarations.map((f) => f.getName()),
+      ...arrowFunctions.map((v) => v.getName()),
     ];
 
     for (const name of allFunctions) {
@@ -224,7 +224,7 @@ async function findEmptyFolders(dir: string = "src"): Promise<void> {
         return;
       }
 
-      const folders = entries.filter(e => e.isDirectory());
+      const folders = entries.filter((e) => e.isDirectory());
       for (const folder of folders) {
         if (folder.name === "node_modules" || folder.name === ".git") continue;
         await scanDir(join(currentDir, folder.name));
@@ -283,7 +283,7 @@ function printReport() {
     console.log(chalk.bold.yellow(`\n📋 Duplicate Zod Schemas (${report.zodSchemas.size}):\n`));
     for (const [schema, files] of report.zodSchemas.entries()) {
       console.log(chalk.white(`  Schema: ${schema}`));
-      files.forEach(f => console.log(chalk.gray(`    - ${f}`)));
+      files.forEach((f) => console.log(chalk.gray(`    - ${f}`)));
       console.log();
     }
   }
@@ -293,7 +293,7 @@ function printReport() {
     console.log(chalk.bold.yellow(`\n⚛️  Duplicate Components (${report.components.size}):\n`));
     for (const [name, files] of report.components.entries()) {
       console.log(chalk.white(`  ${name}:`));
-      files.forEach(f => console.log(chalk.gray(`    - ${f}`)));
+      files.forEach((f) => console.log(chalk.gray(`    - ${f}`)));
       console.log();
     }
   }
@@ -303,17 +303,19 @@ function printReport() {
     console.log(chalk.bold.yellow(`\n🔧 Duplicate Functions (${report.functions.size}):\n`));
     for (const [name, files] of report.functions.entries()) {
       console.log(chalk.white(`  ${name}:`));
-      files.forEach(f => console.log(chalk.gray(`    - ${f}`)));
+      files.forEach((f) => console.log(chalk.gray(`    - ${f}`)));
       console.log();
     }
   }
 
   // Interfaces
   if (report.interfaces.size > 0) {
-    console.log(chalk.bold.yellow(`\n📐 Duplicate Interfaces/Types (${report.interfaces.size}):\n`));
+    console.log(
+      chalk.bold.yellow(`\n📐 Duplicate Interfaces/Types (${report.interfaces.size}):\n`)
+    );
     for (const [name, files] of report.interfaces.entries()) {
       console.log(chalk.white(`  ${name}:`));
-      files.forEach(f => console.log(chalk.gray(`    - ${f}`)));
+      files.forEach((f) => console.log(chalk.gray(`    - ${f}`)));
       console.log();
     }
   }
@@ -321,14 +323,14 @@ function printReport() {
   // Empty Folders
   if (report.emptyFolders.length > 0) {
     console.log(chalk.bold.yellow(`\n📁 Empty Folders (${report.emptyFolders.length}):\n`));
-    report.emptyFolders.forEach(f => console.log(chalk.gray(`  - ${f}`)));
+    report.emptyFolders.forEach((f) => console.log(chalk.gray(`  - ${f}`)));
     console.log();
   }
 
   // Blank Files
   if (report.blankFiles.length > 0) {
     console.log(chalk.bold.yellow(`\n📄 Blank Files (${report.blankFiles.length}):\n`));
-    report.blankFiles.forEach(f => console.log(chalk.gray(`  - ${f}`)));
+    report.blankFiles.forEach((f) => console.log(chalk.gray(`  - ${f}`)));
     console.log();
   }
 
@@ -400,7 +402,9 @@ async function main() {
     if (shouldCleanup) {
       await cleanup(dryRun);
     } else {
-      console.log(chalk.yellow("\n💡 Tip: Run with --cleanup to delete empty folders and blank files"));
+      console.log(
+        chalk.yellow("\n💡 Tip: Run with --cleanup to delete empty folders and blank files")
+      );
       console.log(chalk.yellow("   Add --no-dry-run to actually delete files\n"));
     }
   } catch (error) {

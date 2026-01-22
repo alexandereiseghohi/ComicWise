@@ -1,5 +1,5 @@
 "use client";
-import { ImageUpload } from "@/components/admin/ImageUpload";
+import { ImageUpload } from "@/components/admin/image-upload";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {

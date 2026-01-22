@@ -4,7 +4,7 @@
 
 import { createGenre } from "@/database/mutations/genres";
 import { getAllGenres } from "@/database/queries/genres";
-import { createGenericEntity, listGenericEntity, zodToValidationResult } from "@/lib/genericCrud";
+import { createGenericEntity, listGenericEntity, zodToValidationResult } from "@/lib/generic-crud";
 import { createGenreSchema, genreFilterSchema } from "@/lib/validations";
 import type { NextRequest } from "next/server";
 

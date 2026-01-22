@@ -1,5 +1,5 @@
-import { AppNavbar } from "@/components/layout/AppNavbar";
-import CurrentYear from "@/components/layout/CurrentYear";
+import { AppNavbar } from "@/components/layout/app-navbar";
+import CurrentYear from "@/components/layout/current-year";
 import React, { Suspense } from "react";
 
 export default function RootLayout({

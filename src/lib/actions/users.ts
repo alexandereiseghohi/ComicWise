@@ -108,7 +108,7 @@ export async function requestPasswordReset(email: string): Promise<ActionResult<
     }
 
     // Delete any existing tokens for this email
-    await mutations.deletepasswordResetTokenByEmail(email);
+    await mutations.deletePasswordResetTokenByEmail(email);
 
     // Generate reset token
     const token = crypto.randomBytes(32).toString("hex");

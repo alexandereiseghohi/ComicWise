@@ -3,9 +3,9 @@
 // ═══════════════════════════════════════════════════
 export * from "@/database/queries/accounts";
 export * from "@/database/queries/authenticators";
-export * from "@/database/queries/passwordResetToken";
+export * from "@/database/queries/password-reset-token";
 export * from "@/database/queries/sessions";
-export * from "@/database/queries/verificationTokens";
+export * from "@/database/queries/verification-tokens";
 
 // ═══════════════════════════════════════════════════
 // USER QUERIES
@@ -17,7 +17,7 @@ export * from "@/database/queries/users";
 // ═══════════════════════════════════════════════════
 export * from "@/database/queries/artists";
 export * from "@/database/queries/authors";
-export * from "@/database/queries/chapterImages";
+export * from "@/database/queries/chapter-images";
 export {
   getChapter,
   getChapterByComicAndNumber,
@@ -27,9 +27,9 @@ export {
   getNextChapter,
   getPreviousChapter,
 } from "@/database/queries/chapters";
-export * from "@/database/queries/comicImages";
+export * from "@/database/queries/comic-images";
+export * from "@/database/queries/comic-to-genre";
 export * from "@/database/queries/comics";
-export * from "@/database/queries/comicToGenre";
 export * from "@/database/queries/genres";
 export * from "@/database/queries/types";
 

@@ -1,8 +1,8 @@
 import { updateComicAction } from "@/app/actions/admin/comics";
-import { ComicForm } from "@/components/admin/ComicForm";
-import { DeleteComicButton } from "@/components/admin/DeleteComicButton";
+import { ComicForm } from "@/components/admin/comic-form";
+import { DeleteComicButton } from "@/components/admin/delete-comic-button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { getComicById } from "@/database/queries/adminComics";
+import { getComicById } from "@/database/queries/admin-comics";
 import { auth } from "auth";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";

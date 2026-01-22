@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { RadioGroup } from "@/components/ui/RadioGroup";
+import { RadioGroup } from "@/components/ui/radio-group";
 import { CircleIcon } from "lucide-react";
 import { RadioGroup as RadioGroupPrimitive } from "radix-ui";
 import type { ComponentProps, HTMLAttributes } from "react";

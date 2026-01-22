@@ -4,7 +4,7 @@
 
 import { createType } from "@/database/mutations/types";
 import { getAllTypes } from "@/database/queries/types";
-import { createGenericEntity, listGenericEntity, zodToValidationResult } from "@/lib/genericCrud";
+import { createGenericEntity, listGenericEntity, zodToValidationResult } from "@/lib/generic-crud";
 import { createTypeSchema, typeFilterSchema } from "@/lib/validations";
 import type { NextRequest } from "next/server";
 

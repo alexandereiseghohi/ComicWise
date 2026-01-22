@@ -1,4 +1,4 @@
-import { SettingsForm } from "@/components/profile/SettingsForm";
+import { SettingsForm } from "@/components/profile/settings-form";
 import { auth } from "auth";
 import { redirect } from "next/navigation";
 

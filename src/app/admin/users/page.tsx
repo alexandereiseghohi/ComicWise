@@ -1,4 +1,4 @@
-import { DataTable } from "@/components/admin/DataTable";
+import { DataTable } from "@/components/admin/data-table";
 import { db } from "@/database/db";
 import { Suspense } from "react";
 import { user } from "schema";
