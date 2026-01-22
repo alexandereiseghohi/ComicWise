@@ -23,6 +23,7 @@ const backupFile = args[0];
 
 /**
  * Prompt user for confirmation
+ * @param question
  */
 async function promptConfirmation(question: string): Promise<string> {
   const rl = readline.createInterface({
@@ -40,6 +41,7 @@ async function promptConfirmation(question: string): Promise<string> {
 
 /**
  * Verify backup file exists
+ * @param filepath
  */
 async function verifyBackupFile(filepath: string): Promise<void> {
   try {
@@ -51,7 +53,7 @@ async function verifyBackupFile(filepath: string): Promise<void> {
     console.log(`   File: ${filepath}`);
     console.log(`   Size: ${sizeInMB} MB`);
     console.log(`   Modified: ${stats.mtime.toLocaleString()}\n`);
-  } catch (error) {
+  } catch {
     console.error(`❌ Backup file not found: ${filepath}`);
     console.log(`\n💡 Available backups in ./backups directory:`);
 
@@ -78,7 +80,7 @@ async function verifyBackupFile(filepath: string): Promise<void> {
 async function createSafetyBackup(): Promise<string> {
   console.log("🔒 Creating safety backup of current database...\n");
 
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const timestamp = new Date().toISOString().replaceAll(/[.:]/g, "-");
   const filename = `pre-restore-safety-${timestamp}.sql`;
   const filepath = `./backups/${filename}`;
 
@@ -113,6 +115,7 @@ async function resetSchema(): Promise<void> {
 
 /**
  * Restore database from backup file
+ * @param filepath
  */
 async function restoreDatabase(filepath: string): Promise<void> {
   console.log("📥 Restoring database from backup...\n");
@@ -121,11 +124,7 @@ async function restoreDatabase(filepath: string): Promise<void> {
     // Handle compressed files
     let restoreCommand: string;
 
-    if (filepath.endsWith(".gz")) {
-      restoreCommand = `gunzip -c "${filepath}" | psql "${env.DATABASE_URL}"`;
-    } else {
-      restoreCommand = `psql "${env.DATABASE_URL}" < "${filepath}"`;
-    }
+    restoreCommand = filepath.endsWith(".gz") ? `gunzip -c "${filepath}" | psql "${env.DATABASE_URL}"` : `psql "${env.DATABASE_URL}" < "${filepath}"`;
 
     const { stderr } = await execAsync(restoreCommand);
 
@@ -254,7 +253,7 @@ async function main() {
     console.log("📋 Summary:");
     console.log(`   Restored from: ${backupFile}`);
     console.log(`   Safety backup: ${safetyBackup}`);
-    console.log(`   Database: ${env.DATABASE_URL.split("@")[1]?.split("?")[0] || "connected"}\n`);
+    console.log(`   Database: ${env.DATABASE_URL?.split("@")[1]?.split("?")[0] || env.NEON_DATABASE_URL?.split("@")[1]?.split("?")[0] || "connected"}\n`);
 
     console.log("📋 Next steps:");
     console.log("   1. Test application: pnpm dev");

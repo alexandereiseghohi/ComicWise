@@ -66,7 +66,7 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <div className="container max-w-md mx-auto py-12">
+    <div className="container mx-auto max-w-md py-12">
       <Suspense fallback={<div>Loading...</div>}>
         <ResetPasswordForm />
       </Suspense>

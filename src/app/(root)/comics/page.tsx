@@ -67,6 +67,11 @@ interface ComicsResponse {
 
 /**
  * Fetch comics from API
+ * @param page
+ * @param sort
+ * @param genre
+ * @param status
+ * @param search
  */
 async function fetchComics(
   page: number = 1,
@@ -125,7 +130,7 @@ function ComicsGallery() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
           <p className="text-lg font-semibold text-red-500">Error loading comics</p>
           <p className="text-gray-600">
@@ -137,10 +142,10 @@ function ComicsGallery() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Comics</h1>
+        <h1 className="mb-2 text-4xl font-bold">Comics</h1>
         <p className="text-gray-600">Discover amazing web comics</p>
       </div>
 
@@ -151,7 +156,7 @@ function ComicsGallery() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSearch} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
               {/* Search */}
               <Input
                 placeholder="Search comics..."
@@ -213,20 +218,20 @@ function ComicsGallery() {
 
       {/* Loading State */}
       {isLoading && (
-        <div className="flex items-center justify-center min-h-96">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <div className="flex min-h-96 items-center justify-center">
+          <Loader2 className="size-8 animate-spin text-primary" />
         </div>
       )}
 
       {/* Comics Grid */}
       {data && data.comics.length > 0 && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+          <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {data.comics.map((comic) => (
               <Link key={comic.id} href={`/comics/${comic.slug}`}>
-                <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+                <Card className="h-full cursor-pointer transition-shadow hover:shadow-lg">
                   {/* Cover Image */}
-                  <div className="relative w-full h-48 bg-gray-200">
+                  <div className="relative h-48 w-full bg-gray-200">
                     {comic.coverImage ? (
                       <Image
                         src={comic.coverImage}
@@ -235,8 +240,8 @@ function ComicsGallery() {
                         className="object-cover"
                       />
                     ) : (
-                      <div className="flex items-center justify-center h-full bg-gradient-to-br from-purple-400 to-pink-600">
-                        <span className="text-white text-sm">No Image</span>
+                      <div className="flex h-full items-center justify-center bg-linear-to-br from-purple-400 to-pink-600">
+                        <span className="text-sm text-white">No Image</span>
                       </div>
                     )}
                   </div>
@@ -277,7 +282,7 @@ function ComicsGallery() {
 
                       {/* Rating */}
                       <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                        <Star className="size-4 fill-yellow-400 text-yellow-400" />
                         <span className="font-semibold">{comic.rating.toFixed(1)}</span>
                       </div>
                     </div>
@@ -342,8 +347,8 @@ function ComicsGallery() {
       )}
 
       {/* No Results */}
-      {data && data.comics.length === 0 && !isLoading && (
-        <div className="flex items-center justify-center min-h-96">
+      {data?.comics.length === 0 && !isLoading && (
+        <div className="flex min-h-96 items-center justify-center">
           <div className="text-center">
             <p className="text-lg font-semibold text-gray-600">No comics found</p>
             <p className="text-gray-500">Try adjusting your filters or search terms</p>
@@ -361,8 +366,8 @@ export default function ComicsPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex items-center justify-center min-h-screen">
-          <Loader2 className="w-8 h-8 animate-spin" />
+        <div className="flex min-h-screen items-center justify-center">
+          <Loader2 className="size-8 animate-spin" />
         </div>
       }
     >

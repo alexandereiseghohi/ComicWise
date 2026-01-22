@@ -18,17 +18,17 @@ export const setupGracefulShutdown = (name, { exitCode = 1 } = {}) => {
     // Best-effort cleanup: keep this short and synchronous
     try {
       // Place for lightweight cleanup tasks if needed in future
-    } catch (e) {
-      console.error(`${name}: error during shutdown cleanup:`, e);
+    } catch (error) {
+      console.error(`${name}: error during shutdown cleanup:`, error);
     }
 
     // Exit with a non-zero code to indicate abnormal termination
     try {
       process.exit(exitCode);
-    } catch (e) {
+    } catch (error) {
       // If process.exit is stubbed or overridden (e.g. in tests), surface the failure.
-      console.error(`${name}: process.exit failed:`, e?.message || e);
-      throw e;
+      console.error(`${name}: process.exit failed:`, error?.message || error);
+      throw error;
     }
   };
 

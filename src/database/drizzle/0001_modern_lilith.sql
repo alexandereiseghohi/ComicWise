@@ -1,1 +1,0 @@
-ALTER TABLE "bookmark" ADD COLUMN "status" text DEFAULT 'Reading' NOT NULL;

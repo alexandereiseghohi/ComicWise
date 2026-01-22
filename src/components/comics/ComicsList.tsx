@@ -33,7 +33,7 @@ export function ComicsList({
     setComics(comics);
   }, [comics, setComics]);
 
-  const displayComics = (filteredComics.length > 0 ? filteredComics : comics) as Comic[];
+  const displayComics = (filteredComics.length > 0 ? filteredComics : comics);
 
   return (
     <div className="space-y-8">

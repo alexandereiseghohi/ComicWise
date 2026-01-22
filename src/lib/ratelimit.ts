@@ -122,7 +122,7 @@ export const rateLimitConfigs = {
 /**
  * Rate limit result type
  */
-export type RateLimitResult = {
+export interface RateLimitResult {
   success: boolean;
   /** Alias for success - for backward compatibility */
   allowed: boolean;
@@ -130,15 +130,15 @@ export type RateLimitResult = {
   remaining: number;
   reset: number;
   pending: Promise<unknown>;
-};
+}
 
 /**
  * Options for simple rate limiting
  */
-export type SimpleRateLimitOptions = {
+export interface SimpleRateLimitOptions {
   limit?: number;
   window?: string;
-};
+}
 
 /**
  * Default rate limit configuration
@@ -153,6 +153,9 @@ const dynamicLimiters = new Map<string, Ratelimit>();
 
 /**
  * Get or create a rate limiter for dynamic rate limiting
+ * @param limit
+ * @param window
+ * @param identifier
  */
 function getOrCreateLimiter(limit: number, window: string, identifier: string): Ratelimit {
   const key = `${limit}:${window}`;
@@ -223,6 +226,7 @@ export async function checkRateLimit(
 
 /**
  * Create a standardized rate limit error response
+ * @param result
  */
 export function createRateLimitError(result: RateLimitResult) {
   const resetDate = new Date(result.reset);
@@ -240,6 +244,8 @@ export function createRateLimitError(result: RateLimitResult) {
 /**
  * Helper to get identifier from request
  * Uses user ID if authenticated, otherwise falls back to IP address
+ * @param userId
+ * @param ip
  */
 export function getIdentifier(userId?: string, ip?: string): string {
   if (userId) {
@@ -254,6 +260,9 @@ export function getIdentifier(userId?: string, ip?: string): string {
 /**
  * Middleware wrapper for API routes
  *
+ * @param limiter
+ * @param request
+ * @param userId
  * @example
  * ```ts
  * import { withRateLimit } from "@/lib/rateLimit";
@@ -290,6 +299,8 @@ export async function withRateLimit(
 /**
  * Server action rate limit helper
  *
+ * @param limiter
+ * @param userId
  * @example
  * ```ts
  * import { rateLimitAction } from "@/lib/rateLimit";
@@ -324,6 +335,7 @@ export async function rateLimitAction(
 /**
  * Batch rate limit check for multiple operations
  * Useful when a single request triggers multiple rate-limited operations
+ * @param checks
  */
 export async function checkMultipleRateLimits(
   checks: Array<{ limiter: Ratelimit; identifier: string }>
@@ -336,6 +348,9 @@ export async function checkMultipleRateLimits(
 /**
  * Custom rate limiter factory
  * Create a rate limiter with custom configuration
+ * @param requests
+ * @param window
+ * @param prefix
  */
 export function createRateLimiter(
   requests: number,
@@ -353,6 +368,8 @@ export function createRateLimiter(
 /**
  * Reset rate limit for a specific identifier
  * Useful for admin overrides or testing
+ * @param limiter
+ * @param identifier
  */
 export async function resetRateLimit(limiter: Ratelimit, identifier: string): Promise<void> {
   // Upstash Ratelimit doesn't expose reset, but we can clear the key manually

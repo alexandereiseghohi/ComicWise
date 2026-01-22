@@ -172,6 +172,7 @@ async function cleanupUploads() {
 
 /**
  * Helper: Get directory size
+ * @param dirPath
  */
 async function getDirSize(dirPath: string): Promise<number> {
   let size = 0;
@@ -183,13 +184,9 @@ async function getDirSize(dirPath: string): Promise<number> {
       const filePath = join(dirPath, file);
       const fileStat = await stat(filePath);
 
-      if (fileStat.isDirectory()) {
-        size += await getDirSize(filePath);
-      } else {
-        size += fileStat.size;
-      }
+      size += fileStat.isDirectory() ? (await getDirSize(filePath)) : fileStat.size;
     }
-  } catch (error) {
+  } catch {
     // Ignore errors
   }
 
@@ -198,11 +195,13 @@ async function getDirSize(dirPath: string): Promise<number> {
 
 /**
  * Helper: Remove files matching pattern
+ * @param dirPath
+ * @param pattern
  */
 async function removeFilesByPattern(dirPath: string, pattern: string) {
   try {
     const files = await readdir(dirPath);
-    const regex = new RegExp(pattern.replace(/\*/g, ".*"));
+    const regex = new RegExp(pattern.replaceAll('*', ".*"));
 
     for (const file of files) {
       const filePath = join(dirPath, file);
@@ -220,7 +219,7 @@ async function removeFilesByPattern(dirPath: string, pattern: string) {
         console.log(`  ✓ Removed ${file}`);
       }
     }
-  } catch (error) {
+  } catch {
     // Ignore errors
   }
 }

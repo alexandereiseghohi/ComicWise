@@ -5,18 +5,18 @@ import { db as database } from "@/database/db";
 import { type as comicType, genre } from "@/database/schema";
 import type { ActionResult } from "@/dto";
 import type {
-  CreateGenreInput,
-  CreateTypeInput,
-  PaginationInput,
-  UpdateGenreInput,
-  UpdateTypeInput,
+    CreateGenreInput,
+    CreateTypeInput,
+    PaginationInput,
+    UpdateGenreInput,
+    UpdateTypeInput,
 } from "@/lib/validations";
 import {
-  createGenreSchema,
-  createTypeSchema,
-  paginationSchema,
-  updateGenreSchema,
-  updateTypeSchema,
+    createGenreSchema,
+    createTypeSchema,
+    paginationSchema,
+    updateGenreSchema,
+    updateTypeSchema,
 } from "@/lib/validations";
 import { asc, eq, like, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -27,7 +27,8 @@ export async function createGenre(
   try {
     const validated = createGenreSchema.parse(input);
 
-    const [newGenre] = await database.insert(genre).values(validated).returning();
+    const slug = validated.name.toLowerCase().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").trim();
+    const [newGenre] = await database.insert(genre).values({ ...validated, slug }).returning();
 
     if (!newGenre) {
       return { success: false, error: "Failed to create genre" };

@@ -242,6 +242,8 @@ export async function initializeImageHandler(): Promise<void> {
 
 /**
  * Download a single image - wrapper for seeder compatibility
+ * @param imageUrl
+ * @param type
  */
 export async function downloadImage(
   imageUrl: string,
@@ -253,6 +255,8 @@ export async function downloadImage(
 
 /**
  * Download multiple images - wrapper for seeder compatibility
+ * @param imageUrls
+ * @param type
  */
 export async function downloadImages(
   imageUrls: string[],

@@ -4,6 +4,7 @@
 
 import { deleteUserAccount, updateUserProfile, updateUserSettings } from "@/lib/actions/users";
 import { auth, signOut } from "@/lib/auth";
+import type { Session } from "next-auth";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock dependencies
@@ -39,7 +40,8 @@ describe("updateUserProfile", () => {
   it("successfully updates user profile", async () => {
     vi.mocked(auth).mockResolvedValue({
       user: { id: "user-1", name: "John", email: "john@example.com" },
-    } as any);
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+    } as Session);
 
     const result = await updateUserProfile({
       name: "Jane Doe",
@@ -68,7 +70,8 @@ describe("updateUserProfile", () => {
   it("validates email format", async () => {
     vi.mocked(auth).mockResolvedValue({
       user: { id: "user-1", name: "John", email: "john@example.com" },
-    } as any);
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+    } as Session);
 
     const result = await updateUserProfile({
       name: "Jane Doe",
@@ -84,7 +87,8 @@ describe("updateUserProfile", () => {
   it("revalidates profile path after update", async () => {
     vi.mocked(auth).mockResolvedValue({
       user: { id: "user-1", name: "John", email: "john@example.com" },
-    } as any);
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+    } as Session);
 
     const { revalidatePath } = await import("next/cache");
 
@@ -107,7 +111,8 @@ describe("updateUserSettings", () => {
   it("successfully updates user settings", async () => {
     vi.mocked(auth).mockResolvedValue({
       user: { id: "user-1", name: "John", email: "john@example.com" },
-    } as any);
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+    } as Session);
 
     const result = await updateUserSettings({
       emailNotifications: true,
@@ -138,7 +143,8 @@ describe("deleteUserAccount", () => {
   it("successfully deletes user account", async () => {
     vi.mocked(auth).mockResolvedValue({
       user: { id: "user-1", name: "John", email: "john@example.com" },
-    } as any);
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+    } as Session);
 
     const result = await deleteUserAccount();
 
@@ -157,7 +163,8 @@ describe("deleteUserAccount", () => {
   it("signs out user after deletion", async () => {
     vi.mocked(auth).mockResolvedValue({
       user: { id: "user-1", name: "John", email: "john@example.com" },
-    } as any);
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+    } as Session);
 
     await deleteUserAccount();
 

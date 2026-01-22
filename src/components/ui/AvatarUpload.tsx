@@ -13,8 +13,8 @@ import { useRef, useState } from "react";
 
 interface AvatarUploadProps {
   currentImage?: string | null;
-  onImageSelect: (file: File) => void;
-  onImageRemove: () => void;
+  onImageSelect(file: File): void;
+  onImageRemove(): void;
   className?: string;
 }
 
@@ -32,6 +32,7 @@ export function AvatarUpload({
 
   /**
    * Validate image file
+   * @param file
    */
   const validateImage = (file: File): { valid: boolean; error?: string } => {
     // Check file type
@@ -57,6 +58,7 @@ export function AvatarUpload({
 
   /**
    * Handle file selection
+   * @param file
    */
   const handleFileChange = (file: File | null) => {
     if (!file) return;
@@ -80,6 +82,7 @@ export function AvatarUpload({
 
   /**
    * Handle drag and drop
+   * @param e
    */
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -96,7 +99,7 @@ export function AvatarUpload({
     e.stopPropagation();
     setDragActive(false);
 
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+    if (e.dataTransfer.files?.[0]) {
       handleFileChange(e.dataTransfer.files[0]);
     }
   };
@@ -118,7 +121,7 @@ export function AvatarUpload({
       <div className="relative">
         <div
           className={cn(
-            "relative h-32 w-32 overflow-hidden rounded-full border-4 border-border bg-muted",
+            "relative size-32 overflow-hidden rounded-full border-4 border-border bg-muted",
             dragActive && "border-primary"
           )}
           onDragEnter={handleDrag}
@@ -135,8 +138,8 @@ export function AvatarUpload({
               sizes="128px"
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center">
-              <User className="h-16 w-16 text-muted-foreground" />
+            <div className="flex size-full items-center justify-center">
+              <User className="size-16 text-muted-foreground" />
             </div>
           )}
         </div>
@@ -147,10 +150,10 @@ export function AvatarUpload({
             type="button"
             size="icon"
             variant="destructive"
-            className="absolute -right-2 -top-2 h-8 w-8 rounded-full shadow-lg"
+            className="absolute -top-2 -right-2 size-8 rounded-full shadow-lg"
             onClick={handleRemove}
           >
-            <X className="h-4 w-4" />
+            <X className="size-4" />
           </Button>
         )}
       </div>
@@ -171,11 +174,11 @@ export function AvatarUpload({
           size="sm"
           onClick={() => fileInputRef.current?.click()}
         >
-          <Upload className="mr-2 h-4 w-4" />
+          <Upload className="mr-2 size-4" />
           {displayImage ? "Change Photo" : "Upload Photo"}
         </Button>
 
-        <p className="text-xs text-muted-foreground text-center">
+        <p className="text-center text-xs text-muted-foreground">
           JPG, PNG, WebP or GIF. Max 5MB.
           <br />
           Drag and drop or click to upload.

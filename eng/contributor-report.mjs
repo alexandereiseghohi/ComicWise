@@ -63,7 +63,7 @@ export const globToRegExp = (pattern) => {
   // Escape all regex-special characters except glob wildcards (*, ?, /),
   // then translate glob syntax to regex.
   // Note: This function intentionally supports only a small subset of glob syntax.
-  const regexSpecials = /[.+^${}()|[\]\\]/g;
+  const regexSpecials = /[$()+.[\\\]^{|}]/g;
 
   let normalized = String(pattern);
 
@@ -163,7 +163,7 @@ export const getContributionTypes = (files) => {
     types.add("code");
   }
 
-  return Array.from(types)
+  return [...types]
     .sort((a, b) => a.localeCompare(b))
     .join(",");
 };
@@ -183,7 +183,7 @@ export const getMissingContributors = () => {
     const ignoreSet = new Set(ignoreEntries.map((entry) => entry.toLowerCase()));
 
     if (ignoreSet.size > 0) {
-      console.log(`📋 Loaded ignore list: ${Array.from(ignoreSet).join(", ")}`);
+      console.log(`📋 Loaded ignore list: ${[...ignoreSet].join(", ")}`);
     }
 
     const output = execSync("npx all-contributors check", {
@@ -294,7 +294,7 @@ const getGitHubRepo = () => {
     // - ssh://git@github.com/owner/repo.git
     // - https://github.com/owner/repo.git
     // - https://github.com/owner/repo
-    const regex = /github\.com[/:]([^/]+)\/([^/?#]+?)(?:\.git)?(?:[/?#]|$)/;
+    const regex = /github\.com[/:]([^/]+)\/([^#/?]+?)(?:\.git)?(?:[#/?]|$)/;
     const match = regex.exec(url);
     if (!match) return null;
 
@@ -310,8 +310,8 @@ const getGitHubRepo = () => {
       const repo = parseRepoFromRemoteUrl(upstreamUrl);
       if (repo) return repo;
     }
-  } catch (e) {
-    console.debug("upstream not found, trying origin", e?.message || e);
+  } catch (error) {
+    console.debug("upstream not found, trying origin", error?.message || error);
   }
 
   try {
@@ -321,8 +321,8 @@ const getGitHubRepo = () => {
     }).trim();
     const repo = parseRepoFromRemoteUrl(originUrl);
     if (repo) return repo;
-  } catch (e) {
-    console.debug("origin not found, using default", e?.message || e);
+  } catch (error) {
+    console.debug("origin not found, using default", error?.message || error);
   }
 
   return "github/awesome-copilot";
@@ -401,7 +401,7 @@ const generatePRReport = (contributor, pr, { includeAllFiles = false } = {}) => 
     types.add("code");
   }
 
-  const typeList = Array.from(types);
+  const typeList = [...types];
 
   return {
     prNumber: pr.number,
@@ -464,7 +464,7 @@ export const generateMarkdownReport = (reports, missingCount = 0) => {
       }
     }
 
-    const types = Array.from(typeSet).sort((a, b) => a.localeCompare(b));
+    const types = [...typeSet].sort((a, b) => a.localeCompare(b));
     return types.length > 0 ? types.join(",") : "code";
   };
 
@@ -482,7 +482,7 @@ export const generateMarkdownReport = (reports, missingCount = 0) => {
   for (const report of reports) {
     lines.push(`## @${report.username}`);
 
-    const prs = Array.from(report.prs || []).sort((a, b) => {
+    const prs = [...report.prs || []].sort((a, b) => {
       // Prefer most recent PRs first.
       const aTime = a.mergedAt ? Date.parse(a.mergedAt) : 0;
       const bTime = b.mergedAt ? Date.parse(b.mergedAt) : 0;

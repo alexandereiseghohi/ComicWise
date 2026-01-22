@@ -15,7 +15,7 @@ import type { NextRequest } from "next/server";
 
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  return getGenericEntity(id as string, {
+  return getGenericEntity(id, {
     getFn: async (idValue: string) => getAuthorById(Number(idValue)),
     validateFn: zodToValidationResult(authorIdSchema),
     entityName: "author",
@@ -26,7 +26,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   const { id } = await params;
   const body = await request.json();
 
-  return updateGenericEntity(id as string, body, {
+  return updateGenericEntity(id, body, {
     updateFn: async (idValue: string, data: unknown) =>
       updateAuthor(
         Number(idValue),
@@ -43,7 +43,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  return deleteGenericEntity(id as string, {
+  return deleteGenericEntity(id, {
     deleteFn: async (authorId: string) => {
       const result = await deleteAuthor(Number(authorId));
       return !!result;

@@ -238,3 +238,56 @@ export function getImageExtension(url: string, contentType?: string): string {
 
   return ".jpg";
 }
+
+/**
+ * Extract filename from URL with extension
+ */
+export function getOriginalFilename(url: string): string {
+  try {
+    const urlObj = new URL(url);
+    const pathname = urlObj.pathname;
+    const filename = path.basename(pathname);
+    return filename || `image-${Date.now()}.jpg`;
+  } catch {
+    return `image-${Date.now()}.jpg`;
+  }
+}
+
+/**
+ * Download multiple images with concurrency control
+ */
+export async function downloadImagesWithConcurrency(
+  downloads: Array<{ url: string; outputPath: string; fallbackImage?: string; skipIfExists?: boolean }>,
+  concurrency = 5
+): Promise<Array<{ success: boolean; path: string; cached: boolean; error?: string }>> {
+  const results: Array<{ success: boolean; path: string; cached: boolean; error?: string }> = [];
+
+  for (let i = 0; i < downloads.length; i += concurrency) {
+    const batch = downloads.slice(i, i + concurrency);
+    const batchResults = await Promise.all(
+      batch.map(async ({ url, outputPath, fallbackImage, skipIfExists }) => {
+        // Check if exists
+        if (skipIfExists && (await imageExists(outputPath))) {
+          return { success: true, path: outputPath, cached: true };
+        }
+
+        const result = await downloadImage({
+          url,
+          destinationPath: path.dirname(outputPath),
+          filename: path.basename(outputPath),
+          skipIfExists,
+        });
+
+        return {
+          success: result.success,
+          path: result.filePath || outputPath,
+          cached: result.fromCache || false,
+          error: result.error,
+        };
+      })
+    );
+    results.push(...batchResults);
+  }
+
+  return results;
+}

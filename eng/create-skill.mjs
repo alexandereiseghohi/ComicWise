@@ -61,7 +61,7 @@ async function createSkillTemplate() {
       process.exit(1);
     }
 
-    if (!/^[a-z0-9-]+$/.test(skillName)) {
+    if (!/^[\da-z-]+$/.test(skillName)) {
       console.error("❌ Skill name must contain only lowercase letters, numbers, and hyphens");
       process.exit(1);
     }

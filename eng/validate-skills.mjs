@@ -16,7 +16,7 @@ function validateSkillName(name) {
   if (!name || typeof name !== "string") {
     return "name is required and must be a string";
   }
-  if (!/^[a-z0-9-]+$/.test(name)) {
+  if (!/^[\da-z-]+$/.test(name)) {
     return "name must contain only lowercase letters, numbers, and hyphens";
   }
   if (name.length < SKILL_NAME_MIN_LENGTH || name.length > SKILL_NAME_MAX_LENGTH) {

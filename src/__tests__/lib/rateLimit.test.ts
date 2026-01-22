@@ -9,7 +9,7 @@ import {
   rateLimitAction,
   withRateLimit,
 } from "@/lib/rateLimit";
-import { Ratelimit } from "@upstash/ratelimit";
+import type { Ratelimit } from "@upstash/ratelimit";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock Upstash Redis

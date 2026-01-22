@@ -94,8 +94,8 @@ async function loadMcpRegistryNames() {
 
     console.log(`Loaded ${allServers.length} servers from MCP registry`);
     MCP_REGISTRY_SET = allServers;
-  } catch (e) {
-    console.warn(`Failed to load MCP registry from API: ${e.message}`);
+  } catch (error) {
+    console.warn(`Failed to load MCP registry from API: ${error.message}`);
     MCP_REGISTRY_SET = [];
   }
 
@@ -105,6 +105,9 @@ async function loadMcpRegistryNames() {
 // Add error handling utility
 /**
  * Safe file operation wrapper
+ * @param operation
+ * @param filePath
+ * @param defaultValue
  */
 function safeFileOperation(operation, filePath, defaultValue = null) {
   try {
@@ -169,7 +172,7 @@ function extractTitle(filePath) {
             }
 
             if (!inCodeBlock && line.startsWith("# ")) {
-              return line.substring(2).trim();
+              return line.slice(2).trim();
             }
           }
         }
@@ -183,7 +186,7 @@ function extractTitle(filePath) {
               ? ".agent.md"
               : ".instructions.md"
         );
-        return basename.replace(/[-_]/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
+        return basename.replaceAll(/[_-]/g, " ").replaceAll(/\b\w/g, (l) => l.toUpperCase());
       }
 
       // Step 4: For other files, look for the first heading (but not in code blocks)
@@ -195,19 +198,19 @@ function extractTitle(filePath) {
         }
 
         if (!inCodeBlock && line.startsWith("# ")) {
-          return line.substring(2).trim();
+          return line.slice(2).trim();
         }
       }
 
       // Step 5: Fallback to filename
       const basename = path.basename(filePath, path.extname(filePath));
-      return basename.replace(/[-_]/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
+      return basename.replaceAll(/[_-]/g, " ").replaceAll(/\b\w/g, (l) => l.toUpperCase());
     },
     filePath,
     path
       .basename(filePath, path.extname(filePath))
-      .replace(/[-_]/g, " ")
-      .replace(/\b\w/g, (l) => l.toUpperCase())
+      .replaceAll(/[_-]/g, " ")
+      .replaceAll(/\b\w/g, (l) => l.toUpperCase())
   );
 }
 
@@ -243,6 +246,7 @@ function makeBadges(link, type) {
 
 /**
  * Generate the instructions section with a table of all instructions
+ * @param instructionsDir
  */
 function generateInstructionsSection(instructionsDir) {
   // Check if directory exists
@@ -301,6 +305,7 @@ function generateInstructionsSection(instructionsDir) {
 
 /**
  * Generate the prompts section with a table of all prompts
+ * @param promptsDir
  */
 function generatePromptsSection(promptsDir) {
   // Check if directory exists
@@ -342,11 +347,7 @@ function generatePromptsSection(promptsDir) {
     // Create badges for installation links
     const badges = makeBadges(link, "prompt");
 
-    if (customDescription && customDescription !== "null") {
-      promptsContent += `| [${title}](../${link})<br />${badges} | ${customDescription} |\n`;
-    } else {
-      promptsContent += `| [${title}](../${link})<br />${badges} | | |\n`;
-    }
+    promptsContent += customDescription && customDescription !== "null" ? `| [${title}](../${link})<br />${badges} | ${customDescription} |\n` : `| [${title}](../${link})<br />${badges} | | |\n`;
   }
 
   return `${TEMPLATES.promptsSection}\n${TEMPLATES.promptsUsage}\n\n${promptsContent}`;
@@ -392,7 +393,7 @@ function generateMcpServerLinks(servers, registryNames) {
 
       // Build config-only JSON (no name/type for stdio; just command+args+env)
       let configPayload = {};
-      if (serverObj.type && serverObj.type.toLowerCase() === "http") {
+      if (serverObj.type?.toLowerCase() === "http") {
         // HTTP: url + headers
         configPayload = {
           url: serverObj.url || "",
@@ -465,6 +466,7 @@ function generateAgentsSection(agentsDir, registryNames = []) {
 
 /**
  * Generate the skills section with a table of all skills
+ * @param skillsDir
  */
 function generateSkillsSection(skillsDir) {
   if (!fs.existsSync(skillsDir)) {
@@ -574,15 +576,11 @@ function generateUnifiedModeSection(cfg) {
       mcpServerCell = generateMcpServerLinks(servers, registryNames);
     }
 
-    if (includeMcpServers) {
-      content += `| [${title}](../${link})<br />${badges} | ${
+    content += includeMcpServers ? `| [${title}](../${link})<br />${badges} | ${
         description && description !== "null" ? description : ""
-      } | ${mcpServerCell} |\n`;
-    } else {
-      content += `| [${title}](../${link})<br />${badges} | ${
+      } | ${mcpServerCell} |\n` : `| [${title}](../${link})<br />${badges} | ${
         description && description !== "null" ? description : ""
       } |\n`;
-    }
   }
 
   return `${sectionTemplate}\n${usageTemplate}\n\n${content}`;
@@ -590,6 +588,7 @@ function generateUnifiedModeSection(cfg) {
 
 /**
  * Generate the collections section with a table of all collections
+ * @param collectionsDir
  */
 function generateCollectionsSection(collectionsDir) {
   // Check if collections directory exists, create it if it doesn't
@@ -663,6 +662,7 @@ function generateCollectionsSection(collectionsDir) {
 
 /**
  * Generate the featured collections section for the main README
+ * @param collectionsDir
  */
 function generateFeaturedCollectionsSection(collectionsDir) {
   // Check if collections directory exists
@@ -741,7 +741,7 @@ function generateFeaturedCollectionsSection(collectionsDir) {
  * @param {{ name: string, displayName: string }[]} registryNames - Pre-loaded MCP registry names
  */
 function generateCollectionReadme(collection, collectionId, registryNames = []) {
-  if (!collection || !collection.items) {
+  if (!collection?.items) {
     return `# ${collectionId}\n\nCollection not found or invalid.`;
   }
 
@@ -761,14 +761,10 @@ function generateCollectionReadme(collection, collectionId, registryNames = []) 
   const hasAgents = collection.items.some((item) => item.kind === "agent");
 
   // Generate appropriate table header
-  if (hasAgents) {
-    content += `| Title | Type | Description | MCP Servers |\n| ----- | ---- | ----------- | ----------- |\n`;
-  } else {
-    content += `| Title | Type | Description |\n| ----- | ---- | ----------- |\n`;
-  }
+  content += hasAgents ? `| Title | Type | Description | MCP Servers |\n| ----- | ---- | ----------- | ----------- |\n` : `| Title | Type | Description |\n| ----- | ---- | ----------- |\n`;
 
-  let collectionUsageHeader = "## Collection Usage\n\n";
-  let collectionUsageContent = [];
+  const collectionUsageHeader = "## Collection Usage\n\n";
+  const collectionUsageContent = [];
 
   // Sort items based on display.ordering setting
   const items = [...collection.items];
@@ -811,7 +807,7 @@ function generateCollectionReadme(collection, collectionId, registryNames = []) 
     const badges = badgeType ? makeBadges(item.path, badgeType) : "";
 
     const usageDescription = item.usage
-      ? `${description} [see usage](#${title.replace(/\s+/g, "-").toLowerCase()})`
+      ? `${description} [see usage](#${title.replaceAll(/\s+/g, "-").toLowerCase()})`
       : description;
 
     // Generate MCP server column if collection has agents
@@ -827,7 +823,7 @@ function generateCollectionReadme(collection, collectionId, registryNames = []) 
       registryNames,
     });
     // Generate Usage section for each collection
-    if (item.usage && item.usage.trim()) {
+    if (item.usage?.trim()) {
       collectionUsageContent.push(`### ${title}\n\n${item.usage.trim()}\n\n---\n\n`);
     }
   }
@@ -850,6 +846,16 @@ function generateCollectionReadme(collection, collectionId, registryNames = []) 
 /**
  * Build a single markdown table row for a collection item.
  * Handles optional MCP server column when agents are present.
+ * @param root0
+ * @param root0.hasAgents
+ * @param root0.title
+ * @param root0.link
+ * @param root0.badges
+ * @param root0.typeDisplay
+ * @param root0.usageDescription
+ * @param root0.filePath
+ * @param root0.kind
+ * @param root0.registryNames
  */
 function buildCollectionRow({
   hasAgents,
@@ -891,7 +897,7 @@ function writeFileIfChanged(filePath, content) {
 // Build per-category README content using existing generators, upgrading headings to H1
 function buildCategoryReadme(sectionBuilder, dirPath, headerLine, usageLine, registryNames = []) {
   const section = sectionBuilder(dirPath, registryNames);
-  if (section && section.trim()) {
+  if (section?.trim()) {
     // Upgrade the first markdown heading level from ## to # for standalone README files
     return section.replace(/^##\s/m, "# ");
   }
@@ -1010,16 +1016,16 @@ async function main() {
           const endIndex = readmeContent.indexOf(endMarker, startIndex);
           if (endIndex !== -1) {
             // Replace the existing section
-            const beforeSection = readmeContent.substring(0, startIndex);
-            const afterSection = readmeContent.substring(endIndex);
+            const beforeSection = readmeContent.slice(0, Math.max(0, startIndex));
+            const afterSection = readmeContent.slice(Math.max(0, endIndex));
             readmeContent = beforeSection + featuredSection + "\n\n" + afterSection;
           }
         } else {
           // Section doesn't exist, insert it before "## MCP Server"
           const mcpIndex = readmeContent.indexOf(endMarker);
           if (mcpIndex !== -1) {
-            const beforeMcp = readmeContent.substring(0, mcpIndex);
-            const afterMcp = readmeContent.substring(mcpIndex);
+            const beforeMcp = readmeContent.slice(0, Math.max(0, mcpIndex));
+            const afterMcp = readmeContent.slice(Math.max(0, mcpIndex));
             readmeContent = beforeMcp + featuredSection + "\n\n" + afterMcp;
           }
         }

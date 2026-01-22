@@ -21,7 +21,7 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="container max-w-md mx-auto py-12">
+    <div className="container mx-auto max-w-md py-12">
       <Card>
         <CardHeader>
           <CardTitle className="text-3xl font-bold">Sign In</CardTitle>
@@ -48,7 +48,7 @@ export default function SignInPage() {
             </Link>
             <p className="text-muted-foreground">
               Don't have an account?{" "}
-              <Link href="/sign-up" className="text-primary hover:underline font-medium">
+              <Link href="/sign-up" className="font-medium text-primary hover:underline">
                 Sign Up
               </Link>
             </p>

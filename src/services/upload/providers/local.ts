@@ -125,7 +125,7 @@ export class LocalProvider implements UploadProvider {
    */
   async delete(publicId: string): Promise<boolean> {
     try {
-      const filePath = `${this.uploadDir}${path.sep}${publicId.replace(/\//g, path.sep)}`;
+      const filePath = `${this.uploadDir}${path.sep}${publicId.replaceAll('/', path.sep)}`;
       await fs.unlink(filePath);
       return true;
     } catch (error) {
@@ -177,7 +177,7 @@ export class LocalProvider implements UploadProvider {
     modifiedAt: Date;
   } | null> {
     try {
-      const filePath = `${this.uploadDir}${path.sep}${publicId.replace(/\//g, path.sep)}`;
+      const filePath = `${this.uploadDir}${path.sep}${publicId.replaceAll('/', path.sep)}`;
       const stats = await fs.stat(filePath);
       return {
         size: stats.size,

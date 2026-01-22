@@ -33,10 +33,22 @@ import {
   resetImageHandler,
 } from "@/database/seed/imageHandlerOptimized";
 import { logger } from "@/database/seed/logger";
-import { seedChapters } from "@/database/seed/seeders/seedChaptersOptimized";
-import { seedComics } from "@/database/seed/seeders/seedComicsOptimized";
-import { seedUsers } from "@/database/seed/seeders/seedUsersOptimized";
+import { seedChaptersV4 } from "@/database/seed/seeders/chapterSeederV4";
+import { seedComicsV4 } from "@/database/seed/seeders/comicSeederV4";
+import { seedUsersV4 } from "@/database/seed/seeders/userSeederV4";
 import { sql } from "drizzle-orm";
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TYPE DEFINITIONS
+// ═══════════════════════════════════════════════════════════════════════════
+
+interface SeedResult {
+  total: number;
+  created: number;
+  updated: number;
+  skipped: number;
+  errors: number;
+}
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CONFIGURATION
@@ -100,13 +112,11 @@ async function main() {
 
     // Parse command line arguments
     const args = new Set(process.argv.slice(2));
-    const dryRun = args.has("--dry-run");
-    const verbose = args.has("--verbose");
     const usersOnly = args.has("--users");
     const comicsOnly = args.has("--comics");
     const chaptersOnly = args.has("--chapters");
 
-    if (dryRun) {
+    if (args.has("--dry-run")) {
       logger.warn("⚠️ DRY RUN MODE - No data will be persisted");
     }
 
@@ -124,14 +134,17 @@ async function main() {
     if (!comicsOnly && !chaptersOnly) {
       logger.section("Seeding Users");
       try {
-        const userStats = await retryOperation(
-          () => seedUsers({ dryRun, verbose }),
+        const userStats = await retryOperation<SeedResult>(
+          () => seedUsersV4(["users.json"]),
           "User seeding",
           2
         );
-        stats.users = userStats;
+        stats.users.created = userStats.created;
+        stats.users.updated = userStats.updated;
+        stats.users.skipped = userStats.skipped;
+        stats.users.errors = userStats.errors;
         logger.success(
-          `✓ Users: ${userStats.created} created, ${userStats.updated} updated, ${userStats.skipped} skipped, ${userStats.errors} errors`
+          `✓ Users: ${userStats.total} total, ${userStats.created} created, ${userStats.updated} updated, ${userStats.errors} errors`
         );
       } catch (error) {
         stats.users.errors++;
@@ -150,14 +163,17 @@ async function main() {
     if (!usersOnly && !chaptersOnly) {
       logger.section("Seeding Comics");
       try {
-        const comicStats = await retryOperation(
-          () => seedComics({ dryRun, verbose }),
+        const comicStats = await retryOperation<SeedResult>(
+          () => seedComicsV4(["comics.json", "comicsdata1.json", "comicsdata2.json"]),
           "Comic seeding",
           2
         );
-        stats.comics = comicStats;
+        stats.comics.created = comicStats.created;
+        stats.comics.updated = comicStats.updated;
+        stats.comics.skipped = comicStats.skipped;
+        stats.comics.errors = comicStats.errors;
         logger.success(
-          `✓ Comics: ${comicStats.created} created, ${comicStats.updated} updated, ${comicStats.skipped} skipped, ${comicStats.errors} errors`
+          `✓ Comics: ${comicStats.total} total, ${comicStats.created} created, ${comicStats.updated} updated, ${comicStats.errors} errors`
         );
       } catch (error) {
         stats.comics.errors++;
@@ -176,14 +192,17 @@ async function main() {
     if (!usersOnly && !comicsOnly) {
       logger.section("Seeding Chapters");
       try {
-        const chapterStats = await retryOperation(
-          () => seedChapters({ dryRun, verbose }),
+        const chapterStats = await retryOperation<SeedResult>(
+          () => seedChaptersV4(["chapters.json", "chaptersdata1.json", "chaptersdata2.json"]),
           "Chapter seeding",
           2
         );
-        stats.chapters = chapterStats;
+        stats.chapters.created = chapterStats.created;
+        stats.chapters.updated = chapterStats.updated;
+        stats.chapters.skipped = chapterStats.skipped;
+        stats.chapters.errors = chapterStats.errors;
         logger.success(
-          `✓ Chapters: ${chapterStats.created} created, ${chapterStats.updated} updated, ${chapterStats.skipped} skipped, ${chapterStats.errors} errors`
+          `✓ Chapters: ${chapterStats.total} total, ${chapterStats.created} created, ${chapterStats.updated} updated, ${chapterStats.errors} errors`
         );
       } catch (error) {
         stats.chapters.errors++;
@@ -260,4 +279,4 @@ async function main() {
   }
 }
 
-await main();
+void main();

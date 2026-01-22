@@ -17,9 +17,9 @@ import { promisify } from "util";
 const execAsync = promisify(exec);
 
 const BACKUP_DIR = path.join(process.cwd(), "backups");
-const args = process.argv.slice(2);
-const shouldUpload = args.includes("--upload");
-const shouldCompress = args.includes("--compress");
+const args = new Set(process.argv.slice(2));
+const shouldUpload = args.has("--upload");
+const shouldCompress = args.has("--compress");
 
 interface BackupResult {
   filepath: string;
@@ -38,7 +38,7 @@ async function backupDatabase(): Promise<BackupResult> {
   await fs.mkdir(BACKUP_DIR, { recursive: true });
 
   // Generate filename with timestamp
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const timestamp = new Date().toISOString().replaceAll(/[.:]/g, "-");
   const filename = `comicwise-backup-${timestamp}.sql`;
   const filepath = path.join(BACKUP_DIR, filename);
 
@@ -83,6 +83,7 @@ async function backupDatabase(): Promise<BackupResult> {
 
 /**
  * Compress backup file using gzip
+ * @param filepath
  */
 async function compressBackup(filepath: string): Promise<string> {
   console.log("🗜️  Compressing backup...");
@@ -106,6 +107,7 @@ async function compressBackup(filepath: string): Promise<string> {
 
 /**
  * Upload backup to AWS S3
+ * @param filepath
  */
 async function uploadToS3(filepath: string): Promise<void> {
   console.log("☁️  Uploading to S3...");
@@ -169,6 +171,7 @@ async function cleanupOldBackups(): Promise<void> {
 
 /**
  * Create a "latest" symlink for easy access
+ * @param filepath
  */
 async function createLatestSymlink(filepath: string): Promise<void> {
   const latestPath = path.join(BACKUP_DIR, "latest.sql");
@@ -182,7 +185,7 @@ async function createLatestSymlink(filepath: string): Promise<void> {
     await fs.symlink(relativePath, latestPath);
 
     console.log(`🔗 Created symlink: latest.sql -> ${path.basename(filepath)}\n`);
-  } catch (error) {
+  } catch {
     // Symlinks might not work on all systems, just log warning
     console.warn("⚠️  Could not create symlink (not critical)");
   }

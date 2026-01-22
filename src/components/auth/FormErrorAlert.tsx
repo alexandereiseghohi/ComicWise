@@ -16,7 +16,7 @@ interface FormErrorAlertProps {
   /**
    * Callback when alert is dismissed
    */
-  onDismiss?: () => void;
+  onDismiss?(): void;
   /**
    * Delay before auto-dismissing (ms)
    * @default undefined (no auto-dismiss)
@@ -28,6 +28,11 @@ interface FormErrorAlertProps {
  * Form Error Alert Component
  * Displays validation or submission errors with dismissible alert
  *
+ * @param root0
+ * @param root0.message
+ * @param root0.visible
+ * @param root0.onDismiss
+ * @param root0.autoDismissDelay
  * @example
  * ```tsx
  * const [error, setError] = useState<string | undefined>();
@@ -70,13 +75,13 @@ export function FormErrorAlert({
 
   return (
     <div className="flex items-start gap-3 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-destructive">
-      <AlertCircle className="mt-0.5 size-5 flex-shrink-0" />
+      <AlertCircle className="mt-0.5 size-5 shrink-0" />
       <div className="flex-1">
         <p className="text-sm font-medium">{message}</p>
       </div>
       <button
         onClick={handleDismiss}
-        className="flex-shrink-0 text-destructive/60 hover:text-destructive"
+        className="shrink-0 text-destructive/60 hover:text-destructive"
         aria-label="Dismiss error"
       >
         <X className="size-4" />
@@ -88,6 +93,12 @@ export function FormErrorAlert({
 /**
  * Generic Alert Component
  * Used for success, info, and warning messages
+ * @param root0
+ * @param root0.message
+ * @param root0.type
+ * @param root0.visible
+ * @param root0.onDismiss
+ * @param root0.autoDismissDelay
  */
 export function FormAlert({
   message,
@@ -99,7 +110,7 @@ export function FormAlert({
   message?: string;
   type?: "success" | "warning" | "info";
   visible?: boolean;
-  onDismiss?: () => void;
+  onDismiss?(): void;
   autoDismissDelay?: number;
 }) {
   const [isVisible, setIsVisible] = useState(visible);
@@ -142,13 +153,13 @@ export function FormAlert({
     <div
       className={`flex items-start gap-3 rounded-lg border ${config.bgColor} p-4 ${config.textColor}`}
     >
-      <div className="mt-0.5 flex-shrink-0 text-lg">{config.icon}</div>
+      <div className="mt-0.5 shrink-0 text-lg">{config.icon}</div>
       <div className="flex-1">
         <p className="text-sm font-medium">{message}</p>
       </div>
       <button
         onClick={handleDismiss}
-        className={`flex-shrink-0 opacity-60 hover:opacity-100`}
+        className={`shrink-0 opacity-60 hover:opacity-100`}
         aria-label="Dismiss alert"
       >
         <X className="size-4" />

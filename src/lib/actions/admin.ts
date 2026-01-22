@@ -9,12 +9,13 @@ import { revalidatePath } from "next/cache";
 /**
  * Admin-only action: Delete a user
  * Requires admin role
+ * @param userId
  */
 export async function deleteUserAsAdmin(userId: string): Promise<ActionResult<void>> {
   try {
     // Auth check
     const session = await auth();
-    if (!session?.user || session.user.role !== "admin") {
+    if (session?.user?.role !== "admin") {
       return error("Unauthorized: Admin access required");
     }
 
@@ -28,14 +29,16 @@ export async function deleteUserAsAdmin(userId: string): Promise<ActionResult<vo
     revalidatePath("/admin/users");
 
     return success(void 0, "User deleted successfully");
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Failed to delete user";
+  } catch (error_) {
+    const message = error_ instanceof Error ? error_.message : "Failed to delete user";
     return error(message);
   }
 }
 
 /**
  * Admin-only action: Update a user's role
+ * @param userId
+ * @param role
  */
 export async function updateUserRoleAsAdmin(
   userId: string,
@@ -43,7 +46,7 @@ export async function updateUserRoleAsAdmin(
 ): Promise<ActionResult<void>> {
   try {
     const session = await auth();
-    if (!session?.user || session.user.role !== "admin") {
+    if (session?.user?.role !== "admin") {
       return error("Unauthorized: Admin access required");
     }
 
@@ -57,19 +60,20 @@ export async function updateUserRoleAsAdmin(
     revalidatePath("/admin/users");
 
     return success(void 0, `User role updated to ${role}`);
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Failed to update user role";
+  } catch (error_) {
+    const message = error_ instanceof Error ? error_.message : "Failed to update user role";
     return error(message);
   }
 }
 
 /**
  * Admin-only action: Delete a comic
+ * @param comicId
  */
 export async function deleteComicAsAdmin(comicId: number): Promise<ActionResult<void>> {
   try {
     const session = await auth();
-    if (!session?.user || session.user.role !== "admin") {
+    if (session?.user?.role !== "admin") {
       return error("Unauthorized: Admin access required");
     }
 
@@ -77,19 +81,20 @@ export async function deleteComicAsAdmin(comicId: number): Promise<ActionResult<
     revalidatePath("/admin/comics");
 
     return success(void 0, "Comic deleted successfully");
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Failed to delete comic";
+  } catch (error_) {
+    const message = error_ instanceof Error ? error_.message : "Failed to delete comic";
     return error(message);
   }
 }
 
 /**
  * Admin-only action: Delete a chapter
+ * @param chapterId
  */
 export async function deleteChapterAsAdmin(chapterId: number): Promise<ActionResult<void>> {
   try {
     const session = await auth();
-    if (!session?.user || session.user.role !== "admin") {
+    if (session?.user?.role !== "admin") {
       return error("Unauthorized: Admin access required");
     }
 
@@ -97,19 +102,20 @@ export async function deleteChapterAsAdmin(chapterId: number): Promise<ActionRes
     revalidatePath("/admin/chapters");
 
     return success(void 0, "Chapter deleted successfully");
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Failed to delete chapter";
+  } catch (error_) {
+    const message = error_ instanceof Error ? error_.message : "Failed to delete chapter";
     return error(message);
   }
 }
 
 /**
  * Admin-only action: Delete a genre
+ * @param genreId
  */
 export async function deleteGenreAsAdmin(genreId: number): Promise<ActionResult<void>> {
   try {
     const session = await auth();
-    if (!session?.user || session.user.role !== "admin") {
+    if (session?.user?.role !== "admin") {
       return error("Unauthorized: Admin access required");
     }
 
@@ -117,21 +123,22 @@ export async function deleteGenreAsAdmin(genreId: number): Promise<ActionResult<
     revalidatePath("/admin/genres");
 
     return success(void 0, "Genre deleted successfully");
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Failed to delete genre";
+  } catch (error_) {
+    const message = error_ instanceof Error ? error_.message : "Failed to delete genre";
     return error(message);
   }
 }
 
 /**
  * Admin-only action: Bulk delete users
+ * @param userIds
  */
 export async function bulkDeleteUsers(
   userIds: string[]
 ): Promise<ActionResult<{ deletedCount: number }>> {
   try {
     const session = await auth();
-    if (!session?.user || session.user.role !== "admin") {
+    if (session?.user?.role !== "admin") {
       return error("Unauthorized: Admin access required");
     }
 
@@ -156,21 +163,22 @@ export async function bulkDeleteUsers(
       { deletedCount: filteredIds.length },
       `${filteredIds.length} user(s) deleted successfully`
     );
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Failed to delete users";
+  } catch (error_) {
+    const message = error_ instanceof Error ? error_.message : "Failed to delete users";
     return error(message);
   }
 }
 
 /**
  * Admin-only action: Bulk delete comics
+ * @param comicIds
  */
 export async function bulkDeleteComics(
   comicIds: number[]
 ): Promise<ActionResult<{ deletedCount: number }>> {
   try {
     const session = await auth();
-    if (!session?.user || session.user.role !== "admin") {
+    if (session?.user?.role !== "admin") {
       return error("Unauthorized: Admin access required");
     }
 
@@ -188,8 +196,8 @@ export async function bulkDeleteComics(
       { deletedCount: comicIds.length },
       `${comicIds.length} comic(s) deleted successfully`
     );
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Failed to delete comics";
+  } catch (error_) {
+    const message = error_ instanceof Error ? error_.message : "Failed to delete comics";
     return error(message);
   }
 }

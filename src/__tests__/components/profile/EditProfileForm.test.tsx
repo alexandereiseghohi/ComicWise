@@ -83,7 +83,7 @@ describe("EditProfileForm", () => {
     render(<EditProfileForm user={mockUser} />);
 
     const file = new File(["test"], "avatar.jpg", { type: "image/jpeg" });
-    const input = screen.getByLabelText(/Drop image here or click to upload/i) as HTMLInputElement;
+    const input = screen.getByLabelText(/drop image here or click to upload/i);
 
     fireEvent.change(input, { target: { files: [file] } });
 
@@ -92,7 +92,7 @@ describe("EditProfileForm", () => {
     });
 
     // Check that the new avatar URL is set
-    const formData = mockUploadAvatar.mock.calls[0][0] as FormData;
+    const formData = mockUploadAvatar.mock.calls[0][0];
     expect(formData.get("avatar")).toBe(file);
   });
 
@@ -123,7 +123,7 @@ describe("EditProfileForm", () => {
     render(<EditProfileForm user={mockUser} />);
 
     const file = new File(["test"], "avatar.jpg", { type: "image/jpeg" });
-    const input = screen.getByLabelText(/Drop image here or click to upload/i) as HTMLInputElement;
+    const input = screen.getByLabelText(/drop image here or click to upload/i);
 
     fireEvent.change(input, { target: { files: [file] } });
 
@@ -153,7 +153,7 @@ describe("EditProfileForm", () => {
     render(<EditProfileForm user={mockUser} />);
 
     const file = new File(["test"], "avatar.jpg", { type: "image/jpeg" });
-    const input = screen.getByLabelText(/Drop image here or click to upload/i) as HTMLInputElement;
+    const input = screen.getByLabelText(/drop image here or click to upload/i);
 
     fireEvent.change(input, { target: { files: [file] } });
 

@@ -6,7 +6,7 @@ export async function getPasswordResetToken(token: string) {
   const [resetToken] = await db
     .select()
     .from(passwordResetToken)
-    .where(and(eq(passwordResetToken.token, token), gt(passwordResetToken.expiresAt, new Date())))
+    .where(and(eq(passwordResetToken.token, token), gt(passwordResetToken.expires, new Date())))
     .limit(1);
 
   return resetToken;

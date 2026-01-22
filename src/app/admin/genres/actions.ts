@@ -26,10 +26,19 @@ export async function createGenre(input: unknown): Promise<ActionResult<{ id: nu
     await requireRole("admin");
     const data = createGenreSchema.parse(input);
 
+    // Generate slug from name
+    const slug = data.name
+      .toLowerCase()
+      .replaceAll(/[^\s\w-]/g, "")
+      .replaceAll(/\s+/g, "-")
+      .replaceAll(/-+/g, "-")
+      .trim();
+
     const result = await database
       .insert(genre)
       .values({
         name: data.name,
+        slug: slug,
         description: data.description || null,
         createdAt: new Date(),
       })
@@ -72,7 +81,23 @@ export async function updateGenre(
       return { success: false, error: "Genre not found" };
     }
 
-    await database.update(genre).set(data).where(eq(genre.id, id));
+    // Generate new slug if name is being updated
+    const updateData: {
+      name?: string;
+      slug?: string;
+      description?: string | null;
+    } = { ...data };
+
+    if (data.name) {
+      updateData.slug = data.name
+        .toLowerCase()
+        .replaceAll(/[^\s\w-]/g, "")
+        .replaceAll(/\s+/g, "-")
+        .replaceAll(/-+/g, "-")
+        .trim();
+    }
+
+    await database.update(genre).set(updateData).where(eq(genre.id, id));
     console.log(`✅ Genre updated: ${existing.name} (ID: ${id})`);
     return { success: true, data: { id } };
   } catch (error) {

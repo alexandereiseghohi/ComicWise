@@ -55,6 +55,7 @@ interface ProfilePageProps {
 
 /**
  * Fetch user profile from API
+ * @param userId
  */
 async function fetchUserProfile(userId: string): Promise<UserProfile> {
   const response = await fetch(`/api/users/${userId}/profile`, {
@@ -67,6 +68,8 @@ async function fetchUserProfile(userId: string): Promise<UserProfile> {
 
 /**
  * User Profile Page Component
+ * @param root0
+ * @param root0.params
  */
 export default function ProfilePage({ params }: ProfilePageProps) {
   const { userId } = params;
@@ -83,7 +86,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
           <p className="text-lg font-semibold text-red-500">Error loading profile</p>
           <Button asChild variant="outline" className="mt-4">
@@ -96,8 +99,8 @@ export default function ProfilePage({ params }: ProfilePageProps) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="size-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -112,9 +115,9 @@ export default function ProfilePage({ params }: ProfilePageProps) {
         {/* Profile Header */}
         <Card className="mb-8">
           <CardContent className="pt-8">
-            <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
+            <div className="flex flex-col items-start gap-8 md:flex-row md:items-center">
               {/* Avatar */}
-              <div className="relative w-32 h-32 flex-shrink-0">
+              <div className="relative size-32 shrink-0">
                 {profile.image ? (
                   <Image
                     src={profile.image}
@@ -123,7 +126,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
                     className="rounded-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full rounded-full bg-gradient-to-br from-purple-400 to-pink-600 flex items-center justify-center text-white text-4xl font-bold">
+                  <div className="flex size-full items-center justify-center rounded-full bg-linear-to-br from-purple-400 to-pink-600 text-4xl font-bold text-white">
                     {profile.name.charAt(0).toUpperCase()}
                   </div>
                 )}
@@ -131,7 +134,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
 
               {/* Profile Info */}
               <div className="flex-1">
-                <div className="flex items-center justify-between mb-4">
+                <div className="mb-4 flex items-center justify-between">
                   <div>
                     <h1 className="text-3xl font-bold">{profile.name}</h1>
                     <Badge className="mt-2">{profile.role.toUpperCase()}</Badge>
@@ -143,16 +146,16 @@ export default function ProfilePage({ params }: ProfilePageProps) {
                   )}
                 </div>
 
-                {profile.bio && <p className="text-gray-600 mb-4">{profile.bio}</p>}
+                {profile.bio && <p className="mb-4 text-gray-600">{profile.bio}</p>}
 
                 {/* Contact Info */}
                 <div className="space-y-2 text-sm text-gray-600">
                   <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4" />
+                    <Mail className="size-4" />
                     <span>{profile.email}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4" />
+                    <Calendar className="size-4" />
                     <span>Joined {new Date(profile.createdAt).toLocaleDateString()}</span>
                   </div>
                 </div>
@@ -160,7 +163,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 pt-8 border-t">
+            <div className="mt-8 grid grid-cols-2 gap-4 border-t pt-8 md:grid-cols-4">
               <div className="text-center">
                 <p className="text-2xl font-bold text-primary">{profile.stats.bookmarkCount}</p>
                 <p className="text-sm text-gray-600">Bookmarks</p>
@@ -185,11 +188,11 @@ export default function ProfilePage({ params }: ProfilePageProps) {
         <Tabs defaultValue="bookmarks" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="bookmarks">
-              <Heart className="w-4 h-4 mr-2" />
+              <Heart className="mr-2 size-4" />
               Bookmarks ({profile.bookmarkedComics.length})
             </TabsTrigger>
             <TabsTrigger value="reading">
-              <BookOpen className="w-4 h-4 mr-2" />
+              <BookOpen className="mr-2 size-4" />
               Reading History
             </TabsTrigger>
             <TabsTrigger value="followers">Following</TabsTrigger>
@@ -198,21 +201,21 @@ export default function ProfilePage({ params }: ProfilePageProps) {
           {/* Bookmarks Tab */}
           <TabsContent value="bookmarks">
             {profile.bookmarkedComics.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
+              <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {profile.bookmarkedComics.map((comic) => (
                   <Link key={comic.id} href={`/comics/${comic.slug}`}>
-                    <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
-                      <div className="relative w-full aspect-[3/4] bg-gray-200">
+                    <Card className="h-full cursor-pointer transition-shadow hover:shadow-lg">
+                      <div className="relative aspect-3/4 w-full bg-gray-200">
                         {comic.coverImage ? (
                           <Image
                             src={comic.coverImage}
                             alt={comic.title}
                             fill
-                            className="object-cover rounded-t-lg"
+                            className="rounded-t-lg object-cover"
                           />
                         ) : (
-                          <div className="flex items-center justify-center h-full bg-gradient-to-br from-purple-400 to-pink-600 rounded-t-lg">
-                            <BookOpen className="w-8 h-8 text-white opacity-50" />
+                          <div className="flex h-full items-center justify-center rounded-t-lg bg-linear-to-br from-purple-400 to-pink-600">
+                            <BookOpen className="size-8 text-white opacity-50" />
                           </div>
                         )}
                       </div>
@@ -226,7 +229,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
             ) : (
               <Card className="mt-6">
                 <CardContent className="py-8 text-center">
-                  <Heart className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                  <Heart className="mx-auto mb-4 size-12 text-gray-300" />
                   <p className="text-gray-600">No bookmarks yet</p>
                   <Button asChild variant="outline" className="mt-4">
                     <Link href="/comics">Explore Comics</Link>

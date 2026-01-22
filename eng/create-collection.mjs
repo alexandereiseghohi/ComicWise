@@ -69,7 +69,7 @@ async function createCollectionTemplate() {
       process.exit(1);
     }
 
-    if (!/^[a-z0-9-]+$/.test(collectionId)) {
+    if (!/^[\da-z-]+$/.test(collectionId)) {
       console.error("❌ Collection ID must contain only lowercase letters, numbers, and hyphens");
       process.exit(1);
     }
@@ -113,7 +113,7 @@ async function createCollectionTemplate() {
       tagInput = await prompt("Tags (comma-separated, or press Enter for defaults): ");
     }
 
-    if (tagInput && tagInput.toString().trim()) {
+    if (tagInput?.toString().trim()) {
       tags = tagInput
         .toString()
         .split(",")

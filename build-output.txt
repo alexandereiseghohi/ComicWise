@@ -1,0 +1,198 @@
+
+> comicwise@0.1.0 prebuild C:\Users\Alexa\Desktop\SandBox\comicwise
+> pnpm clean:cache && pnpm typegen
+
+
+> comicwise@0.1.0 clean:cache C:\Users\Alexa\Desktop\SandBox\comicwise
+> rimraf .next/cache
+
+
+> comicwise@0.1.0 typegen C:\Users\Alexa\Desktop\SandBox\comicwise
+> next typegen
+
+Generating route types...
+Γ£ô Types generated successfully
+
+> comicwise@0.1.0 build C:\Users\Alexa\Desktop\SandBox\comicwise
+> next build
+
+Γû▓ Next.js 16.1.3 (Turbopack)
+- Environments: .env.local
+- Experiments (use with caution):
+  ┬╖ optimizePackageImports
+  ┬╖ serverActions
+  ┬╖ staleTimes
+  ┬╖ staticGenerationMaxConcurrency: 16
+  ┬╖ staticGenerationRetryCount: 3
+  Γ£ô typedEnv
+  Γ£ô webpackBuildWorker
+
+  Creating an optimized production build ...
+
+[0.65ms] [@tailwindcss/postcss] src\app\ibmplexsans_344ab582.module.css
+[0.60ms]   Γå│ Quick bail check
+
+
+[0.07ms] [@tailwindcss/postcss] src\app\schibstedgrotesk_a73a592d.module.css
+[0.04ms]   Γå│ Quick bail check
+
+
+[0.49ms] [@tailwindcss/postcss] src\app\martianmono_d4e9dc31.module.css
+[0.45ms]   Γå│ Quick bail check
+
+
+[0.15ms] [@tailwindcss/postcss] src\app\firasans_b9cc4c64.module.css
+[0.13ms]   Γå│ Quick bail check
+
+
+[0.07ms] [@tailwindcss/postcss] src\app\firamono_2dd64605.module.css
+[0.03ms]   Γå│ Quick bail check
+
+
+[4524.93ms] [@tailwindcss/postcss] src\styles\globals.css
+[   0.02ms]   Γå│ Quick bail check
+[  46.16ms]   Γå│ Setup compiler
+[   2.12ms]     Γå│ PostCSS AST -> Tailwind CSS AST
+[  43.98ms]     Γå│ Create compiler
+[   0.16ms]   Γå│ Register full rebuild paths
+[  16.36ms]   Γå│ Setup scanner
+[3544.62ms]   Γå│ Scan for candidates
+[ 485.18ms]   Γå│ Register dependency messages
+[ 205.23ms]   Γå│ Build utilities
+[ 213.93ms]   Γå│ Optimization
+[   3.23ms]     Γå│ AST -> CSS
+[ 148.22ms]     Γå│ Lightning CSS
+[  62.40ms]     Γå│ CSS -> PostCSS AST
+[  12.43ms]   Γå│ Update PostCSS AST
+
+
+[0.98ms] [@tailwindcss/postcss] src\app\bebasneue_1e2c1499.module.css
+[0.91ms]   Γå│ Quick bail check
+
+Γ£ô Compiled successfully in 2.0min
+  Running TypeScript ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/48) ...
+  Generating static pages using 7 workers (12/48) 
+  Generating static pages using 7 workers (24/48) 
+  Generating static pages using 7 workers (36/48) 
+Γ£ô Generating static pages using 7 workers (48/48) in 7.9s
+  Finalizing page optimization ...
+
+Route (app)
+Γöî Γùï /
+Γö£ Γùï /_not-found
+Γö£ Γùï /admin
+Γö£ ╞Æ /admin/artists
+Γö£ ╞Æ /admin/artists/[id]
+Γö£ Γùï /admin/artists/new
+Γö£ ╞Æ /admin/authors
+Γö£ ╞Æ /admin/authors/[id]
+Γö£ Γùï /admin/authors/new
+Γö£ Γùï /admin/chapters
+Γö£ ╞Æ /admin/chapters/[id]
+Γö£ Γùï /admin/chapters/new
+Γö£ ╞Æ /admin/comics
+Γö£ ╞Æ /admin/comics/[id]
+Γö£ ╞Æ /admin/comics/new
+Γö£ ╞Æ /admin/genres
+Γö£ ╞Æ /admin/genres/[id]
+Γö£ Γùï /admin/genres/new
+Γö£ ╞Æ /admin/types
+Γö£ ╞Æ /admin/types/[id]
+Γö£ Γùï /admin/types/new
+Γö£ Γùï /admin/users
+Γö£ ╞Æ /admin/users/[id]
+Γö£ Γùï /admin/users/new
+Γö£ ╞Æ /api/artists
+Γö£ ╞Æ /api/artists/[id]
+Γö£ ╞Æ /api/auth/[...nextauth]
+Γö£ ╞Æ /api/authors
+Γö£ ╞Æ /api/authors/[id]
+Γö£ ╞Æ /api/bookmarks
+Γö£ ╞Æ /api/chapter-images
+Γö£ ╞Æ /api/chapters
+Γö£ ╞Æ /api/chapters/[id]
+Γö£ ╞Æ /api/comic-images
+Γö£ ╞Æ /api/comics
+Γö£ ╞Æ /api/comics/[slug]
+Γö£ ╞Æ /api/comments
+Γö£ ╞Æ /api/comments/[id]
+Γö£ ╞Æ /api/genres
+Γö£ ╞Æ /api/genres/[id]
+Γö£ ╞Æ /api/health
+Γö£ ╞Æ /api/search
+Γö£ ╞Æ /api/seed
+Γö£ ╞Æ /api/types
+Γö£ ╞Æ /api/types/[id]
+Γö£ ╞Æ /api/upload
+Γö£ ╞Æ /api/users
+Γö£ ╞Æ /api/users/[id]
+Γö£ ╞Æ /bookmarks
+Γö£ ╞Æ /browse
+Γö£ Γùï /comics
+Γö£ ╞Æ /comics/[slug]
+Γö£ ╞Æ /comics/[slug]/chapters/[chapterId]
+Γö£ Γùï /dmca
+Γö£ Γùï /forgot-password
+Γö£ ΓùÅ /genres/[slug]
+Γö£ Γùï /privacy-policy
+Γö£ ╞Æ /profile
+Γö£ ╞Æ /profile/[userId]
+Γö£ ╞Æ /profile/change-password
+Γö£ ╞Æ /profile/edit
+Γö£ ╞Æ /profile/settings
+Γö£ Γùï /resend-verification
+Γö£ Γùï /reset-password
+Γö£ ╞Æ /search
+Γö£ Γùï /sign-in
+Γö£ Γùï /sign-out
+Γö£ Γùï /sign-up
+Γö£ Γùï /terms-of-service
+Γöö Γùï /verify-request
+
+
+Γùï  (Static)   prerendered as static content
+ΓùÅ  (SSG)      prerendered as static HTML (uses generateStaticParams)
+╞Æ  (Dynamic)  server-rendered on demand
+
+
+> comicwise@0.1.0 postbuild C:\Users\Alexa\Desktop\SandBox\comicwise
+> pnpm dlx next-sitemap --config nextSitemap.config.ts
+
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Progress: resolved 4, reused 2, downloaded 0, added 0
+Progress: resolved 16, reused 11, downloaded 2, added 0
+Progress: resolved 24, reused 19, downloaded 3, added 0
+Progress: resolved 65, reused 27, downloaded 4, added 0
+Progress: resolved 69, reused 33, downloaded 4, added 0
+Progress: resolved 70, reused 34, downloaded 4, added 0
+Progress: resolved 71, reused 34, downloaded 4, added 0
+Progress: resolved 71, reused 35, downloaded 4, added 0
+Progress: resolved 72, reused 35, downloaded 4, added 0
+Progress: resolved 72, reused 36, downloaded 4, added 0
+Progress: resolved 73, reused 37, downloaded 4, added 0
+Packages: +43
++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 74, reused 38, downloaded 4, added 5
+Progress: resolved 74, reused 38, downloaded 4, added 39
+Progress: resolved 74, reused 38, downloaded 4, added 41
+Progress: resolved 74, reused 38, downloaded 5, added 42
+Progress: resolved 74, reused 38, downloaded 6, added 42
+Progress: resolved 74, reused 38, downloaded 6, added 43
+Progress: resolved 74, reused 38, downloaded 6, added 43, done
+Γ£¿ [next-sitemap] Loading next-sitemap config: file:///C:/Users/Alexa/Desktop/SandBox/comicwise/nextSitemap.config.ts
+Γ£à [next-sitemap] Generation completed
+ΓöîΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö¼ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÉ
+Γöé (index)       Γöé Values Γöé
+Γö£ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöñ
+Γöé indexSitemaps Γöé 0      Γöé
+Γöé sitemaps      Γöé 1      Γöé
+ΓööΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö┤ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ
+-----------------------------------------------------
+ SITEMAPS 
+-----------------------------------------------------
+
+   Γùï http://localhost:3000/sitemap.xml
+
+

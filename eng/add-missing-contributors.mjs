@@ -45,7 +45,7 @@ const getContributorFiles = (username) => {
       }
     }
 
-    const fileList = Array.from(files);
+    const fileList = [...files];
     console.log(
       `📄 Found ${fileList.length} unique files for ${username}: ${fileList.slice(0, 3).join(", ")}${fileList.length > 3 ? "..." : ""}`
     );

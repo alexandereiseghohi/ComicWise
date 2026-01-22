@@ -21,6 +21,9 @@ interface OAuthProvidersProps {
  * OAuth Provider Buttons Component
  * Displays Google and GitHub authentication options
  *
+ * @param root0
+ * @param root0.redirectTo
+ * @param root0.isLoading
  * @example
  * ```tsx
  * <OAuthProviders redirectTo="/dashboard" />

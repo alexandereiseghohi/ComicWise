@@ -50,17 +50,19 @@ interface VerificationReport {
  * Color codes for console output
  */
 const colors = {
-  reset: "\x1b[0m",
-  green: "\x1b[32m",
-  red: "\x1b[31m",
-  yellow: "\x1b[33m",
-  blue: "\x1b[34m",
-  cyan: "\x1b[36m",
-  bold: "\x1b[1m",
+  reset: "\x1B[0m",
+  green: "\x1B[32m",
+  red: "\x1B[31m",
+  yellow: "\x1B[33m",
+  blue: "\x1B[34m",
+  cyan: "\x1B[36m",
+  bold: "\x1B[1m",
 };
 
 /**
  * Print colored message to console
+ * @param message
+ * @param color
  */
 function log(message: string, color: keyof typeof colors = "reset") {
   console.log(`${colors[color]}${message}${colors.reset}`);
@@ -68,6 +70,8 @@ function log(message: string, color: keyof typeof colors = "reset") {
 
 /**
  * Check if file exists and is valid JSON/JSONC
+ * @param filePath
+ * @param fileName
  */
 function checkConfigFile(filePath: string, fileName: string): CheckResult {
   try {
@@ -81,19 +85,19 @@ function checkConfigFile(filePath: string, fileName: string): CheckResult {
 
     const content = fs.readFileSync(filePath, "utf-8");
     // Simple JSONC validation - this will fail on actual comments, but that's ok for basic check
-    JSON.parse(content.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, ""));
+    JSON.parse(content.replaceAll(/\/\*[\S\s]*?\*\/|\/\/.*/g, ""));
 
     return {
       name: `${fileName} valid`,
       passed: true,
       message: `✅ ${fileName} is valid`,
     };
-  } catch (err) {
+  } catch (error) {
     return {
       name: `${fileName} valid`,
       passed: false,
       message: `❌ ${fileName} parse error`,
-      details: err instanceof Error ? err.message : String(err),
+      details: error instanceof Error ? error.message : String(error),
     };
   }
 }
@@ -140,7 +144,7 @@ async function checkTypeScriptConfig(): Promise<CheckResult> {
     }
 
     const tsConfig = JSON.parse(
-      fs.readFileSync(tsConfigPath, "utf-8").replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, "")
+      fs.readFileSync(tsConfigPath, "utf-8").replaceAll(/\/\*[\S\s]*?\*\/|\/\/.*/g, "")
     );
 
     const hasStrictMode = tsConfig.compilerOptions?.strict === true;
@@ -160,12 +164,12 @@ async function checkTypeScriptConfig(): Promise<CheckResult> {
       message: "⚠️  TypeScript config incomplete",
       details: `Strict: ${hasStrictMode}, Path Aliases: ${hasPathAliases}`,
     };
-  } catch (err) {
+  } catch (error) {
     return {
       name: "TypeScript config",
       passed: false,
       message: "❌ TypeScript config error",
-      details: err instanceof Error ? err.message : String(err),
+      details: error instanceof Error ? error.message : String(error),
     };
   }
 }
@@ -185,7 +189,7 @@ function checkVSCodeExtensions(): CheckResult {
     }
 
     const extConfig = JSON.parse(
-      fs.readFileSync(extPath, "utf-8").replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, "")
+      fs.readFileSync(extPath, "utf-8").replaceAll(/\/\*[\S\s]*?\*\/|\/\/.*/g, "")
     );
     const extensions = extConfig.recommendations || [];
 
@@ -204,12 +208,12 @@ function checkVSCodeExtensions(): CheckResult {
         : "⚠️  Some recommended extensions missing",
       details: `Found ${extensions.length} extensions`,
     };
-  } catch (err) {
+  } catch (error) {
     return {
       name: "VS Code extensions",
       passed: false,
       message: "❌ Extensions check error",
-      details: err instanceof Error ? err.message : String(err),
+      details: error instanceof Error ? error.message : String(error),
     };
   }
 }
@@ -290,8 +294,8 @@ async function main() {
 
     // Exit with appropriate code
     process.exit(report.summary.failed > 0 ? 1 : 0);
-  } catch (err) {
-    log(`\n❌ Verification failed: ${err instanceof Error ? err.message : String(err)}\n`, "red");
+  } catch (error) {
+    log(`\n❌ Verification failed: ${error instanceof Error ? error.message : String(error)}\n`, "red");
     process.exit(1);
   }
 }

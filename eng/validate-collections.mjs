@@ -10,7 +10,7 @@ function validateCollectionId(id) {
   if (!id || typeof id !== "string") {
     return "ID is required and must be a string";
   }
-  if (!/^[a-z0-9-]+$/.test(id)) {
+  if (!/^[\da-z-]+$/.test(id)) {
     return "ID must contain only lowercase letters, numbers, and hyphens";
   }
   if (id.length < 1 || id.length > 50) {
@@ -51,7 +51,7 @@ function validateCollectionTags(tags) {
       if (typeof tag !== "string") {
         return "All tags must be strings";
       }
-      if (!/^[a-z0-9-]+$/.test(tag)) {
+      if (!/^[\da-z-]+$/.test(tag)) {
         return `Tag "${tag}" must contain only lowercase letters, numbers, and hyphens`;
       }
       if (tag.length < 1 || tag.length > 30) {
@@ -202,7 +202,7 @@ function validateCollectionDisplay(display) {
       // Strip any inline comment starting with '#'
       const hashIndex = val.indexOf("#");
       if (hashIndex !== -1) {
-        val = val.substring(0, hashIndex).trim();
+        val = val.slice(0, Math.max(0, hashIndex)).trim();
       }
       // Also strip surrounding quotes if present
       if (

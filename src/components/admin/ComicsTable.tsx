@@ -1,4 +1,3 @@
-import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -88,12 +87,11 @@ export function ComicsTable({
       confirmText: "Delete",
       cancelText: "Cancel",
       variant: "destructive",
-      onConfirm: async () => {
-        setDeletingId(id);
-        await onDelete(id);
-        setDeletingId(null);
-        setSelectedIds(selectedIds.filter((sid) => sid !== id));
-      },
+    }, async () => {
+      setDeletingId(id);
+      await onDelete(id);
+      setDeletingId(null);
+      setSelectedIds(selectedIds.filter((sid) => sid !== id));
     });
   };
 
@@ -106,32 +104,19 @@ export function ComicsTable({
       confirmText: "Delete All",
       cancelText: "Cancel",
       variant: "destructive",
-      onConfirm: async () => {
-        setIsBulkDeleting(true);
-        try {
-          await onBulkDelete(selectedIds);
-          setSelectedIds([]);
-        } finally {
-          setIsBulkDeleting(false);
-        }
-      },
+    }, async () => {
+      setIsBulkDeleting(true);
+      try {
+        await onBulkDelete(selectedIds);
+        setSelectedIds([]);
+      } finally {
+        setIsBulkDeleting(false);
+      }
     });
   };
 
   return (
     <div className="space-y-4">
-      {options && (
-        <ConfirmDialog
-          open={isOpen}
-          onOpenChange={(open) => !open && handleCancel()}
-          title={options.title}
-          description={options.description}
-          confirmText={options.confirmText}
-          cancelText={options.cancelText}
-          variant={options.variant}
-          onConfirm={handleConfirm}
-        />
-      )}
       <Card>
         <CardHeader>
           <CardTitle>Comics</CardTitle>
@@ -219,7 +204,7 @@ export function ComicsTable({
                             size="sm"
                             variant="ghost"
                             onClick={() => handleDelete(comic.id)}
-                            disabled={isLoading || deletingId === comic.id}
+                            disabled={isLoading ?? deletingId === comic.id}
                           >
                             <Trash2 className="size-4" />
                           </Button>
@@ -256,7 +241,7 @@ export function ComicsTable({
           </div>
 
           {selectedIds.length > 0 && (
-            <div className={`mt-4 flex items-center justify-between border-t pt-4`}>
+            <div className="mt-4 flex items-center justify-between border-t pt-4">
               <p className="text-sm text-muted-foreground">{selectedIds.length} selected</p>
               {onBulkDelete && (
                 <Button
@@ -268,9 +253,6 @@ export function ComicsTable({
                   {isBulkDeleting ? "Deleting..." : `Delete ${selectedIds.length}`}
                 </Button>
               )}
-              <Button size="sm" variant="destructive">
-                Delete Selected
-              </Button>
             </div>
           )}
         </CardContent>

@@ -58,6 +58,8 @@ interface ChapterReaderProps {
 
 /**
  * Fetch chapter detail from API
+ * @param slug
+ * @param chapterId
  */
 async function fetchChapterDetail(slug: string, chapterId: string): Promise<ChapterDetail> {
   const response = await fetch(`/api/comics/${slug}/chapters/${chapterId}`, {
@@ -70,6 +72,8 @@ async function fetchChapterDetail(slug: string, chapterId: string): Promise<Chap
 
 /**
  * Chapter Reader Component
+ * @param root0
+ * @param root0.params
  */
 export default function ChapterReaderPage({ params }: ChapterReaderProps) {
   const { slug, chapterId } = params;
@@ -87,7 +91,7 @@ export default function ChapterReaderPage({ params }: ChapterReaderProps) {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
           <p className="text-lg font-semibold text-red-500">Error loading chapter</p>
           <Button asChild variant="outline" className="mt-4">
@@ -100,8 +104,8 @@ export default function ChapterReaderPage({ params }: ChapterReaderProps) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="size-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -112,16 +116,16 @@ export default function ChapterReaderPage({ params }: ChapterReaderProps) {
   const hasMultipleImages = chapter.images.length > 1;
 
   return (
-    <div className={`${isFullscreen ? "fullscreen" : ""} bg-black min-h-screen`}>
+    <div className={`${isFullscreen ? "fullscreen" : ""} min-h-screen bg-black`}>
       {/* Header */}
       {!isFullscreen && (
-        <div className="bg-gray-900 text-white border-b border-gray-800 sticky top-0 z-10">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="sticky top-0 z-10 border-b border-gray-800 bg-gray-900 text-white">
+          <div className="container mx-auto flex items-center justify-between p-4">
             <div>
               <Link href={`/comics/${slug}`} className="text-sm text-blue-400 hover:underline">
                 ← {chapter.comicTitle}
               </Link>
-              <h1 className="text-xl font-bold mt-2">
+              <h1 className="mt-2 text-xl font-bold">
                 Chapter {chapter.number}: {chapter.title}
               </h1>
             </div>
@@ -131,23 +135,23 @@ export default function ChapterReaderPage({ params }: ChapterReaderProps) {
               onClick={() => setIsFullscreen(!isFullscreen)}
               className="text-white hover:bg-gray-800"
             >
-              {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+              {isFullscreen ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />}
             </Button>
           </div>
         </div>
       )}
 
       {/* Reader */}
-      <div className="flex items-center justify-center min-h-[calc(100vh-80px)] p-4">
+      <div className="flex min-h-[calc(100vh-80px)] items-center justify-center p-4">
         {currentImage && (
-          <div className="relative max-w-4xl w-full aspect-auto">
+          <div className="relative aspect-auto w-full max-w-4xl">
             <Image
               src={currentImage.url}
               alt={`Page ${currentImageIndex + 1}`}
               width={1200}
               height={1600}
               priority
-              className="w-full h-auto rounded-lg"
+              className="h-auto w-full rounded-lg"
             />
 
             {/* Navigation Buttons (Overlay) */}
@@ -158,9 +162,9 @@ export default function ChapterReaderPage({ params }: ChapterReaderProps) {
                   variant="ghost"
                   onClick={() => setCurrentImageIndex(Math.max(0, currentImageIndex - 1))}
                   disabled={currentImageIndex === 0}
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white"
+                  className="absolute top-1/2 left-4 -translate-y-1/2 transform bg-black/50 text-white hover:bg-black/70"
                 >
-                  <ChevronLeft className="w-6 h-6" />
+                  <ChevronLeft className="size-6" />
                 </Button>
 
                 <Button
@@ -170,9 +174,9 @@ export default function ChapterReaderPage({ params }: ChapterReaderProps) {
                     setCurrentImageIndex(Math.min(chapter.images.length - 1, currentImageIndex + 1))
                   }
                   disabled={currentImageIndex === chapter.images.length - 1}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white"
+                  className="absolute top-1/2 right-4 -translate-y-1/2 transform bg-black/50 text-white hover:bg-black/70"
                 >
-                  <ChevronRight className="w-6 h-6" />
+                  <ChevronRight className="size-6" />
                 </Button>
               </>
             )}
@@ -182,11 +186,11 @@ export default function ChapterReaderPage({ params }: ChapterReaderProps) {
 
       {/* Footer Navigation */}
       {!isFullscreen && (
-        <div className="bg-gray-900 border-t border-gray-800 sticky bottom-0 z-10">
+        <div className="sticky bottom-0 z-10 border-t border-gray-800 bg-gray-900">
           <div className="container mx-auto px-4 py-6">
             {/* Image Counter */}
             {hasMultipleImages && (
-              <div className="text-center text-gray-400 mb-4">
+              <div className="mb-4 text-center text-gray-400">
                 <p>
                   Page {currentImageIndex + 1} of {chapter.images.length}
                 </p>
@@ -201,7 +205,7 @@ export default function ChapterReaderPage({ params }: ChapterReaderProps) {
                   className="flex-1"
                 >
                   <Button variant="outline" className="w-full">
-                    <ChevronLeft className="w-4 h-4 mr-2" />
+                    <ChevronLeft className="mr-2 size-4" />
                     Previous Chapter
                   </Button>
                 </Link>
@@ -211,7 +215,7 @@ export default function ChapterReaderPage({ params }: ChapterReaderProps) {
 
               <Link href={`/comics/${slug}`}>
                 <Button variant="ghost" className="text-gray-400">
-                  <MessageSquare className="w-4 h-4 mr-2" />
+                  <MessageSquare className="mr-2 size-4" />
                   Comments
                 </Button>
               </Link>
@@ -220,7 +224,7 @@ export default function ChapterReaderPage({ params }: ChapterReaderProps) {
                 <Link href={`/comics/${slug}/chapters/${chapter.nextChapterId}`} className="flex-1">
                   <Button variant="outline" className="w-full">
                     Next Chapter
-                    <ChevronRight className="w-4 h-4 ml-2" />
+                    <ChevronRight className="ml-2 size-4" />
                   </Button>
                 </Link>
               ) : (

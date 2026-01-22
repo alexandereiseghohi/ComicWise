@@ -1,17 +1,17 @@
 import type { SQL } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 import {
-  boolean,
-  decimal,
-  index,
-  integer,
-  pgEnum,
-  pgTable,
-  primaryKey,
-  serial,
-  text,
-  timestamp,
-  unique,
+    boolean,
+    decimal,
+    index,
+    integer,
+    pgEnum,
+    pgTable,
+    primaryKey,
+    serial,
+    text,
+    timestamp,
+    unique,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
 
@@ -164,6 +164,7 @@ export const artist = pgTable("artist", {
 export const genre = pgTable("genre", {
   id: serial("id").primaryKey(),
   name: text("name").notNull().unique(),
+  slug: text("slug").notNull().unique(),
   description: text("description"),
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow().notNull(),
 });
@@ -347,5 +348,54 @@ export const readingProgress = pgTable(
     index("readingProgressChapterIdIdx").on(table.chapterId),
     index("readingProgressLastReadIdx").on(table.lastReadAt),
     index("readingProgressUserComicIdx").on(table.userId, table.comicId),
+  ]
+);
+
+export const rating = pgTable(
+  "rating",
+  {
+    id: serial("id").primaryKey(),
+    userId: text("userId")
+      .references(() => user.id, { onDelete: "cascade" })
+      .notNull(),
+    comicId: integer("comicId")
+      .references(() => comic.id, { onDelete: "cascade" })
+      .notNull(),
+    rating: decimal("rating", { precision: 2, scale: 1 }).notNull(), // 0.0 to 10.0
+    review: text("review"),
+    createdAt: timestamp("createdAt", { mode: "date" }).defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow().notNull(),
+  },
+  (table) => [
+    unique("userComicRatingUnique").on(table.userId, table.comicId),
+    index("ratingUserIdIdx").on(table.userId),
+    index("ratingComicIdIdx").on(table.comicId),
+    index("ratingValueIdx").on(table.rating),
+    index("ratingCreatedAtIdx").on(table.createdAt),
+  ]
+);
+
+export const notification = pgTable(
+  "notification",
+  {
+    id: serial("id").primaryKey(),
+    userId: text("userId")
+      .references(() => user.id, { onDelete: "cascade" })
+      .notNull(),
+    type: text("type").notNull(), // 'new_chapter', 'comment_reply', 'system'
+    title: text("title").notNull(),
+    message: text("message").notNull(),
+    link: text("link"),
+    read: boolean("read").default(false).notNull(),
+    comicId: integer("comicId").references(() => comic.id, { onDelete: "cascade" }),
+    chapterId: integer("chapterId").references(() => chapter.id, { onDelete: "cascade" }),
+    createdAt: timestamp("createdAt", { mode: "date" }).defaultNow().notNull(),
+  },
+  (table) => [
+    index("notificationUserIdIdx").on(table.userId),
+    index("notificationReadIdx").on(table.read),
+    index("notificationTypeIdx").on(table.type),
+    index("notificationCreatedAtIdx").on(table.createdAt),
+    index("notificationUserReadIdx").on(table.userId, table.read),
   ]
 );

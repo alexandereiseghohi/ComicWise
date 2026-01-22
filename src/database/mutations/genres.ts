@@ -16,10 +16,13 @@ export async function createGenre(data: {
   name: string;
   description?: string | null;
 }): Promise<typeof genre.$inferSelect | undefined> {
+  const slug = data.name.toLowerCase().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").trim();
+
   const [newGenre] = await database
     .insert(genre)
     .values({
       name: data.name,
+      slug,
       description: data.description || null,
       createdAt: new Date(),
     })

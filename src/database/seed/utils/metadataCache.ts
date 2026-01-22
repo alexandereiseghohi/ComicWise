@@ -126,9 +126,17 @@ export class MetadataCache {
       return existing.id;
     }
 
+    // Generate slug from name
+    const slug = name
+      .toLowerCase()
+      .replaceAll(/[^\s\w-]/g, "")
+      .replaceAll(/\s+/g, "-")
+      .replaceAll(/-+/g, "-")
+      .trim();
+
     const [created] = await database
       .insert(genre)
-      .values({ name })
+      .values({ name, slug })
       .onConflictDoNothing()
       .returning();
 

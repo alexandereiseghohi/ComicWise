@@ -14,7 +14,7 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="container max-w-md mx-auto py-12">
+    <div className="container mx-auto max-w-md py-12">
       <Card>
         <CardHeader>
           <CardTitle className="text-3xl font-bold">Forgot Password</CardTitle>
@@ -40,7 +40,7 @@ export default function ForgotPasswordPage() {
           </GenericForm>
           <p className="mt-4 text-center text-sm text-muted-foreground">
             Remember your password?{" "}
-            <Link href="/sign-in" className="text-primary hover:underline font-medium">
+            <Link href="/sign-in" className="font-medium text-primary hover:underline">
               Sign In
             </Link>
           </p>

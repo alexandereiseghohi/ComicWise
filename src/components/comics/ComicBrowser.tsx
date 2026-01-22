@@ -54,6 +54,11 @@ const ITEMS_PER_PAGE = 24;
  * - Pagination controls
  * - Responsive grid layout
  *
+ * @param root0
+ * @param root0.initialComics
+ * @param root0.types
+ * @param root0.genres
+ * @param root0.totalCount
  * @component
  */
 export function ComicBrowser({ initialComics, types, genres, totalCount }: ComicBrowserProps) {
@@ -150,8 +155,8 @@ export function ComicBrowser({ initialComics, types, genres, totalCount }: Comic
         <div className="space-y-6">
           {/* Search Bar */}
           <div className="flex gap-2">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <div className="relative flex-1">
+              <Search className="absolute top-3 left-3 size-4 text-muted-foreground" />
               <Input
                 placeholder="Search comics by title or author..."
                 value={searchQuery}
@@ -160,7 +165,7 @@ export function ComicBrowser({ initialComics, types, genres, totalCount }: Comic
               />
             </div>
             <Button onClick={applyFilters} disabled={isPending} className="gap-2">
-              <Search className="h-4 w-4" />
+              <Search className="size-4" />
               Search
             </Button>
           </div>
@@ -245,7 +250,7 @@ export function ComicBrowser({ initialComics, types, genres, totalCount }: Comic
             </Button>
             {(searchQuery || selectedType || selectedGenre || selectedStatus) && (
               <Button variant="ghost" size="sm" onClick={clearAllFilters} disabled={isPending}>
-                <RotateCcw className="mr-2 h-4 w-4" />
+                <RotateCcw className="mr-2 size-4" />
                 Clear Filters
               </Button>
             )}
@@ -284,7 +289,7 @@ export function ComicBrowser({ initialComics, types, genres, totalCount }: Comic
                 onClick={() => goToPage(currentPage - 1)}
                 disabled={currentPage === 1 || isPending}
               >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className="size-4" />
                 Previous
               </Button>
 
@@ -323,7 +328,7 @@ export function ComicBrowser({ initialComics, types, genres, totalCount }: Comic
                 disabled={currentPage === totalPages || isPending}
               >
                 Next
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="size-4" />
               </Button>
 
               {/* Current Page Indicator */}

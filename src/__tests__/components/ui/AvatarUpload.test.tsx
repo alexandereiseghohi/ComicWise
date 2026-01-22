@@ -24,7 +24,7 @@ describe("AvatarUpload", () => {
     );
 
     expect(screen.getByText("Upload")).toBeInTheDocument();
-    expect(screen.getByText(/Drop image here or click to upload/i)).toBeInTheDocument();
+    expect(screen.getByText(/drop image here or click to upload/i)).toBeInTheDocument();
   });
 
   it("renders current image when provided", () => {
@@ -51,8 +51,8 @@ describe("AvatarUpload", () => {
       />
     );
 
-    expect(screen.getByText(/JPG, PNG, WebP or GIF/i)).toBeInTheDocument();
-    expect(screen.getByText(/Max 5MB/i)).toBeInTheDocument();
+    expect(screen.getByText(/jpg, png, webp or gif/i)).toBeInTheDocument();
+    expect(screen.getByText(/max 5mb/i)).toBeInTheDocument();
   });
 
   it("calls onImageSelect when valid file is selected", async () => {
@@ -65,7 +65,7 @@ describe("AvatarUpload", () => {
     );
 
     const file = new File(["test"], "test.jpg", { type: "image/jpeg" });
-    const input = screen.getByLabelText(/Drop image here or click to upload/i) as HTMLInputElement;
+    const input = screen.getByLabelText(/drop image here or click to upload/i);
 
     fireEvent.change(input, { target: { files: [file] } });
 
@@ -89,7 +89,7 @@ describe("AvatarUpload", () => {
     const largeFile = new File([new ArrayBuffer(6 * 1024 * 1024)], "large.jpg", {
       type: "image/jpeg",
     });
-    const input = screen.getByLabelText(/Drop image here or click to upload/i) as HTMLInputElement;
+    const input = screen.getByLabelText(/drop image here or click to upload/i);
 
     fireEvent.change(input, { target: { files: [largeFile] } });
 
@@ -112,7 +112,7 @@ describe("AvatarUpload", () => {
     );
 
     const pdfFile = new File(["test"], "test.pdf", { type: "application/pdf" });
-    const input = screen.getByLabelText(/Drop image here or click to upload/i) as HTMLInputElement;
+    const input = screen.getByLabelText(/drop image here or click to upload/i);
 
     fireEvent.change(input, { target: { files: [pdfFile] } });
 
@@ -148,7 +148,7 @@ describe("AvatarUpload", () => {
     );
 
     const file = new File(["test"], "test.jpg", { type: "image/jpeg" });
-    const dropZone = screen.getByText(/Drop image here or click to upload/i).closest("div");
+    const dropZone = screen.getByText(/drop image here or click to upload/i).closest("div");
 
     if (!dropZone) {
       throw new Error("Drop zone not found");
@@ -177,7 +177,7 @@ describe("AvatarUpload", () => {
     );
 
     const file = new File(["test"], "test.jpg", { type: "image/jpeg" });
-    const dropZone = screen.getByText(/Drop image here or click to upload/i).closest("div");
+    const dropZone = screen.getByText(/drop image here or click to upload/i).closest("div");
 
     if (!dropZone) {
       throw new Error("Drop zone not found");
@@ -210,8 +210,8 @@ describe("AvatarUpload", () => {
 
       const file = new File(["test"], format.name, { type: format.type });
       const input = screen.getByLabelText(
-        /Drop image here or click to upload/i
-      ) as HTMLInputElement;
+        /drop image here or click to upload/i
+      );
 
       fireEvent.change(input, { target: { files: [file] } });
 

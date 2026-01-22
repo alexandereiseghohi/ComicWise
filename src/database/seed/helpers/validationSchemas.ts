@@ -31,6 +31,7 @@ export const ComicSeedSchema = z.object({
     .default("Ongoing"),
   serialization: z.string().optional(),
   updatedAt: z.string().optional(),
+  category: z.string().optional(), // Alternative to type
   type: z
     .object({
       name: z.string(),
@@ -62,12 +63,16 @@ export const ComicSeedSchema = z.object({
     )
     .optional()
     .default([]),
+  image_urls: z.array(z.string()).optional(),
 });
 
 export const ChapterSeedSchema = z.object({
   url: z.string().url().optional(),
   name: z.string().optional(),
   title: z.string().min(1).optional().default("Untitled Chapter"),
+  slug: z.string().optional(),
+  chapterslug: z.string().optional(),
+  comicslug: z.string().optional(),
   comic: z
     .object({
       title: z.string(),
@@ -83,6 +88,7 @@ export const ChapterSeedSchema = z.object({
     )
     .optional()
     .default([]),
+  image_urls: z.array(z.string()).optional(),
 });
 
 export type UserSeedData = z.infer<typeof UserSeedSchema>;
@@ -91,7 +97,8 @@ export type ChapterSeedData = z.infer<typeof ChapterSeedSchema>;
 
 // Re-export for convenience
 export type {
-  ChapterSeedData as ChapterSeed,
-  ComicSeedData as ComicSeed,
-  UserSeedData as UserSeed,
+    ChapterSeedData as ChapterSeed,
+    ComicSeedData as ComicSeed,
+    UserSeedData as UserSeed
 };
+

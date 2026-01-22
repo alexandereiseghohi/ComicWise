@@ -20,7 +20,7 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="container max-w-md mx-auto py-12">
+    <div className="container mx-auto max-w-md py-12">
       <Card>
         <CardHeader>
           <CardTitle className="text-3xl font-bold">Sign Up</CardTitle>
@@ -53,7 +53,7 @@ export default function SignUpPage() {
           </GenericForm>
           <p className="mt-4 text-center text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Link href="/sign-in" className="text-primary hover:underline font-medium">
+            <Link href="/sign-in" className="font-medium text-primary hover:underline">
               Sign In
             </Link>
           </p>

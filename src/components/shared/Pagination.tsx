@@ -24,10 +24,10 @@ export function Pagination({ currentPage, totalPages, baseUrl }: PaginationProps
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex items-center justify-center gap-2 mt-8">
+    <div className="mt-8 flex items-center justify-center gap-2">
       <Button variant="outline" size="sm" asChild disabled={currentPage <= 1}>
         <Link href={createPageUrl(currentPage - 1)}>
-          <ChevronLeft className="h-4 w-4 mr-1" />
+          <ChevronLeft className="mr-1 size-4" />
           Previous
         </Link>
       </Button>
@@ -61,7 +61,7 @@ export function Pagination({ currentPage, totalPages, baseUrl }: PaginationProps
       <Button variant="outline" size="sm" asChild disabled={currentPage >= totalPages}>
         <Link href={createPageUrl(currentPage + 1)}>
           Next
-          <ChevronRight className="h-4 w-4 ml-1" />
+          <ChevronRight className="ml-1 size-4" />
         </Link>
       </Button>
     </div>

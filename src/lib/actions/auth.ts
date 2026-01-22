@@ -4,7 +4,7 @@ import appConfig from "@/appConfig";
 import { db as database } from "@/database/db";
 import { passwordResetToken, user, verificationToken } from "@/database/schema";
 import type { AuthActionResponse } from "@/dto";
-import { auth } from "@/lib/auth";
+import { auth , signIn, signOut } from "@/lib/auth";
 import {
   sendAccountUpdatedEmail,
   sendPasswordResetEmail,
@@ -26,7 +26,6 @@ import {
   signUpSchema,
   verifyEmailSchema,
 } from "@/lib/validations";
-import { signIn, signOut } from "auth";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
@@ -545,7 +544,7 @@ export async function changePassword(data: {
       where: eq(user.id, session.user.id),
     });
 
-    if (!currentUser || !currentUser.password) {
+    if (!currentUser?.password) {
       return {
         success: false,
         error: "User not found or no password set",

@@ -16,11 +16,12 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  useReactTable,
-  type ColumnDef,
-  type ColumnFiltersState,
-  type SortingState,
+  useReactTable
+  
+  
+  
 } from "@tanstack/react-table";
+import type {ColumnDef, ColumnFiltersState, SortingState} from "@tanstack/react-table";
 import { useState } from "react";
 
 interface GenericDataTableProps<TData, TValue> {

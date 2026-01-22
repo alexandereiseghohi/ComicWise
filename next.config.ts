@@ -41,10 +41,19 @@ const nextConfig: NextConfig = {
       "@radix-ui/react-separator",
       "lucide-react",
       "@tabler/icons-react",
+      "@heroicons/react",
       "framer-motion",
       "recharts",
       "date-fns",
+      "clsx",
+      "class-variance-authority",
+      "@tanstack/react-query",
     ],
+
+    // Server optimization
+    optimizeServerReact: true,
+    serverMinification: true,
+    webpackBuildWorker: true,
 
     // Server Actions configuration
     serverActions: {
@@ -107,7 +116,7 @@ const nextConfig: NextConfig = {
   // Security headers
   poweredByHeader: false,
   compress: true,
-  cacheComponents: true,
+  // cacheComponents: true, // Disabled - incompatible with dynamic route segments
 
   // Security headers
   headers: async () => [

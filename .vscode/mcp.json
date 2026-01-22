@@ -280,11 +280,66 @@
         "textDocument/hover",
         "textDocument/completion",
         "textDocument/codeAction",
-        "workspace/symbol"
+        "workspace/symbol",
+        "textDocument/rename",
+        "textDocument/formatting",
+        "textDocument/rangeFormatting",
+        "textDocument/typeDefinition",
+        "textDocument/implementation",
+        "textDocument/documentSymbol",
+        "workspace/executeCommand"
       ],
       "description": "TypeScript language server for intelligent code analysis",
       "env": {
-        "TSSERVER_LOG_FILE": "${workspaceFolder}\\.vscode\\logs\\tsserver.log"
+        "TSSERVER_LOG_FILE": "${workspaceFolder}\\.vscode\\logs\\tsserver.log",
+        "TSSERVER_MAX_MEMORY": "8192",
+        "TSC_COMPILE_ON_SAVE_ENABLED": "true"
+      }
+    },
+
+    "nextjs-mcp": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-everything"],
+      "timeout": 120000,
+      "retries": 3,
+      "disabled": false,
+      "priority": "critical",
+      "autoApprove": [
+        "read_resource",
+        "list_resources",
+        "call_tool",
+        "list_tools",
+        "get_prompt",
+        "list_prompts"
+      ],
+      "description": "Next.js-specific MCP server for App Router, Server Components, and React 19 features",
+      "env": {
+        "NEXTJS_VERSION": "16.1.3",
+        "REACT_VERSION": "19.2.3",
+        "PROJECT_ROOT": "${workspaceFolder}",
+        "TURBOPACK_ENABLED": "true"
+      }
+    },
+
+    "drizzle-orm": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-everything"],
+      "timeout": 90000,
+      "retries": 3,
+      "disabled": false,
+      "priority": "high",
+      "autoApprove": [
+        "introspect_schema",
+        "generate_migration",
+        "list_tables",
+        "describe_table",
+        "query_builder",
+        "relation_mapper"
+      ],
+      "description": "Drizzle ORM schema management and query optimization",
+      "env": {
+        "DATABASE_URL": "${env:DATABASE_URL}",
+        "DRIZZLE_VERSION": "0.45.1"
       }
     },
 

@@ -38,12 +38,11 @@ export function DeleteComicButton({ comicId }: DeleteComicButtonProps) {
             confirmText: "Delete",
             cancelText: "Cancel",
             variant: "destructive",
-            onConfirm: async () => {
-              const result = await deleteComicAction(comicId);
-              if (result.success) {
-                redirect("/admin/comics");
-              }
-            },
+          }, async () => {
+            const result = await deleteComicAction(comicId);
+            if (result.success) {
+              redirect("/admin/comics");
+            }
           })
         }
       >
