@@ -252,15 +252,15 @@ export async function createComment(
         }
       | undefined;
 
-    if (comicData?.bookmarks) {
+    if (chapterData && comicData?.bookmarks) {
       for (const bookmarkItem of comicData.bookmarks) {
         if (bookmarkItem.userId !== validated.userId && bookmarkItem.user.email) {
           await sendCommentNotificationEmail(
             bookmarkItem.user.email,
-            bookmarkItem.user.name || "User",
+            bookmarkItem.user.name ?? "User",
             comicData.title,
             chapterData.title
-          ).catch((err) => console.error("Failed to send notification:", err));
+          ).catch((error) => console.error("Failed to send notification:", error));
         }
       }
     }

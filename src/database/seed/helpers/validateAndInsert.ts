@@ -20,7 +20,7 @@
  * @module validateAndInsert
  */
 
-import bcrypt from "bcryptjs";
+import { hashPassword } from "@/database/seed/helpers/passwordHasher";
 import { z } from "zod";
 import type { Logger } from "./seedLogger";
 
@@ -87,7 +87,7 @@ export function validateData(
     if (error instanceof z.ZodError) {
       const errors: Record<string, string> = {};
 
-      error.errors.forEach((err) => {
+      error.issues.forEach((err) => {
         const path = err.path.join(".");
         errors[path] = err.message;
       });
@@ -105,29 +105,31 @@ export function validateData(
 }
 
 /**
- * Hashes a password using bcrypt
- *
- * @param {string} password - Plain text password
- * @param {number} rounds - Bcrypt salt rounds (default: 10)
- * @returns {Promise<string>} Hashed password
+ * User data structure for seeding
  */
-export async function hashPassword(password: string, rounds: number = 10): Promise<string> {
-  return bcrypt.hash(password, rounds);
+export interface SeedUserData {
+  email: string;
+  password?: string;
+  name?: string;
+  role?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  [key: string]: unknown; // Allow additional properties from seed data
 }
 
 /**
  * Prepares user data for insertion (handles password hashing)
  *
- * @param {any} userData - User data to prepare
+ * @param {SeedUserData} userData - User data to prepare
  * @param {InsertConfig} config - Insert configuration
  * @param {Logger} logger - Logger instance
- * @returns {Promise<any>} Prepared user data
+ * @returns {Promise<SeedUserData>} Prepared user data
  */
 export async function prepareUserData(
-  userData: any,
+  userData: SeedUserData,
   config: InsertConfig,
   logger: Logger
-): Promise<any> {
+): Promise<SeedUserData> {
   const prepared = { ...userData };
 
   // Hash password if configured
@@ -149,48 +151,77 @@ export async function prepareUserData(
   // Add timestamps if configured
   if (config.includeTimestamps) {
     const now = new Date();
-    if (!prepared.createdAt) prepared.createdAt = now;
-    if (!prepared.updatedAt) prepared.updatedAt = now;
+    prepared.createdAt ??= now;
+    prepared.updatedAt ??= now;
   }
 
   return prepared;
+}
+
+/**
+ * Comic data structure for seeding
+ */
+export interface SeedComicData {
+  title: string;
+  description?: string;
+  authorId?: string;
+  coverImage?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  [key: string]: unknown; // Allow additional properties from seed data
 }
 
 /**
  * Prepares comic data for insertion
  *
- * @param {any} comicData - Comic data to prepare
+ * @param {SeedComicData} comicData - Comic data to prepare
  * @param {InsertConfig} config - Insert configuration
- * @returns {any} Prepared comic data
+ * @returns {SeedComicData} Prepared comic data
  */
-export function prepareComicData(comicData: any, config: InsertConfig): any {
+export function prepareComicData(comicData: SeedComicData, config: InsertConfig): SeedComicData {
   const prepared = { ...comicData };
 
   // Add timestamps if configured
   if (config.includeTimestamps) {
     const now = new Date();
-    if (!prepared.createdAt) prepared.createdAt = now;
-    if (!prepared.updatedAt) prepared.updatedAt = now;
+    prepared.createdAt ??= now;
+    prepared.updatedAt ??= now;
   }
 
   return prepared;
 }
 
 /**
+ * Chapter data structure for seeding
+ */
+export interface SeedChapterData {
+  title: string;
+  comicId: string;
+  chapterNumber: number;
+  content?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  [key: string]: unknown; // Allow additional properties from seed data
+}
+
+/**
  * Prepares chapter data for insertion
  *
- * @param {any} chapterData - Chapter data to prepare
+ * @param {SeedChapterData} chapterData - Chapter data to prepare
  * @param {InsertConfig} config - Insert configuration
- * @returns {any} Prepared chapter data
+ * @returns {SeedChapterData} Prepared chapter data
  */
-export function prepareChapterData(chapterData: any, config: InsertConfig): any {
+export function prepareChapterData(
+  chapterData: SeedChapterData,
+  config: InsertConfig
+): SeedChapterData {
   const prepared = { ...chapterData };
 
   // Add timestamps if configured
   if (config.includeTimestamps) {
     const now = new Date();
-    if (!prepared.createdAt) prepared.createdAt = now;
-    if (!prepared.updatedAt) prepared.updatedAt = now;
+    prepared.createdAt ??= now;
+    prepared.updatedAt ??= now;
   }
 
   return prepared;
@@ -202,6 +233,12 @@ export function prepareChapterData(chapterData: any, config: InsertConfig): any 
  * @template T
  * @param {boolean} success - Whether operation succeeded
  * @param {object} options - Result options
+ * @param options.data
+ * @param options.error
+ * @param options.validationErrors
+ * @param options.inserted
+ * @param options.updated
+ * @param options.skipped
  * @returns {ValidationInsertResult<T>} Validation result
  */
 export function createValidationResult<T>(
@@ -253,7 +290,7 @@ export function reportInsertStats(results: ValidationInsertResult<any>[], logger
     results
       .filter((r) => !r.success)
       .forEach((r) => {
-        logger.warn(`  - ${r.error || "Unknown error"}`, { errors: r.validationErrors });
+        logger.warn(`  - ${r.error ?? "Unknown error"}`, { errors: r.validationErrors });
       });
   }
 }
@@ -281,7 +318,7 @@ export function extractValidationErrors(
   return results
     .map((r, index) => ({
       index,
-      errors: r.validationErrors || {},
+      errors: r.validationErrors ?? {},
     }))
     .filter((item) => Object.keys(item.errors).length > 0);
 }

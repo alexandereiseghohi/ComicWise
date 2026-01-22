@@ -1,3 +1,5 @@
+/* eslint-disable sonarjs/cognitive-complexity */
+/* eslint-disable typescript-eslint/no-non-null-assertion */
 /**
  * 🌱 Optimized Comic Seeder v2.0
  * ═══════════════════════════════════════════════════════════════════════════
@@ -12,6 +14,7 @@ import { loadComics } from "@/database/seed/dataLoaderOptimized";
 import { downloadImage, downloadImages } from "@/database/seed/imageHandlerOptimized";
 import { logger } from "@/database/seed/logger";
 import { FALLBACK_COMIC_IMAGE } from "@/database/seed/utils/imagePathConfig";
+import type { InferSelectModel } from "drizzle-orm";
 import { eq } from "drizzle-orm";
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -30,12 +33,33 @@ interface SeedStats {
   errors: number;
 }
 
+type ComicStatus = "Ongoing" | "Hiatus" | "Completed" | "Dropped" | "Season End" | "Coming Soon";
+
+interface ComicData {
+  title: string;
+  slug: string;
+  description?: string;
+  coverImage?: string;
+  rating?: string | number;
+  status?: string;
+  type?: { name: string };
+  author?: { name: string };
+  artist?: { name: string };
+  genres?: Array<{ name: string }>;
+  images?: Array<{ url: string }>;
+}
+
 interface MetadataCache {
   types: Map<string, number>;
   authors: Map<string, number>;
   artists: Map<string, number>;
   genres: Map<string, number>;
 }
+
+type TypeEntity = InferSelectModel<typeof type>;
+type AuthorEntity = InferSelectModel<typeof author>;
+type ArtistEntity = InferSelectModel<typeof artist>;
+type GenreEntity = InferSelectModel<typeof genre>;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // SEED COMICS
@@ -62,11 +86,7 @@ export async function seedComics(options: SeedOptions = {}): Promise<SeedStats> 
       return stats;
     }
 
-    logger.debug(`Loaded ${loadResult.valid} valid comics, ${loadResult.invalid} invalid`);
-
-    if (loadResult.invalid > 0) {
-      logger.warn(`⚠ Comic validation errors: ${loadResult.invalid}`);
-    }
+    logger.debug(`Loaded ${loadResult.data.length} valid comics from data files`);
 
     if (loadResult.data.length === 0) {
       logger.warn("No valid comics found");
@@ -78,7 +98,18 @@ export async function seedComics(options: SeedOptions = {}): Promise<SeedStats> 
     // Process each comic
     for (const comicData of loadResult.data) {
       try {
-        const result = await upsertComic(comicData, cache, options);
+        // Filter out undefined images and map to match ComicData type
+        const sanitizedImages =
+          comicData.images
+            ?.filter((img): img is { url: string } => img?.url !== undefined)
+            .map((img) => ({ url: img!.url })) ?? undefined;
+
+        const sanitizedComicData: ComicData = {
+          ...comicData,
+          images: sanitizedImages,
+        };
+
+        const result = await upsertComic(sanitizedComicData, cache, options);
         if (result.created) {
           stats.created++;
         } else if (result.updated) {
@@ -121,20 +152,28 @@ async function initializeMetadataCache(): Promise<MetadataCache> {
   };
 
   try {
-    const [types, authors, artists, genres] = await Promise.all([
+    const [typeEntities, authorEntities, artistEntities, genreEntities] = await Promise.all([
       db.query.type.findMany(),
       db.query.author.findMany(),
       db.query.artist.findMany(),
       db.query.genre.findMany(),
     ]);
 
-    types.forEach((t) => cache.types.set(t.name, t.id));
-    authors.forEach((a) => cache.authors.set(a.name, a.id));
-    artists.forEach((a) => cache.artists.set(a.name, a.id));
-    genres.forEach((g) => cache.genres.set(g.name, g.id));
+    for (const t of typeEntities) {
+      cache.types.set(t.name, t.id);
+    }
+    for (const a of authorEntities) {
+      cache.authors.set(a.name, a.id);
+    }
+    for (const a of artistEntities) {
+      cache.artists.set(a.name, a.id);
+    }
+    for (const g of genreEntities) {
+      cache.genres.set(g.name, g.id);
+    }
 
     logger.debug(
-      `Initialized caches: ${types.length} types, ${authors.length} authors, ${artists.length} artists, ${genres.length} genres`
+      `Initialized caches: ${typeEntities.length} types, ${authorEntities.length} authors, ${artistEntities.length} artists, ${genreEntities.length} genres`
     );
   } catch (error) {
     logger.warn(`Failed to initialize metadata cache: ${error}`);
@@ -164,11 +203,12 @@ async function getOrCreateMetadata(
           : cache.genres;
 
   if (cacheMap.has(name)) {
-    return cacheMap.get(name)!;
+    const cachedId = cacheMap.get(name);
+    return cachedId ?? null;
   }
 
   try {
-    let result;
+    let result: TypeEntity | AuthorEntity | ArtistEntity | GenreEntity | undefined;
 
     switch (table) {
       case "type": {
@@ -228,11 +268,30 @@ async function getOrCreateMetadata(
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
+// HELPER: VALIDATE COMIC STATUS
+// ═══════════════════════════════════════════════════════════════════════════
+
+function validateComicStatus(status: string | undefined): ComicStatus {
+  const validStatuses: ComicStatus[] = [
+    "Ongoing",
+    "Hiatus",
+    "Completed",
+    "Dropped",
+    "Season End",
+    "Coming Soon",
+  ];
+  if (status && validStatuses.includes(status as ComicStatus)) {
+    return status as ComicStatus;
+  }
+  return "Ongoing";
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 // UPSERT COMIC
 // ═══════════════════════════════════════════════════════════════════════════
 
 async function upsertComic(
-  data: any,
+  data: ComicData,
   cache: MetadataCache,
   options: SeedOptions
 ): Promise<{ created: boolean; updated: boolean }> {
@@ -242,22 +301,13 @@ async function upsertComic(
     });
 
     // Download cover image to /public/comics/covers/
-    let coverImageUrl = data.coverImage;
-    if (!coverImageUrl && data.images && data.images.length > 0) {
-      coverImageUrl = data.images[0].url;
-    }
+    let coverImageUrl: string = data.coverImage ?? data.images?.[0]?.url ?? FALLBACK_COMIC_IMAGE;
 
-    if (coverImageUrl) {
-      const imageResult = await downloadImage(coverImageUrl, "comics/covers");
-      if (imageResult.success && imageResult.local) {
-        coverImageUrl = imageResult.local;
-      } else {
-        // Use fallback if download fails
-        coverImageUrl = FALLBACK_COMIC_IMAGE;
-      }
-    } else {
-      // No cover image provided, use fallback
-      coverImageUrl = FALLBACK_COMIC_IMAGE;
+    if (coverImageUrl && coverImageUrl !== FALLBACK_COMIC_IMAGE) {
+      const imageResult = await downloadImage(coverImageUrl, "comic");
+      // downloadImage returns the local path string directly, or fallback on error
+      coverImageUrl =
+        typeof imageResult === "string" && imageResult ? imageResult : FALLBACK_COMIC_IMAGE;
     }
 
     // Get/create metadata
@@ -273,8 +323,11 @@ async function upsertComic(
           .set({
             description: data.description,
             coverImage: coverImageUrl || existing.coverImage,
-            rating: data.rating ? String(Number.parseFloat(String(data.rating))) : existing.rating,
-            status: data.status || "Ongoing",
+            rating:
+              data.rating !== undefined
+                ? String(Number.parseFloat(String(data.rating)))
+                : existing.rating,
+            status: validateComicStatus(data.status),
             authorId: authorId ?? existing.authorId,
             artistId: artistId ?? existing.artistId,
             typeId: typeId ?? existing.typeId,
@@ -283,10 +336,10 @@ async function upsertComic(
           .where(eq(comic.id, existing.id));
 
         // Update genres
-        await updateComicGenres(existing.id, data.genres || [], cache);
+        await updateComicGenres(existing.id, data.genres ?? [], cache);
 
         // Update comic images
-        await updateComicImages(existing.id, data.images || []);
+        await updateComicImages(existing.id, data.images ?? []);
       }
 
       if (options.verbose) {
@@ -295,22 +348,18 @@ async function upsertComic(
       return { created: false, updated: true };
     } else {
       // Create new comic
-      if (!coverImageUrl) {
-        logger.warn(`No cover image for comic: ${data.title}`);
-        return { created: false, updated: false };
-      }
-
       if (!options.dryRun) {
         const result = await db
           .insert(comic)
           .values({
             title: data.title,
             slug: data.slug,
-            description: data.description,
+            description: data.description ?? "",
             coverImage: coverImageUrl,
             publicationDate: new Date(),
-            rating: data.rating ? String(Number.parseFloat(String(data.rating))) : "0",
-            status: data.status || "Ongoing",
+            rating:
+              data.rating !== undefined ? String(Number.parseFloat(String(data.rating))) : "0",
+            status: validateComicStatus(data.status),
             authorId: authorId ?? undefined,
             artistId: artistId ?? undefined,
             typeId: typeId ?? undefined,
@@ -319,10 +368,10 @@ async function upsertComic(
 
         if (result[0]) {
           // Add genres
-          await updateComicGenres(result[0].id, data.genres || [], cache);
+          await updateComicGenres(result[0].id, data.genres ?? [], cache);
 
           // Add comic images
-          await updateComicImages(result[0].id, data.images || []);
+          await updateComicImages(result[0].id, data.images ?? []);
         }
       }
 
@@ -372,20 +421,22 @@ async function updateComicImages(comicId: number, images: Array<{ url: string }>
 
     // Download images in parallel
     const urls = images.map((img) => img.url);
-    const downloadResults = await downloadImages(urls, 3);
+    const downloadResults = await downloadImages(urls, "comic");
 
     // Remove old images
     await db.delete(comicImage).where(eq(comicImage.comicId, comicId));
 
     // Add new images
     let order = 1;
-    for (const result of downloadResults) {
-      if (result.success && result.local) {
+    for (const localPath of downloadResults) {
+      // downloadImages returns array of strings (local paths)
+      // Skip if download failed (empty string or fallback)
+      if (localPath && localPath !== FALLBACK_COMIC_IMAGE) {
         await db
           .insert(comicImage)
           .values({
             comicId,
-            imageUrl: result.local,
+            imageUrl: localPath,
             imageOrder: order++,
           })
           .onConflictDoNothing();

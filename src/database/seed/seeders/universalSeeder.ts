@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /**
  * ═══════════════════════════════════════════════════════════════════════════
  * Universal Seeder - Dynamic JSON Data Import System
@@ -46,6 +47,15 @@ import fs from "fs/promises";
 import { glob } from "glob";
 import path from "path";
 import { z } from "zod";
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════════════════════════════════════════════
+
+const UNKNOWN_AUTHOR = "Unknown Author";
+const UNKNOWN_ARTIST = "Unknown Artist";
+const UNKNOWN_TYPE = "Unknown Type";
+const UNKNOWN_GENRE = "Unknown Genre";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // HELPER FUNCTIONS
@@ -176,18 +186,10 @@ const ChapterSchema = z
 /**
  * Download and process image with optimized deduplication
  * Checks hash BEFORE uploading to avoid unnecessary uploads
- * @param imageUrl
- * @param folder
- * @param fileName
- * @param p0
- * @param _fileName
+ * @param imageUrl - The URL of the image to download
+ * @param folder - The folder path where the image should be stored
  */
-async function downloadAndUploadImage(
-  imageUrl: string,
-  folder: string,
-
-  _fileName: string
-): Promise<string | null> {
+async function downloadAndUploadImage(imageUrl: string, folder: string): Promise<string | null> {
   try {
     // OPTIMIZATION 1: Check URL cache first - exact URL match (most efficient)
     const cachedUrl = getCachedUrl(imageUrl);
@@ -266,9 +268,7 @@ async function downloadAndUploadImages(
 
   while (queue.length > 0) {
     const batch = queue.splice(0, concurrency);
-    const batchPromises = batch.map((url, index) =>
-      downloadAndUploadImage(url, folder, `image-${Date.now()}-${index}.webp`)
-    );
+    const batchPromises = batch.map((url) => downloadAndUploadImage(url, folder));
 
     const batchResults = await Promise.all(batchPromises);
     results.push(...batchResults);
@@ -289,14 +289,21 @@ async function downloadAndUploadImages(
 /**
  * Normalize and validate comic data before processing
  * Reduces cognitive complexity by extracting data transformation logic
- * @param comicData
+ * @param comicData - The raw comic data to normalize
  */
 export function normalizeComicData(comicData: Record<string, unknown>): Record<string, unknown> {
   const normalizedData = { ...comicData };
 
   // Normalize status field
   if (normalizedData["status"] && typeof normalizedData["status"] === "string") {
-    const validStatuses = ["Ongoing", "Completed", "Hiatus", "Dropped", "Coming Soon"];
+    const validStatuses = [
+      "Ongoing",
+      "Completed",
+      "Hiatus",
+      "Dropped",
+      "Season End",
+      "Coming Soon",
+    ];
     if (!validStatuses.includes(normalizedData["status"])) {
       logger.warn(
         `Invalid status "${normalizedData["status"]}" for ${comicData["title"] ?? comicData["slug"]}, defaulting to "Ongoing"`
@@ -308,7 +315,7 @@ export function normalizeComicData(comicData: Record<string, unknown>): Record<s
   // Clamp rating to [0, 10.00]
   if (normalizedData["rating"] !== undefined) {
     let ratingNumber = Number.parseFloat(String(normalizedData["rating"]));
-    if (isNaN(ratingNumber) || ratingNumber < 0) ratingNumber = 0;
+    if (Number.isNaN(ratingNumber) || ratingNumber < 0) ratingNumber = 0;
     if (ratingNumber > 10.0) {
       logger.warn(
         `Rating ${normalizedData["rating"]} exceeds max for ${comicData["title"] ?? comicData["slug"]}, clamping to 10.00`
@@ -324,33 +331,37 @@ export function normalizeComicData(comicData: Record<string, unknown>): Record<s
 /**
  * Extract cover image URL from comic data
  * Reduces cognitive complexity by isolating image extraction logic
- * @param validatedComic
+ * @param validatedComic - The validated comic data
  */
-export function extractCoverImageUrl(validatedComic: Record<string, any>): string | null {
-  if (validatedComic["coverImage"]) return validatedComic["coverImage"];
-  if (validatedComic["images"]?.length > 0) return validatedComic["images"][0]?.url;
-  if (validatedComic["image_urls"]?.length > 0) return validatedComic["image_urls"][0];
+export function extractCoverImageUrl(validatedComic: z.infer<typeof ComicSchema>): string | null {
+  if (validatedComic.coverImage) return validatedComic.coverImage;
+  if (validatedComic.images && validatedComic.images.length > 0) {
+    return validatedComic.images[0]?.url ?? null;
+  }
+  if (validatedComic.image_urls && validatedComic.image_urls.length > 0) {
+    return validatedComic.image_urls[0] ?? null;
+  }
   return null;
 }
 
 /**
  * Extract all unique comic image URLs from various sources
  * Reduces cognitive complexity by consolidating image URL collection
- * @param validatedComic
+ * @param validatedComic - The validated comic data
  */
-export function extractComicImageUrls(validatedComic: Record<string, any>): string[] {
+export function extractComicImageUrls(validatedComic: z.infer<typeof ComicSchema>): string[] {
   const comicImageUrls: string[] = [];
 
-  if (Array.isArray(validatedComic["images"])) {
-    for (const img of validatedComic["images"]) {
+  if (validatedComic.images) {
+    for (const img of validatedComic.images) {
       if (img?.url && !comicImageUrls.includes(img.url)) {
         comicImageUrls.push(img.url);
       }
     }
   }
 
-  if (Array.isArray(validatedComic["image_urls"])) {
-    for (const url of validatedComic["image_urls"]) {
+  if (validatedComic.image_urls) {
+    for (const url of validatedComic.image_urls) {
       if (url && !comicImageUrls.includes(url)) {
         comicImageUrls.push(url);
       }
@@ -363,39 +374,49 @@ export function extractComicImageUrls(validatedComic: Record<string, any>): stri
 /**
  * Extract author name from various data formats
  * Reduces cognitive complexity by handling different author formats
- * @param validatedComic
+ * @param validatedComic - The validated comic data
  */
-export function extractAuthorName(validatedComic: Record<string, any>): string {
-  if (typeof validatedComic["author"] === "string") return validatedComic["author"];
-  if (validatedComic["author"]?.name) return validatedComic["author"].name;
-  return "Unknown Author";
+export function extractAuthorName(validatedComic: z.infer<typeof ComicSchema>): string {
+  if (typeof validatedComic.author === "string") return validatedComic.author;
+  if (
+    validatedComic.author &&
+    typeof validatedComic.author === "object" &&
+    "name" in validatedComic.author
+  ) {
+    return validatedComic.author.name;
+  }
+  return UNKNOWN_AUTHOR;
 }
 
 /**
  * Extract artist name from various data formats
- * @param validatedComic
+ * @param validatedComic - The validated comic data
  */
-export function extractArtistName(validatedComic: Record<string, any>): string {
-  if (typeof validatedComic["artist"] === "string") return validatedComic["artist"];
-  if (validatedComic["artist"]?.name) return validatedComic["artist"].name;
-  return "Unknown Artist";
+export function extractArtistName(validatedComic: z.infer<typeof ComicSchema>): string {
+  if (typeof validatedComic.artist === "string") return validatedComic.artist;
+  if (
+    validatedComic.artist &&
+    typeof validatedComic.artist === "object" &&
+    "name" in validatedComic.artist
+  ) {
+    return validatedComic.artist.name;
+  }
+  return UNKNOWN_ARTIST;
 }
 
 /**
  * Process and create/update a single comic
  * Extracted to reduce cognitive complexity in seedComicsFromJSON
- * @param validatedComic
- * @param normalizedData
- * @param uploadedCoverImage
- * @param processedComicImageUrls
- * @param authorId
- * @param artistId
- * @param typeId
- * @param genreIds
+ * @param validatedComic - The validated comic data
+ * @param uploadedCoverImage - The uploaded cover image URL
+ * @param processedComicImageUrls - Array of processed comic image URLs
+ * @param authorId - The author's database ID
+ * @param artistId - The artist's database ID
+ * @param typeId - The comic type's database ID
+ * @param genreIds - Array of genre database IDs
  */
 export async function processComicRecord(
-  validatedComic: any,
-  normalizedData: Record<string, unknown>,
+  validatedComic: z.infer<typeof ComicSchema>,
   uploadedCoverImage: string | null,
   processedComicImageUrls: string[],
   authorId: number,
@@ -437,7 +458,10 @@ export async function processComicRecord(
       logger.success(`✓ Updated comic: ${validatedComic.title}`);
     } else {
       const [newComic] = await db.insert(comic).values(comicPayload).returning();
-      comicId = newComic!.id;
+      if (!newComic) {
+        throw new Error(`Failed to create comic: ${validatedComic.title}`);
+      }
+      comicId = newComic.id;
       logger.success(`✓ Created comic: ${validatedComic.title}`);
     }
 
@@ -472,7 +496,7 @@ export async function processComicRecord(
 /**
  * Extract and normalize chapter metadata from various formats
  * Reduces cognitive complexity in seedChaptersFromJSON
- * @param validatedChapter
+ * @param validatedChapter - The validated chapter data
  */
 function extractChapterMetadata(validatedChapter: z.infer<typeof ChapterSchema>): {
   chapterName: string;
@@ -506,15 +530,17 @@ function extractChapterMetadata(validatedChapter: z.infer<typeof ChapterSchema>)
 /**
  * Process and create/update a single chapter with images
  * Extracted to reduce cognitive complexity in seedChaptersFromJSON
- * @param validatedChapter
- * @param metadata
- * @param comicRecord
- * @param processedImageUrls
+ * @param metadata - The extracted chapter metadata
+ * @param validatedChapter - The validated chapter data
+ * @param comicRecord - The comic record object
+ * @param comicRecord.id
+ * @param comicRecord.slug
+ * @param processedImageUrls - Array of processed image URLs
  */
 async function processChapterRecord(
-  validatedChapter: any,
   metadata: ReturnType<typeof extractChapterMetadata>,
-  comicRecord: any,
+  validatedChapter: z.infer<typeof ChapterSchema>,
+  comicRecord: { id: number; slug: string },
   processedImageUrls: string[]
 ): Promise<{ success: boolean; chapterId?: number; error?: string }> {
   try {
@@ -540,7 +566,10 @@ async function processChapterRecord(
       logger.success(`✓ Updated chapter: ${metadata.chapterTitle} (${metadata.chapterNumber})`);
     } else {
       const [newChapter] = await db.insert(chapter).values(chapterPayload).returning();
-      chapterId = newChapter!.id;
+      if (!newChapter) {
+        throw new Error(`Failed to create chapter: ${metadata.chapterTitle}`);
+      }
+      chapterId = newChapter.id;
       logger.success(`✓ Created chapter: ${metadata.chapterTitle} (${metadata.chapterNumber})`);
     }
 
@@ -569,12 +598,13 @@ async function processChapterRecord(
 }
 
 async function findOrCreateAuthor(authorName: string): Promise<number> {
-  if (!authorName || authorName === "_") {
-    authorName = "Unknown Author";
+  let normalizedName = authorName;
+  if (!normalizedName || normalizedName === "_") {
+    normalizedName = UNKNOWN_AUTHOR;
   }
 
   const existing = await db.query.author.findFirst({
-    where: eq(author.name, authorName),
+    where: eq(author.name, normalizedName),
   });
 
   if (existing) {
@@ -584,21 +614,26 @@ async function findOrCreateAuthor(authorName: string): Promise<number> {
   const [newAuthor] = await db
     .insert(author)
     .values({
-      name: authorName,
+      name: normalizedName,
       bio: null,
     })
     .returning();
 
-  return newAuthor!.id;
+  if (!newAuthor) {
+    throw new Error(`Failed to create author: ${normalizedName}`);
+  }
+
+  return newAuthor.id;
 }
 
 async function findOrCreateArtist(artistName: string): Promise<number> {
-  if (!artistName || artistName === "_") {
-    artistName = "Unknown Artist";
+  let normalizedName = artistName;
+  if (!normalizedName || normalizedName === "_") {
+    normalizedName = UNKNOWN_ARTIST;
   }
 
   const existing = await db.query.artist.findFirst({
-    where: eq(artist.name, artistName),
+    where: eq(artist.name, normalizedName),
   });
 
   if (existing) {
@@ -608,21 +643,26 @@ async function findOrCreateArtist(artistName: string): Promise<number> {
   const [newArtist] = await db
     .insert(artist)
     .values({
-      name: artistName,
+      name: normalizedName,
       bio: null,
     })
     .returning();
 
-  return newArtist!.id;
+  if (!newArtist) {
+    throw new Error(`Failed to create artist: ${normalizedName}`);
+  }
+
+  return newArtist.id;
 }
 
 async function findOrCreateType(typeName: string): Promise<number> {
-  if (!typeName || typeName === "_") {
-    typeName = "Unknown Type";
+  let normalizedName = typeName;
+  if (!normalizedName || normalizedName === "_") {
+    normalizedName = UNKNOWN_TYPE;
   }
 
   const existing = await db.query.type.findFirst({
-    where: eq(comicType.name, typeName),
+    where: eq(comicType.name, normalizedName),
   });
 
   if (existing) {
@@ -632,21 +672,26 @@ async function findOrCreateType(typeName: string): Promise<number> {
   const [newType] = await db
     .insert(comicType)
     .values({
-      name: typeName,
+      name: normalizedName,
       description: null,
     })
     .returning();
 
-  return newType!.id;
+  if (!newType) {
+    throw new Error(`Failed to create type: ${normalizedName}`);
+  }
+
+  return newType.id;
 }
 
 async function findOrCreateGenre(genreName: string): Promise<number> {
-  if (!genreName || genreName === "_") {
-    genreName = "Unknown Genre";
+  let normalizedName = genreName;
+  if (!normalizedName || normalizedName === "_") {
+    normalizedName = UNKNOWN_GENRE;
   }
 
   const existing = await db.query.genre.findFirst({
-    where: eq(genre.name, genreName),
+    where: eq(genre.name, normalizedName),
   });
 
   if (existing) {
@@ -656,12 +701,16 @@ async function findOrCreateGenre(genreName: string): Promise<number> {
   const [newGenre] = await db
     .insert(genre)
     .values({
-      name: genreName,
+      name: normalizedName,
       description: null,
     })
     .returning();
 
-  return newGenre!.id;
+  if (!newGenre) {
+    throw new Error(`Failed to create genre: ${normalizedName}`);
+  }
+
+  return newGenre.id;
 }
 
 /**
@@ -669,19 +718,17 @@ async function findOrCreateGenre(genreName: string): Promise<number> {
  * @param validatedComic - The validated comic data
  * @returns The uploaded cover image URL or the original URL
  */
-async function processCoverImage(validatedComic: Record<string, any>): Promise<string | null> {
+async function processCoverImage(
+  validatedComic: z.infer<typeof ComicSchema>
+): Promise<string | null> {
   const coverImageUrl = extractCoverImageUrl(validatedComic);
   if (!coverImageUrl) return null;
 
   const isExternalUrl = coverImageUrl.startsWith("http://") || coverImageUrl.startsWith("https://");
   if (!isExternalUrl) return coverImageUrl;
 
-  const uploaded = await downloadAndUploadImage(
-    coverImageUrl,
-    "covers",
-    `${validatedComic.slug}.webp`
-  );
-  return uploaded || coverImageUrl;
+  const uploaded = await downloadAndUploadImage(coverImageUrl, "covers");
+  return uploaded ?? coverImageUrl;
 }
 
 /**
@@ -689,17 +736,17 @@ async function processCoverImage(validatedComic: Record<string, any>): Promise<s
  * @param validatedComic - The validated comic data
  * @returns Array of processed image URLs
  */
-async function processComicImages(validatedComic: Record<string, any>): Promise<string[]> {
+async function processComicImages(validatedComic: z.infer<typeof ComicSchema>): Promise<string[]> {
   const comicImageUrls = extractComicImageUrls(validatedComic);
   if (comicImageUrls.length === 0) return [];
 
   logger.info(
-    `   📸 Processing ${comicImageUrls.length} images for comic: ${validatedComic["title"]}`
+    `   📸 Processing ${comicImageUrls.length} images for comic: ${validatedComic.title}`
   );
 
   const uploadedImages = await downloadAndUploadImages(
     comicImageUrls,
-    `comics/${validatedComic["slug"]}`,
+    `comics/${validatedComic.slug}`,
     5
   );
 
@@ -714,7 +761,7 @@ async function processComicImages(validatedComic: Record<string, any>): Promise<
  * @param validatedComic - The validated comic data
  * @returns Object containing IDs for author, artist, type, and genres
  */
-async function getOrCreateComicEntities(validatedComic: Record<string, any>): Promise<{
+async function getOrCreateComicEntities(validatedComic: z.infer<typeof ComicSchema>): Promise<{
   authorId: number;
   artistId: number;
   typeId: number;
@@ -722,30 +769,30 @@ async function getOrCreateComicEntities(validatedComic: Record<string, any>): Pr
 } | null> {
   const authorId = await findOrCreateAuthor(extractAuthorName(validatedComic));
   if (!authorId) {
-    logger.error(`Comic '${validatedComic["title"]}': Author not found or could not be created.`);
+    logger.error(`Comic '${validatedComic.title}': Author not found or could not be created.`);
     return null;
   }
 
   const artistId = await findOrCreateArtist(extractArtistName(validatedComic));
   if (!artistId) {
-    logger.error(`Comic '${validatedComic["title"]}': Artist not found or could not be created.`);
+    logger.error(`Comic '${validatedComic.title}': Artist not found or could not be created.`);
     return null;
   }
 
-  const typeName = validatedComic["type"]?.name ?? validatedComic["category"] ?? "Unknown Type";
+  const typeName = validatedComic.type?.name ?? validatedComic.category ?? UNKNOWN_TYPE;
   const typeId = await findOrCreateType(typeName);
   if (!typeId) {
-    logger.error(`Comic '${validatedComic["title"]}': Type not found or could not be created.`);
+    logger.error(`Comic '${validatedComic.title}': Type not found or could not be created.`);
     return null;
   }
 
   const genreIds: number[] = [];
-  for (const genre of validatedComic["genres"] ?? []) {
+  for (const genre of validatedComic.genres ?? []) {
     if (!genre) continue;
-    const genreName = typeof genre === "string" ? genre : genre.name;
+    const genreName = typeof genre === "string" ? genre : (genre as { name: string }).name;
     const genreId = await findOrCreateGenre(genreName);
     if (!genreId) {
-      logger.error(`Comic '${validatedComic["title"]}': Genre not found or could not be created.`);
+      logger.error(`Comic '${validatedComic.title}': Genre not found or could not be created.`);
       continue;
     }
     genreIds.push(genreId);
@@ -763,37 +810,41 @@ async function processSingleComic(comicData: Record<string, unknown>): Promise<{
   success: boolean;
   created?: boolean;
 }> {
-  const normalizedData = normalizeComicData(comicData);
-  const validatedComic = ComicSchema.parse(normalizedData);
+  try {
+    const normalizedData = normalizeComicData(comicData);
+    const validatedComic = ComicSchema.parse(normalizedData);
 
-  const uploadedCoverImage = await processCoverImage(validatedComic);
-  const processedComicImageUrls = await processComicImages(validatedComic);
+    const uploadedCoverImage = await processCoverImage(validatedComic);
+    const processedComicImageUrls = await processComicImages(validatedComic);
 
-  const entities = await getOrCreateComicEntities(validatedComic);
-  if (!entities) return { success: false };
+    const entities = await getOrCreateComicEntities(validatedComic);
+    if (!entities) return { success: false };
 
-  const result = await processComicRecord(
-    validatedComic,
-    normalizedData,
-    uploadedCoverImage,
-    processedComicImageUrls,
-    entities.authorId,
-    entities.artistId,
-    entities.typeId,
-    entities.genreIds
-  );
+    const result = await processComicRecord(
+      validatedComic,
+      uploadedCoverImage,
+      processedComicImageUrls,
+      entities.authorId,
+      entities.artistId,
+      entities.typeId,
+      entities.genreIds
+    );
 
-  if (!result.success) {
-    logger.error(`${result.error}`);
+    if (!result.success) {
+      logger.error(`${result.error}`);
+      return { success: false };
+    }
+
+    const existingComic = await db.query.comic.findFirst({
+      where: (table, { eq, or }) =>
+        or(eq(table.slug, validatedComic.slug), eq(table.title, validatedComic.title)),
+    });
+
+    return { success: true, created: !existingComic };
+  } catch (error) {
+    logger.error(`Failed to process comic: ${error}`);
     return { success: false };
   }
-
-  const existingComic = await db.query.comic.findFirst({
-    where: (table, { eq, or }) =>
-      or(eq(table.slug, validatedComic.slug), eq(table.title, validatedComic.title)),
-  });
-
-  return { success: true, created: !existingComic };
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -810,6 +861,7 @@ export async function seedUsersFromJSON(jsonFiles: string[] = ["users.json"]): P
   for (const jsonFile of jsonFiles) {
     try {
       const filePath = path.join(process.cwd(), jsonFile);
+      // eslint-disable-next-line security/detect-non-literal-fs-filename
       const fileContent = await fs.readFile(filePath, "utf-8");
       const rawData = JSON.parse(fileContent);
       const usersData = Array.isArray(rawData)
@@ -901,6 +953,7 @@ export async function seedComicsFromJSON(pattern: string = "comics*.json"): Prom
 
     try {
       const filePath = path.join(process.cwd(), jsonFile);
+      // eslint-disable-next-line security/detect-non-literal-fs-filename
       const fileContent = await fs.readFile(filePath, "utf-8");
       const rawData = JSON.parse(fileContent);
       const comicsData = Array.isArray(rawData)
@@ -910,130 +963,22 @@ export async function seedComicsFromJSON(pattern: string = "comics*.json"): Prom
       logger.info(`📖 Processing ${comicsData.length} comic(s) from ${jsonFile}`);
 
       for (const comicData of comicsData) {
-        try {
-          // Normalize comic data
-          const normalizedData = normalizeComicData(comicData);
-          const validatedComic = ComicSchema.parse(normalizedData);
+        const result = await processSingleComic(comicData);
 
-          // Process cover image
-          const coverImageUrl = extractCoverImageUrl(validatedComic);
-          let uploadedCoverImage = coverImageUrl;
-          if (
-            coverImageUrl &&
-            (coverImageUrl.startsWith("http://") || coverImageUrl.startsWith("https://"))
-          ) {
-            const uploaded = await downloadAndUploadImage(
-              coverImageUrl,
-              "covers",
-              `${validatedComic.slug}.webp`
-            );
-            if (uploaded) uploadedCoverImage = uploaded;
-          }
+        if (result.success) {
+          totalProcessed++;
+          fileStats.processed++;
 
-          // Process all comic images
-          const comicImageUrls = extractComicImageUrls(validatedComic);
-          let processedComicImageUrls: string[] = [];
-          if (comicImageUrls.length > 0) {
-            logger.info(
-              `   📸 Processing ${comicImageUrls.length} images for comic: ${validatedComic.title}`
-            );
-            const uploadedComicImages = await downloadAndUploadImages(
-              comicImageUrls,
-              `comics/${validatedComic.slug}`,
-              5
-            );
-            processedComicImageUrls = uploadedComicImages.filter(
-              (url): url is string => url !== null
-            );
-            logger.info(
-              `   ✓ Processed ${processedComicImageUrls.length}/${comicImageUrls.length} comic images`
-            );
-          }
-
-          // Get or create author, artist, type, and genres
-          const authorId = await findOrCreateAuthor(extractAuthorName(validatedComic));
-          if (!authorId) {
-            logger.error(
-              `Comic '${validatedComic.title}': Author not found or could not be created.`
-            );
-            totalErrors++;
-            fileStats.errors++;
-            continue;
-          }
-
-          const artistId = await findOrCreateArtist(extractArtistName(validatedComic));
-          if (!artistId) {
-            logger.error(
-              `Comic '${validatedComic.title}': Artist not found or could not be created.`
-            );
-            totalErrors++;
-            fileStats.errors++;
-            continue;
-          }
-
-          const typeName = validatedComic.type?.name ?? validatedComic.category ?? "Unknown Type";
-          const typeId = await findOrCreateType(typeName);
-          if (!typeId) {
-            logger.error(
-              `Comic '${validatedComic.title}': Type not found or could not be created.`
-            );
-            totalErrors++;
-            fileStats.errors++;
-            continue;
-          }
-
-          const genreIds: number[] = [];
-          for (const genre of validatedComic.genres ?? []) {
-            if (!genre) continue;
-            const genreName = typeof genre === "string" ? genre : genre.name;
-            const genreId = await findOrCreateGenre(genreName);
-            if (!genreId) {
-              logger.error(
-                `Comic '${validatedComic.title}': Genre not found or could not be created.`
-              );
-              continue;
-            }
-            genreIds.push(genreId);
-          }
-
-          // Process and create/update comic
-          const result = await processComicRecord(
-            validatedComic,
-            normalizedData,
-            uploadedCoverImage,
-            processedComicImageUrls,
-            authorId,
-            artistId,
-            typeId,
-            genreIds
-          );
-
-          if (result.success) {
-            // Determine if created or updated
-            const existingComic = await db.query.comic.findFirst({
-              where: (table, { eq, or }) =>
-                or(eq(table.slug, validatedComic.slug), eq(table.title, validatedComic.title)),
-            });
-            if (existingComic) {
-              totalUpdated++;
-              fileStats.updated++;
-            } else {
-              totalCreated++;
-              fileStats.created++;
-            }
-            totalProcessed++;
-            fileStats.processed++;
+          if (result.created) {
+            totalCreated++;
+            fileStats.created++;
           } else {
-            totalErrors++;
-            fileStats.errors++;
-            logger.error(`${result.error}`);
+            totalUpdated++;
+            fileStats.updated++;
           }
-        } catch (error) {
+        } else {
           totalErrors++;
           fileStats.errors++;
-          logger.error(
-            `Comic '${comicData["title"] ?? comicData["slug"]}': Failed to process comic: ${error}`
-          );
         }
       }
 
@@ -1098,7 +1043,7 @@ export async function seedChaptersFromJSON(pattern: string = "chapters*.json"): 
 
 /**
  * Process chapter images - Helper function to reduce complexity
- * @param metadata
+ * @param metadata - The extracted chapter metadata
  */
 async function processChapterImages(
   metadata: ReturnType<typeof extractChapterMetadata>
@@ -1123,19 +1068,19 @@ async function processChapterImages(
 
 /**
  * Process a single chapter from JSON data - Extracted to reduce complexity
- * @param chapterData
- * @param results
+ * @param chapterData - The raw chapter data
+ * @param results - The results tracking object
  */
 async function processSingleChapter(
   chapterData: Record<string, unknown>,
-  results: any
+  results: Record<string, unknown>
 ): Promise<void> {
   const validatedChapter = ChapterSchema.parse(chapterData);
   const metadata = extractChapterMetadata(validatedChapter);
 
   if (!metadata.comicSlug) {
     logger.warn(`⚠ Missing comic slug for chapter: ${metadata.chapterTitle}`);
-    results.totalSkipped++;
+    results["totalSkipped"] = (results["totalSkipped"] as number) + 1;
     return;
   }
 
@@ -1147,22 +1092,22 @@ async function processSingleChapter(
     logger.warn(
       `⚠ Comic not found for chapter: ${metadata.chapterTitle} (comic: ${metadata.comicSlug})`
     );
-    results.totalSkipped++;
+    results["totalSkipped"] = (results["totalSkipped"] as number) + 1;
     return;
   }
 
   const processedImageUrls = await processChapterImages(metadata);
 
   const result = await processChapterRecord(
-    validatedChapter,
     metadata,
+    validatedChapter,
     comicRecord,
     processedImageUrls
   );
 
   if (!result.success) {
     logger.error(`${result.error}`);
-    results.totalErrors++;
+    results["totalErrors"] = (results["totalErrors"] as number) + 1;
     return;
   }
 
@@ -1170,24 +1115,28 @@ async function processSingleChapter(
     where: and(eq(chapter.comicId, comicRecord.id), eq(chapter.slug, metadata.chapterSlug)),
   });
 
-  results.totalProcessed++;
+  results["totalProcessed"] = (results["totalProcessed"] as number) + 1;
   if (existingChapter) {
-    results.totalUpdated++;
+    results["totalUpdated"] = (results["totalUpdated"] as number) + 1;
   } else {
-    results.totalCreated++;
+    results["totalCreated"] = (results["totalCreated"] as number) + 1;
   }
 }
 
 /**
  * Process a single JSON file for chapters - Extracted to reduce complexity
- * @param jsonFile
- * @param results
+ * @param jsonFile - The path to the JSON file
+ * @param results - The results tracking object
  */
-async function processSingleChapterFile(jsonFile: string, results: any): Promise<void> {
+async function processSingleChapterFile(
+  jsonFile: string,
+  results: Record<string, unknown>
+): Promise<void> {
   const fileStats = { processed: 0, created: 0, updated: 0, errors: 0, skipped: 0 };
 
   try {
     const filePath = path.join(process.cwd(), jsonFile);
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
     const fileContent = await fs.readFile(filePath, "utf-8");
     const rawData = JSON.parse(fileContent);
     const chaptersData = Array.isArray(rawData)
@@ -1198,53 +1147,70 @@ async function processSingleChapterFile(jsonFile: string, results: any): Promise
 
     for (const chapterData of chaptersData) {
       try {
-        const beforeProcessing = results.totalProcessed;
+        const beforeProcessing = results["totalProcessed"] as number;
         await processSingleChapter(chapterData, results);
 
-        if (results.totalProcessed > beforeProcessing) {
+        if ((results["totalProcessed"] as number) > beforeProcessing) {
           fileStats.processed++;
-          if (results.totalCreated > (results.fileResults[jsonFile]?.created ?? 0)) {
+          const fileResults = results["fileResults"] as Record<
+            string,
+            { created: number; updated: number; skipped: number }
+          >;
+          if ((results["totalCreated"] as number) > (fileResults[jsonFile]?.created ?? 0)) {
             fileStats.created++;
-          } else if (results.totalUpdated > (results.fileResults[jsonFile]?.updated ?? 0)) {
+          } else if ((results["totalUpdated"] as number) > (fileResults[jsonFile]?.updated ?? 0)) {
             fileStats.updated++;
           }
-        } else if (results.totalSkipped > (results.fileResults[jsonFile]?.skipped ?? 0)) {
+        } else if (
+          (results["totalSkipped"] as number) >
+          ((results["fileResults"] as Record<string, { skipped: number }>)[jsonFile]?.skipped ?? 0)
+        ) {
           fileStats.skipped++;
         } else {
           fileStats.errors++;
         }
       } catch (error) {
-        results.totalErrors++;
+        results["totalErrors"] = (results["totalErrors"] as number) + 1;
         fileStats.errors++;
         logger.error(`Failed to process chapter: ${error}`);
       }
     }
 
-    results.fileResults[jsonFile] = fileStats;
+    (results["fileResults"] as Record<string, typeof fileStats>)[jsonFile] = fileStats;
     logger.info(
       `✓ ${jsonFile}: ${fileStats.processed} processed, ${fileStats.created} created, ${fileStats.updated} updated, ${fileStats.skipped} skipped, ${fileStats.errors} errors`
     );
   } catch (error) {
-    results.totalErrors++;
+    results["totalErrors"] = (results["totalErrors"] as number) + 1;
     logger.error(`Failed to read ${jsonFile}: ${error}`);
-    results.fileResults[jsonFile] = { processed: 0, created: 0, updated: 0, errors: 1, skipped: 0 };
+    (results["fileResults"] as Record<string, typeof fileStats>)[jsonFile] = {
+      processed: 0,
+      created: 0,
+      updated: 0,
+      errors: 1,
+      skipped: 0,
+    };
   }
 }
 
 /**
  * Log chapters seeding results - Extracted to reduce complexity
- * @param results
+ * @param results - The results tracking object
  */
-function logChaptersSeedingResults(results: Record<string, any>): void {
+function logChaptersSeedingResults(results: Record<string, unknown>): void {
   logger.success(
     `✅ Chapters seeding complete: ${results["totalProcessed"]} processed, ${results["totalCreated"]} created, ${results["totalUpdated"]} updated, ${results["totalSkipped"]} skipped, ${results["totalErrors"]} errors`
   );
 
-  if (Object.keys(results["fileResults"]).length > 0) {
+  const fileResults = results["fileResults"] as Record<
+    string,
+    { processed: number; created: number; updated: number; skipped: number; errors: number }
+  >;
+  if (Object.keys(fileResults).length > 0) {
     logger.info("\n📊 Detailed File Results:");
-    for (const [file, stats] of Object.entries(results["fileResults"])) {
+    for (const [file, stats] of Object.entries(fileResults)) {
       logger.info(
-        `   ${file}: ${(stats as any)["processed"]} processed, ${(stats as any)["created"]} created, ${(stats as any)["updated"]} updated, ${(stats as any)["skipped"]} skipped, ${(stats as any)["errors"]} errors`
+        `   ${file}: ${stats.processed} processed, ${stats.created} created, ${stats.updated} updated, ${stats.skipped} skipped, ${stats.errors} errors`
       );
     }
   }

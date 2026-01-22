@@ -42,7 +42,6 @@ import { sql } from "drizzle-orm";
 // CONFIGURATION
 // ═══════════════════════════════════════════════════════════════════════════
 
-const TIMEOUT_MS = 300000; // 5 minutes per seeding operation
 const RETRY_ATTEMPTS = 3;
 const RETRY_DELAY_MS = 1000;
 
@@ -106,7 +105,6 @@ async function main() {
     const usersOnly = args.has("--users");
     const comicsOnly = args.has("--comics");
     const chaptersOnly = args.has("--chapters");
-    const clearFlag = args.has("--clear");
 
     if (dryRun) {
       logger.warn("⚠️ DRY RUN MODE - No data will be persisted");
@@ -137,7 +135,8 @@ async function main() {
         );
       } catch (error) {
         stats.users.errors++;
-        logger.error(`Failed to seed users: ${error}`);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        logger.error(`Failed to seed users: ${errorMessage}`);
         if (!process.argv.includes("--continue-on-error")) {
           throw error;
         }
@@ -162,7 +161,8 @@ async function main() {
         );
       } catch (error) {
         stats.comics.errors++;
-        logger.error(`Failed to seed comics: ${error}`);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        logger.error(`Failed to seed comics: ${errorMessage}`);
         if (!process.argv.includes("--continue-on-error")) {
           throw error;
         }
@@ -187,7 +187,8 @@ async function main() {
         );
       } catch (error) {
         stats.chapters.errors++;
-        logger.error(`Failed to seed chapters: ${error}`);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        logger.error(`Failed to seed chapters: ${errorMessage}`);
         if (!process.argv.includes("--continue-on-error")) {
           throw error;
         }
@@ -215,10 +216,10 @@ async function main() {
 
     // Image statistics
     logger.section("Image Management");
-    const imageStats = getImageStats();
-    logger.success(`✓ Session cached: ${imageStats.sessionCached}`);
-    logger.success(`✓ File system cached: ${imageStats.fileSystemCached}`);
-    logger.success(`✓ Total unique images: ${imageStats.totalUnique}`);
+    const imageStats = await getImageStats();
+    logger.success(`✓ Downloaded: ${imageStats.downloaded}`);
+    logger.success(`✓ Cached: ${imageStats.cached}`);
+    logger.success(`✓ Total processed: ${imageStats.total}`);
 
     // Error summary
     const totalErrors = stats.users.errors + stats.comics.errors + stats.chapters.errors;

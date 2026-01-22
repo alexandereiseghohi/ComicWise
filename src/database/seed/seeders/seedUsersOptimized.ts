@@ -28,6 +28,24 @@ interface SeedStats {
   errors: number;
 }
 
+interface UserData {
+  id: string;
+  name: string;
+  email: string;
+  image?: string;
+  role?: string;
+  emailVerified?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+interface LoadResult {
+  data: UserData[];
+  valid: number;
+  invalid: number;
+  errors: Array<{ index: number; error: string }>;
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 // SEED USERS
 // ═══════════════════════════════════════════════════════════════════════════
@@ -43,7 +61,7 @@ export async function seedUsers(options: SeedOptions = {}): Promise<SeedStats> {
 
   try {
     logger.debug("Loading user data from files...");
-    const loadResult = await loadUsers("users.json");
+    const loadResult = (await loadUsers("users.json")) as LoadResult | null;
 
     if (!loadResult || !Array.isArray(loadResult.data)) {
       logger.warn("Invalid load result for users");
@@ -103,8 +121,9 @@ export async function seedUsers(options: SeedOptions = {}): Promise<SeedStats> {
 // UPSERT USER
 // ═══════════════════════════════════════════════════════════════════════════
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 async function upsertUser(
-  data: any,
+  data: UserData,
   options: SeedOptions
 ): Promise<{ created: boolean; updated: boolean }> {
   try {
@@ -116,9 +135,10 @@ async function upsertUser(
     // Download avatar if provided
     let avatarUrl: string | null = null;
     if (data.image) {
-      const imageResult = await downloadImage(data.image, "avatars");
-      if (imageResult.success && imageResult.local) {
-        avatarUrl = imageResult.local;
+      const imageResult = await downloadImage(data.image, "user");
+      // downloadImage returns the local path directly as a string
+      if (imageResult) {
+        avatarUrl = imageResult;
       }
     }
 
@@ -129,8 +149,8 @@ async function upsertUser(
           .update(user)
           .set({
             name: data.name,
-            image: avatarUrl || existing.image,
-            role: data.role || "user",
+            image: avatarUrl ?? existing.image,
+            role: (data.role as "user" | "admin" | "moderator" | undefined) ?? "user",
             emailVerified: data.emailVerified
               ? new Date(data.emailVerified)
               : existing.emailVerified,
@@ -154,7 +174,7 @@ async function upsertUser(
           email: data.email,
           image: avatarUrl,
           password: hashedPassword,
-          role: data.role || "user",
+          role: (data.role as "user" | "admin" | "moderator" | undefined) ?? "user",
           emailVerified: data.emailVerified ? new Date(data.emailVerified) : null,
           status: true,
           createdAt: data.createdAt ? new Date(data.createdAt) : new Date(),

@@ -72,7 +72,25 @@ export async function seedChapters(options: SeedOptions = {}): Promise<SeedStats
     // Process each chapter
     for (const chapterData of loadResult.data) {
       try {
-        const result = await upsertChapter(chapterData, options);
+        // Skip chapters with missing comic data
+        if (!chapterData.comic) {
+          logger.warn(`Skipping chapter "${chapterData.title}": missing comic data`);
+          stats.skipped++;
+          continue;
+        }
+
+        // TypeScript now knows comic is defined due to the check above
+        const result = await upsertChapter(
+          {
+            ...chapterData,
+            comic: chapterData.comic, // This is now guaranteed to be defined
+            images: chapterData.images?.filter(
+              (img): img is { url: string } =>
+                img !== undefined && typeof img === "object" && "url" in img
+            ) as Array<{ url: string }> | undefined,
+          },
+          options
+        );
         if (result.created) {
           stats.created++;
         } else if (result.updated) {
@@ -82,7 +100,8 @@ export async function seedChapters(options: SeedOptions = {}): Promise<SeedStats
         }
       } catch (error) {
         stats.errors++;
-        logger.error(`Error processing chapter ${chapterData.title}: ${error}`);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        logger.error(`Error processing chapter ${chapterData.title}: ${errorMessage}`);
       }
     }
 
@@ -107,7 +126,14 @@ export async function seedChapters(options: SeedOptions = {}): Promise<SeedStats
 // ═══════════════════════════════════════════════════════════════════════════
 
 async function upsertChapter(
-  data: any,
+  data: {
+    title: string;
+    comic: { slug: string; title: string };
+    chapterNumber: string | number;
+    releaseDate?: string | Date;
+    views?: string | number;
+    images?: Array<{ url: string }>;
+  },
   options: SeedOptions
 ): Promise<{ created: boolean; updated: boolean }> {
   try {
@@ -191,7 +217,8 @@ async function upsertChapter(
       return { created: true, updated: false };
     }
   } catch (error) {
-    logger.error(`Failed to upsert chapter: ${error}`);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logger.error(`Failed to upsert chapter: ${errorMessage}`);
     return { created: false, updated: false };
   }
 }
@@ -214,12 +241,8 @@ async function updateChapterImages(
     // Extract URLs
     const urls = imageUrls.map((img) => img.url);
 
-    // Download images to /public/comics/chapters/${comic.slug}/${chapter.slug}/
-    const downloadResults = await downloadImages(
-      urls,
-      `comics/chapters/${comicSlug}/${chapterSlug}`,
-      3
-    );
+    // Download images to /public/comics/chapters/${comic.slug}/${chapterSlug}/
+    const downloadResults = await downloadImages(urls);
 
     // Remove old images
     await db.delete(chapterImage).where(eq(chapterImage.chapterId, chapterId));
@@ -227,7 +250,9 @@ async function updateChapterImages(
     // Add new images
     let pageNumber = 1;
     for (const result of downloadResults) {
-      const imageUrl = result.success && result.local ? result.local : FALLBACK_CHAPTER_IMAGE;
+      // downloadImages returns an array of local paths (strings)
+      // Use the result directly as it's already the local path or empty string
+      const imageUrl = result || FALLBACK_CHAPTER_IMAGE;
       await db
         .insert(chapterImage)
         .values({
@@ -240,9 +265,10 @@ async function updateChapterImages(
       pageNumber++;
     }
 
-    const successCount = downloadResults.filter((r) => r.success).length;
+    const successCount = downloadResults.filter((r) => r && r !== FALLBACK_CHAPTER_IMAGE).length;
     logger.debug(`Added ${successCount}/${imageUrls.length} images to chapter ${chapterSlug}`);
   } catch (error) {
-    logger.warn(`Failed to update chapter images: ${error}`);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logger.warn(`Failed to update chapter images: ${errorMessage}`);
   }
 }

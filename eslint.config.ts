@@ -194,7 +194,7 @@ const eslintRules = {
   "sonarjs/no-duplicate-string": "warn",
   "jsdoc/require-jsdoc": "off", // Too verbose for modern TypeScript projects
   "jsdoc/require-param": "warn",
-  "jsdoc/require-returns": "warn",
+  "jsdoc/require-returns": "off", // Conflicts with many valid cases without return values
   "jsdoc/valid-types": "warn",
   "unicorn/better-regex": "warn",
   "unicorn/catch-error-name": ["warn", { name: "error" }],

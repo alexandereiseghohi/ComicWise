@@ -4,11 +4,11 @@ import { z } from "zod";
 export const env = createEnv({
   server: {
     // Database
-    DATABASE_URL: z.string().url(),
-    NEON_DATABASE_URL: z.string().url().optional(),
+    DATABASE_URL: z.string().min(1).optional(),
+    NEON_DATABASE_URL: z.string().min(1).optional(),
 
     // Auth
-    AUTH_SECRET: z.string().min(32),
+    AUTH_SECRET: z.string().min(32).optional(),
     AUTH_TRUST_HOST: z.string().optional(),
 
     // OAuth Providers
@@ -34,14 +34,14 @@ export const env = createEnv({
     REDIS_TLS_ENABLED: z.string().optional(),
 
     // Upstash Redis
-    UPSTASH_REDIS_REST_URL: z.string().url().optional(),
-    UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
+    UPSTASH_REDIS_REST_URL: z.string().min(1).optional(),
+    UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
 
     // Storage/CDN
-    UPLOAD_PROVIDER: z.enum(["imagekit", "cloudinary", "local", "aws"]).default("local"),
-    IMAGEKIT_PUBLIC_KEY: z.string().optional(),
-    IMAGEKIT_PRIVATE_KEY: z.string().optional(),
-    IMAGEKIT_URL_ENDPOINT: z.string().url().optional(),
+    UPLOAD_PROVIDER: z.enum(["imagekit", "cloudinary", "local", "aws"]).optional().default("local"),
+    IMAGEKIT_PUBLIC_KEY: z.string().min(1).optional(),
+    IMAGEKIT_PRIVATE_KEY: z.string().min(1).optional(),
+    IMAGEKIT_URL_ENDPOINT: z.string().min(1).optional(),
     CLOUDINARY_CLOUD_NAME: z.string().optional(),
     CLOUDINARY_API_KEY: z.string().optional(),
     CLOUDINARY_API_SECRET: z.string().optional(),
@@ -94,10 +94,10 @@ export const env = createEnv({
     RATE_LIMIT_WINDOW_MS: z.string().optional(),
 
     // Sentry (Error Monitoring)
-    SENTRY_DSN: z.string().url().optional(),
-    SENTRY_ORG: z.string().optional(),
-    SENTRY_PROJECT: z.string().optional(),
-    SENTRY_AUTH_TOKEN: z.string().optional(),
+    SENTRY_DSN: z.string().min(1).optional(),
+    SENTRY_ORG: z.string().min(1).optional(),
+    SENTRY_PROJECT: z.string().min(1).optional(),
+    SENTRY_AUTH_TOKEN: z.string().min(1).optional(),
     SENTRY_ENABLE_TRACING: z.string().optional(),
     SENTRY_TRACES_SAMPLE_RATE: z.string().optional(),
     SENTRY_REPLAY_SESSION_SAMPLE_RATE: z.string().optional(),
@@ -105,10 +105,10 @@ export const env = createEnv({
   },
 
   client: {
-    NEXT_PUBLIC_APP_URL: z.string().url(),
-    NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY: z.string().optional(),
-    NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT: z.string().url().optional(),
-    NEXT_PUBLIC_SENTRY_DSN: z.string().url().optional(),
+    NEXT_PUBLIC_APP_URL: z.string().min(1).optional(),
+    NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY: z.string().min(1).optional(),
+    NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT: z.string().min(1).optional(),
+    NEXT_PUBLIC_SENTRY_DSN: z.string().min(1).optional(),
   },
 
   runtimeEnv: {

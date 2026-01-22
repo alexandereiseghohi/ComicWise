@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * ═══════════════════════════════════════════════════════════════════════════
  * Enhanced Seed Logger
@@ -323,7 +324,10 @@ export class Logger {
     };
 
     this.history.forEach((entry) => {
-      counts[entry.level]++;
+      const count = counts[entry.level];
+      if (count !== undefined) {
+        counts[entry.level] = count + 1;
+      }
     });
 
     return counts;

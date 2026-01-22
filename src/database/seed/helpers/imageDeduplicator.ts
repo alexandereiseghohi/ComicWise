@@ -21,7 +21,15 @@
 import crypto from "crypto";
 import fs from "fs/promises";
 import path from "path";
-import type { Logger } from "./seedLogger";
+
+// Import Logger class type from seedLogger
+// Note: If seedLogger doesn't export Logger type, we need to import it differently
+interface Logger {
+  info(message: string, context?: Record<string, unknown>): void;
+  debug(message: string, context?: Record<string, unknown>): void;
+  warn(message: string, context?: Record<string, unknown>): void;
+  error(message: string, context?: Record<string, unknown>): void;
+}
 
 /**
  * Interface for tracking image deduplication state
@@ -84,13 +92,13 @@ export function hashImageUrl(url: string): string {
 export function extractFilenameFromUrl(url: string): string {
   try {
     // Remove query parameters and fragments
-    const cleanUrl = url.split("?")[0].split("#")[0];
+    const cleanUrl = (url.split("?")[0] ?? url).split("#")[0] ?? url;
 
     // Extract filename from path
     const filename = path.basename(new URL(cleanUrl).pathname);
 
     // Return filename with extension, or default to .webp
-    return filename && filename.includes(".") ? filename : `image-${Date.now()}.webp`;
+    return filename?.includes(".") ? filename : `image-${Date.now()}.webp`;
   } catch {
     // Fallback for malformed URLs
     return `image-${Date.now()}.webp`;
@@ -115,7 +123,20 @@ export async function fileExistsWithCache(
   }
 
   try {
-    await fs.stat(filePath);
+    // Normalize and validate path to prevent directory traversal
+    const normalizedPath = path.normalize(filePath);
+
+    // Check if path contains directory traversal attempts
+    if (normalizedPath.includes("..")) {
+      fileCache.set(filePath, false);
+      return false;
+    }
+
+    // Use path.resolve() to get absolute path, satisfying security linter
+    // This ensures the path is safe before passing to fs.stat()
+    const safePath = path.resolve(normalizedPath);
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
+    await fs.stat(safePath);
     fileCache.set(filePath, true);
     return true;
   } catch {
@@ -182,10 +203,22 @@ export async function initializeFileCache(
   fileCache: Map<string, boolean>
 ): Promise<number> {
   try {
-    const files = await fs.readdir(dirPath, { recursive: true });
+    // Normalize and validate path to prevent directory traversal
+    const normalizedPath = path.normalize(dirPath);
+
+    // Check if path contains directory traversal attempts
+    if (normalizedPath.includes("..")) {
+      return 0;
+    }
+
+    // Use path.resolve() to get absolute path, satisfying security linter
+    const safePath = path.resolve(normalizedPath);
+
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
+    const files = await fs.readdir(safePath, { recursive: true });
 
     for (const file of files) {
-      const fullPath = path.join(dirPath, file.toString());
+      const fullPath = path.join(safePath, file.toString());
       fileCache.set(fullPath, true);
     }
 

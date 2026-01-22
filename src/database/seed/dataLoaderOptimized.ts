@@ -259,7 +259,11 @@ export async function loadChapters(): Promise<ValidationResult<ChapterSeedData>>
 /**
  * Load all data at once
  */
-export async function loadAllData() {
+export async function loadAllData(): Promise<{
+  users: ValidationResult<UserSeedData>;
+  comics: ValidationResult<ComicSeedData>;
+  chapters: ValidationResult<ChapterSeedData>;
+}> {
   logger.section("Loading All Seed Data");
 
   const [users, comics, chapters] = await Promise.all([loadUsers(), loadComics(), loadChapters()]);

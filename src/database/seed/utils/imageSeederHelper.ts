@@ -1,5 +1,3 @@
-/* eslint-disable typescript-eslint/explicit-module-boundary-types */
-
 /**
  * Image Seeder Helper Utilities
  * Handles downloading and caching images during seeding
@@ -50,8 +48,8 @@ export class ImageCacheManager {
    */
   async getOrDownloadImage(url: string, _context: string = "unknown"): Promise<string | undefined> {
     // Check if already cached
-    if (this.imageCache.has(url)) {
-      const cached = this.imageCache.get(url)!;
+    const cached = this.imageCache.get(url);
+    if (cached) {
       this.downloadStats.cached++;
       logger.debug(`Using cached image: ${url}`);
       return cached.localPath;
@@ -125,7 +123,13 @@ export class ImageCacheManager {
   /**
    * Get download statistics
    */
-  getStats() {
+  getStats(): {
+    attempted: number;
+    successful: number;
+    failed: number;
+    cached: number;
+    cacheSize: number;
+  } {
     return {
       ...this.downloadStats,
       cacheSize: this.imageCache.size,
@@ -157,21 +161,22 @@ export class ImageCacheManager {
  * Handles various data formats
  * @param data
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export function extractImageUrls(data: Record<string, unknown>): string[] {
   const urls: string[] = [];
 
   // Direct cover/image URL
-  if (data.coverImage && typeof data.coverImage === "string") {
-    urls.push(data.coverImage);
+  if (data["coverImage"] && typeof data["coverImage"] === "string") {
+    urls.push(data["coverImage"]);
   }
 
-  if (data.image && typeof data.image === "string") {
-    urls.push(data.image);
+  if (data["image"] && typeof data["image"] === "string") {
+    urls.push(data["image"]);
   }
 
   // Array of image objects with URLs
-  if (Array.isArray(data.images)) {
-    for (const img of data.images) {
+  if (Array.isArray(data["images"])) {
+    for (const img of data["images"]) {
       if (typeof img === "string") {
         urls.push(img);
       } else if (typeof img === "object" && img.url) {
@@ -181,8 +186,8 @@ export function extractImageUrls(data: Record<string, unknown>): string[] {
   }
 
   // Array of image URLs
-  if (Array.isArray(data.image_urls)) {
-    for (const img of data.image_urls) {
+  if (Array.isArray(data["image_urls"])) {
+    for (const img of data["image_urls"]) {
       if (typeof img === "string") {
         urls.push(img);
       }
@@ -190,8 +195,8 @@ export function extractImageUrls(data: Record<string, unknown>): string[] {
   }
 
   // Chapter page URLs
-  if (Array.isArray(data.pages)) {
-    for (const page of data.pages) {
+  if (Array.isArray(data["pages"])) {
+    for (const page of data["pages"]) {
       if (typeof page === "string") {
         urls.push(page);
       } else if (typeof page === "object" && page.url) {
