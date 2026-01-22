@@ -257,7 +257,12 @@ export function getOriginalFilename(url: string): string {
  * Download multiple images with concurrency control
  */
 export async function downloadImagesWithConcurrency(
-  downloads: Array<{ url: string; outputPath: string; fallbackImage?: string; skipIfExists?: boolean }>,
+  downloads: Array<{
+    url: string;
+    outputPath: string;
+    fallbackImage?: string;
+    skipIfExists?: boolean;
+  }>,
   concurrency = 5
 ): Promise<Array<{ success: boolean; path: string; cached: boolean; error?: string }>> {
   const results: Array<{ success: boolean; path: string; cached: boolean; error?: string }> = [];

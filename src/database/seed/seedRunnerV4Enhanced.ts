@@ -89,15 +89,11 @@ async function seedAll(config: SeedConfig = DEFAULT_CONFIG): Promise<void> {
     // PHASE 1: SEED USERS
     // ═══════════════════════════════════════════════════════════════════════
     if (config.users && !config.dryRun) {
-
       logger.info("│ PHASE 1: Seeding Users                                 │");
 
       logger.info("");
 
-      const userResult = await seedUsersV4(
-        ["users.json"],
-        env.CUSTOM_PASSWORD
-      );
+      const userResult = await seedUsersV4(["users.json"], env.CUSTOM_PASSWORD);
       results.users = userResult;
 
       logger.info("");
@@ -179,8 +175,7 @@ async function seedAll(config: SeedConfig = DEFAULT_CONFIG): Promise<void> {
     logger.info("");
 
     // Check for errors
-    const totalErrors =
-      results.users.errors + results.comics.errors + results.chapters.errors;
+    const totalErrors = results.users.errors + results.comics.errors + results.chapters.errors;
 
     if (totalErrors > 0) {
       logger.warn(`⚠️  Completed with ${totalErrors} errors. Check logs for details.`);

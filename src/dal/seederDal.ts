@@ -7,23 +7,23 @@
 
 import { db } from "@/database";
 import {
-    artist,
-    author,
-    chapter,
-    chapterImage,
-    comic,
-    comicImage,
-    comicToGenre,
-    type as comicType,
-    genre,
-    user,
+  artist,
+  author,
+  chapter,
+  chapterImage,
+  comic,
+  comicImage,
+  comicToGenre,
+  type as comicType,
+  genre,
+  user,
 } from "@/database/schema";
 import type {
-    ChapterMetadata,
-    ChapterPayload,
-    ComicEntities,
-    ComicPayload,
-    ProcessingResult,
+  ChapterMetadata,
+  ChapterPayload,
+  ComicEntities,
+  ComicPayload,
+  ProcessingResult,
 } from "@/dto";
 import { logger as baseLogger } from "@/lib/logger";
 import { and, eq } from "drizzle-orm";

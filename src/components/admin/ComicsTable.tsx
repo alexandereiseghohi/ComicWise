@@ -80,39 +80,45 @@ export function ComicsTable({
   };
 
   const handleDelete = (id: number) => {
-    confirm({
-      title: "Delete Comic",
-      description:
-        "Are you sure? This will delete the comic and all associated chapters. This action cannot be undone.",
-      confirmText: "Delete",
-      cancelText: "Cancel",
-      variant: "destructive",
-    }, async () => {
-      setDeletingId(id);
-      await onDelete(id);
-      setDeletingId(null);
-      setSelectedIds(selectedIds.filter((sid) => sid !== id));
-    });
+    confirm(
+      {
+        title: "Delete Comic",
+        description:
+          "Are you sure? This will delete the comic and all associated chapters. This action cannot be undone.",
+        confirmText: "Delete",
+        cancelText: "Cancel",
+        variant: "destructive",
+      },
+      async () => {
+        setDeletingId(id);
+        await onDelete(id);
+        setDeletingId(null);
+        setSelectedIds(selectedIds.filter((sid) => sid !== id));
+      }
+    );
   };
 
   const handleBulkDelete = () => {
     if (selectedIds.length === 0 || !onBulkDelete) return;
 
-    confirm({
-      title: "Bulk Delete Comics",
-      description: `Are you sure? This will delete ${selectedIds.length} comic(s) and all their associated chapters. This action cannot be undone.`,
-      confirmText: "Delete All",
-      cancelText: "Cancel",
-      variant: "destructive",
-    }, async () => {
-      setIsBulkDeleting(true);
-      try {
-        await onBulkDelete(selectedIds);
-        setSelectedIds([]);
-      } finally {
-        setIsBulkDeleting(false);
+    confirm(
+      {
+        title: "Bulk Delete Comics",
+        description: `Are you sure? This will delete ${selectedIds.length} comic(s) and all their associated chapters. This action cannot be undone.`,
+        confirmText: "Delete All",
+        cancelText: "Cancel",
+        variant: "destructive",
+      },
+      async () => {
+        setIsBulkDeleting(true);
+        try {
+          await onBulkDelete(selectedIds);
+          setSelectedIds([]);
+        } finally {
+          setIsBulkDeleting(false);
+        }
       }
-    });
+    );
   };
 
   return (

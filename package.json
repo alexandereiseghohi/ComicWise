@@ -3,11 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "engines": {
-    "node": ">=20.0.0",
-    "pnpm": ">=9.0.0"
-  },
-  "packageManager": "pnpm@9.14.4",
   "scripts": {
     "// ═══════════ ANALYSIS & OPTIMIZATION ═══════════": "",
     "// ═══════════ BUILD & DEPLOY ═══════════": "",
@@ -54,6 +49,7 @@
     "cleanup:backups": "tsx scripts/cleanup.ts --backups",
     "cleanup:build": "tsx scripts/cleanup.ts --build",
     "cleanup:deep": "tsx scripts/cleanup.ts --deep",
+    "cleanup:docs": "tsx scripts/cleanup.ts --docs",
     "cleanup:duplicates": "tsx scripts/cleanup-duplicates.ts",
     "cleanup:duplicates:dry-run": "tsx scripts/cleanup-duplicates.ts --dry-run",
     "cleanup:uploads": "tsx scripts/cleanup.ts --uploads",
@@ -103,6 +99,13 @@
     "docs:readme": "tsx scripts/master-setup.ts --task=readme",
     "format": "prettier --config .prettierrc.ts --write \"**/*.{ts,tsx,js,jsx,mjs,mts,cjs,cts,json,css,md}\"",
     "format:check": "prettier --config .prettierrc.ts --check \"**/*.{ts,tsx,js,jsx,mjs,mts,cjs,cts,json,css,md}\"",
+    "refactor:duplicates": "tsx scripts/find-duplicates.ts",
+    "refactor:duplicates:cleanup": "tsx scripts/find-duplicates.ts --cleanup --no-dry-run",
+    "refactor:duplicates:dry-run": "tsx scripts/find-duplicates.ts --cleanup",
+    "refactor:kebab": "tsx scripts/convert-to-kebab-case.ts",
+    "refactor:kebab:apply": "tsx scripts/convert-to-kebab-case.ts --no-dry-run",
+    "refactor:kebab:files": "tsx scripts/convert-to-kebab-case.ts --files-only",
+    "refactor:unused-deps": "tsx scripts/remove-unused-deps.ts",
     "git:commit": "tsx scripts/git-commit.ts",
     "git:init": "tsx scripts/git-init.ts",
     "git:push": "tsx scripts/git-commit.ts --no-push=false",
@@ -386,5 +389,10 @@
     "typescript-eslint": "^8.53.0",
     "vitest": "^4.0.17",
     "web-vitals": "^5.1.0"
+  },
+  "packageManager": "pnpm@9.14.4",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
   }
 }

@@ -4,7 +4,7 @@ import appConfig from "@/appConfig";
 import { db as database } from "@/database/db";
 import { passwordResetToken, user, verificationToken } from "@/database/schema";
 import type { AuthActionResponse } from "@/dto";
-import { auth , signIn, signOut } from "@/lib/auth";
+import { auth, signIn, signOut } from "@/lib/auth";
 import {
   sendAccountUpdatedEmail,
   sendPasswordResetEmail,

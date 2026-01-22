@@ -10,18 +10,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import type { ColumnDef, ColumnFiltersState, SortingState } from "@tanstack/react-table";
 import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  useReactTable
-  
-  
-  
+  useReactTable,
 } from "@tanstack/react-table";
-import type {ColumnDef, ColumnFiltersState, SortingState} from "@tanstack/react-table";
 import { useState } from "react";
 
 interface GenericDataTableProps<TData, TValue> {

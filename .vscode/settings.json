@@ -18,6 +18,7 @@
 
   "breadcrumbs.enabled": true,
   "breadcrumbs.symbolPath": "on",
+  "database-client.telemetry.usesOnlineServices": false,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "explicit"
@@ -128,6 +129,5 @@
   "vitest.enable": true,
   "yaml.schemas": {
     "./.schemas/collection.schema.json": "*.collection.yml"
-  },
-  "database-client.telemetry.usesOnlineServices": false
+  }
 }

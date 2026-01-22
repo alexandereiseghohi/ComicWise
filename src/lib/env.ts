@@ -102,6 +102,7 @@ export const env = createEnv({
     SENTRY_TRACES_SAMPLE_RATE: z.string().optional(),
     SENTRY_REPLAY_SESSION_SAMPLE_RATE: z.string().optional(),
     SENTRY_REPLAY_ERROR_SAMPLE_RATE: z.string().optional(),
+    MYCI: z.string().optional(),
   },
 
   client: {
@@ -217,6 +218,7 @@ export const env = createEnv({
     NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY: process.env["NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY"],
     NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT: process.env["NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT"],
     NEXT_PUBLIC_SENTRY_DSN: process.env["NEXT_PUBLIC_SENTRY_DSN"],
+    MYCI: process.env["MYCI"],
   },
 
   skipValidation: !!process.env["SKIP_ENV_VALIDATION"],

@@ -2,13 +2,18 @@
 
 ## 📚 Overview
 
-The Enhanced Seeding System V4 is a comprehensive database seeding solution for ComicWise that provides:
+The Enhanced Seeding System V4 is a comprehensive database seeding solution for
+ComicWise that provides:
 
-- **Dynamic JSON Loading**: Supports multiple JSON files for users, comics, and chapters
-- **Image Download & Caching**: Prevents duplicate downloads with filesystem and database checks
+- **Dynamic JSON Loading**: Supports multiple JSON files for users, comics, and
+  chapters
+- **Image Download & Caching**: Prevents duplicate downloads with filesystem and
+  database checks
 - **Zod Validation**: Type-safe data validation for all entities
-- **Conflict Handling**: Smart upsert operations with `onConflictDoUpdate` behavior
-- **Password Management**: Uses `CUSTOM_PASSWORD` environment variable with bcryptjs encryption
+- **Conflict Handling**: Smart upsert operations with `onConflictDoUpdate`
+  behavior
+- **Password Management**: Uses `CUSTOM_PASSWORD` environment variable with
+  bcryptjs encryption
 - **Comprehensive Logging**: Clear, concise logs for each operation
 - **Fallback Images**: Automatic fallback to placeholder images
 - **Original Filenames**: Preserves original image names and extensions
@@ -82,14 +87,17 @@ curl -X POST http://localhost:3000/api/seed \
 The system automatically loads data from these JSON files:
 
 ### Users
+
 - `users.json` - User accounts with roles (user, moderator, admin)
 
 ### Comics
+
 - `comics.json` - Primary comic data
 - `comicsdata1.json` - Additional comics (batch 1)
 - `comicsdata2.json` - Additional comics (batch 2)
 
 ### Chapters
+
 - `chapters.json` - Primary chapter data
 - `chaptersdata1.json` - Additional chapters (batch 1)
 - `chaptersdata2.json` - Additional chapters (batch 2)
@@ -99,6 +107,7 @@ The system automatically loads data from these JSON files:
 ### 1. User Seeding
 
 **Features:**
+
 - CUSTOM_PASSWORD used for all users
 - bcryptjs encryption (10 salt rounds)
 - Fallback to `/shadcn.jpg` for user images
@@ -106,24 +115,27 @@ The system automatically loads data from these JSON files:
 - Role support (user, moderator, admin)
 
 **JSON Format:**
+
 ```json
 {
-  "id": "5379c193-173a-4130-9fd0-525b80059394",
   "email": "user@example.com",
-  "name": "John Doe",
+  "emailVerified": "2025-01-22T00:00:00.000Z",
+  "id": "5379c193-173a-4130-9fd0-525b80059394",
   "image": "/avatars/john.jpg",
-  "role": "user",
-  "emailVerified": "2025-01-22T00:00:00.000Z"
+  "name": "John Doe",
+  "role": "user"
 }
 ```
 
 **Upsert Behavior:**
+
 - **Existing User**: Updates name, role, image, emailVerified
 - **New User**: Creates with hashed password and all fields
 
 ### 2. Comic Seeding
 
 **Features:**
+
 - Image download to `/public/comics/covers/${comic.slug}/`
 - Fallback to `/public/placeholder-comic.jpg`
 - Original filename preservation
@@ -132,27 +144,24 @@ The system automatically loads data from these JSON files:
 - Slug-based conflict detection
 
 **JSON Format:**
+
 ```json
 {
-  "title": "Nano Machine",
-  "slug": "nano-machine-dede73e1",
-  "description": "Nanotechnology meets martial arts...",
-  "rating": "9.9",
-  "status": "Ongoing",
-  "type": { "name": "Manhwa" },
-  "author": { "name": "Hanjoong Wolya" },
   "artist": { "name": "Redice Studio" },
-  "genres": [
-    { "name": "Action" },
-    { "name": "Fantasy" }
-  ],
-  "images": [
-    { "url": "https://example.com/cover.webp" }
-  ]
+  "author": { "name": "Hanjoong Wolya" },
+  "description": "Nanotechnology meets martial arts...",
+  "genres": [{ "name": "Action" }, { "name": "Fantasy" }],
+  "images": [{ "url": "https://example.com/cover.webp" }],
+  "rating": "9.9",
+  "slug": "nano-machine-dede73e1",
+  "status": "Ongoing",
+  "title": "Nano Machine",
+  "type": { "name": "Manhwa" }
 }
 ```
 
 **Image Handling:**
+
 - Checks filesystem first (fastest)
 - Checks database for existing URLs
 - Downloads only if not cached
@@ -162,6 +171,7 @@ The system automatically loads data from these JSON files:
 ### 3. Chapter Seeding
 
 **Features:**
+
 - Image download to `/public/comics/chapters/${comic.slug}/${chapter.slug}/`
 - Concurrent downloads (5 images at a time)
 - Original filename preservation
@@ -170,10 +180,9 @@ The system automatically loads data from these JSON files:
 - Requires parent comic to exist
 
 **JSON Format:**
+
 ```json
 {
-  "name": "Chapter 272",
-  "title": "90. Lightning Qi (4)",
   "comic": {
     "title": "Nano Machine",
     "slug": "nano-machine-dede73e1"
@@ -181,11 +190,14 @@ The system automatically loads data from these JSON files:
   "images": [
     { "url": "https://example.com/page-01.webp" },
     { "url": "https://example.com/page-02.webp" }
-  ]
+  ],
+  "name": "Chapter 272",
+  "title": "90. Lightning Qi (4)"
 }
 ```
 
 **Image Handling:**
+
 - Downloads all chapter pages
 - Saves with original filenames
 - Preserves page order in database
@@ -194,6 +206,7 @@ The system automatically loads data from these JSON files:
 ## 📊 Output Examples
 
 ### User Seeding Output
+
 ```
 ═══════════════════════════════════════════════════════════
 🌱 Starting Enhanced User Seeding V4
@@ -216,6 +229,7 @@ The system automatically loads data from these JSON files:
 ```
 
 ### Comic Seeding Output
+
 ```
 ═══════════════════════════════════════════════════════════
 🌱 Starting Enhanced Comic Seeding V4
@@ -243,6 +257,7 @@ The system automatically loads data from these JSON files:
 ```
 
 ### Chapter Seeding Output
+
 ```
 ═══════════════════════════════════════════════════════════
 🌱 Starting Enhanced Chapter Seeding V4
@@ -271,19 +286,22 @@ The system automatically loads data from these JSON files:
 The system prevents duplicate downloads using a multi-layer check:
 
 1. **Filesystem Check**: Fastest - checks if file already exists
-2. **Database Check**: Checks if URL is already in `comicImage` or `chapterImage` tables
+2. **Database Check**: Checks if URL is already in `comicImage` or
+   `chapterImage` tables
 3. **Original Filename**: Preserves the original filename from URL
 4. **Fallback**: Uses placeholder images if download fails
 
 ### Example Image Paths
 
 **Comic Covers:**
+
 ```
 public/comics/covers/nano-machine-dede73e1/01JKTBDEEZRNKTH6TRHPF5PCXM-optimized.webp
 public/comics/covers/solo-leveling/cover-image.jpg
 ```
 
 **Chapter Images:**
+
 ```
 public/comics/chapters/nano-machine-dede73e1/nano-machine-chapter-272/00-optimized.webp
 public/comics/chapters/nano-machine-dede73e1/nano-machine-chapter-272/01-optimized.webp
@@ -327,6 +345,7 @@ const IMAGE_CONCURRENCY = 5; // Download 5 images simultaneously
 - **Chapters**: ~1-2s per chapter (multiple images)
 
 **Example Full Seed:**
+
 - 4 users + 125 comics + 1000 chapters = ~45 minutes (with all images)
 
 ## 🔧 Customization
@@ -372,6 +391,7 @@ pnpm db:seed:verbose
 ```
 
 Shows debug-level logs including:
+
 - Individual database queries
 - Image cache hits
 - Genre/author/artist creation
@@ -419,6 +439,7 @@ cat users.json | jq .
 **POST** `/api/seed`
 
 **Request Body:**
+
 ```json
 {
   "entities": "all|users|comics|chapters",
@@ -430,14 +451,29 @@ cat users.json | jq .
 ```
 
 **Response:**
+
 ```json
 {
-  "success": true,
   "data": {
     "users": { "total": 4, "created": 4, "updated": 0, "errors": 0 },
-    "comics": { "total": 125, "created": 125, "updated": 0, "errors": 0, "imagesDownloaded": 125, "imagesCached": 0 },
-    "chapters": { "total": 1000, "created": 1000, "updated": 0, "errors": 0, "imagesDownloaded": 15000, "imagesCached": 0 }
-  }
+    "comics": {
+      "total": 125,
+      "created": 125,
+      "updated": 0,
+      "errors": 0,
+      "imagesDownloaded": 125,
+      "imagesCached": 0
+    },
+    "chapters": {
+      "total": 1000,
+      "created": 1000,
+      "updated": 0,
+      "errors": 0,
+      "imagesDownloaded": 15000,
+      "imagesCached": 0
+    }
+  },
+  "success": true
 }
 ```
 
@@ -461,6 +497,7 @@ cat users.json | jq .
 ## 🆘 Support
 
 For issues or questions:
+
 1. Check logs in console output
 2. Verify JSON format matches schemas
 3. Ensure all environment variables are set

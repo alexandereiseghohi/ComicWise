@@ -17,7 +17,10 @@
 
 import { db } from "@/database/db";
 import { chapter, chapterImage, comic } from "@/database/schema";
-import { downloadImagesWithConcurrency, getOriginalFilename } from "@/database/seed/helpers/imageDownloader";
+import {
+  downloadImagesWithConcurrency,
+  getOriginalFilename,
+} from "@/database/seed/helpers/imageDownloader";
 import { ChapterSeedSchema, type ChapterSeedData } from "@/database/seed/helpers/validationSchemas";
 import { logger } from "@/database/seed/logger";
 import { and, eq } from "drizzle-orm";
@@ -75,7 +78,9 @@ async function loadChaptersFromFile(filePath: string): Promise<ChapterSeedData[]
       }
     }
 
-    logger.info(`✅ Validated ${validChapters.length}/${dataArray.length} chapters from ${filePath}`);
+    logger.info(
+      `✅ Validated ${validChapters.length}/${dataArray.length} chapters from ${filePath}`
+    );
     if (errors.length > 0) {
       logger.warn(`⚠️  ${errors.length} validation errors encountered`);
     }
@@ -171,7 +176,10 @@ async function seedChapter(chapterData: ChapterSeedData): Promise<{
     }
 
     // Generate chapter slug
-    const chapterSlug = chapterData.slug || chapterData.chapterslug || generateChapterSlug(chapterData.name || "untitled", comicSlug);
+    const chapterSlug =
+      chapterData.slug ||
+      chapterData.chapterslug ||
+      generateChapterSlug(chapterData.name || "untitled", comicSlug);
 
     // Download images
     const imageResults = await downloadChapterImages(chapterData, comicSlug, chapterSlug);
@@ -204,10 +212,7 @@ async function seedChapter(chapterData: ChapterSeedData): Promise<{
 
     if (existing.length > 0 && existing[0]) {
       // Update existing chapter
-      await db
-        .update(chapter)
-        .set(chapterRecord)
-        .where(eq(chapter.slug, chapterSlug));
+      await db.update(chapter).set(chapterRecord).where(eq(chapter.slug, chapterSlug));
 
       chapterId = existing[0].id;
       logger.debug(`🔄 Updated chapter: ${chapterData.name}`);
@@ -230,10 +235,7 @@ async function seedChapter(chapterData: ChapterSeedData): Promise<{
       const existingImage = await db
         .select()
         .from(chapterImage)
-        .where(and(
-          eq(chapterImage.chapterId, chapterId),
-          eq(chapterImage.imageUrl, imagePath)
-        ))
+        .where(and(eq(chapterImage.chapterId, chapterId), eq(chapterImage.imageUrl, imagePath)))
         .limit(1);
 
       if (existingImage.length === 0) {

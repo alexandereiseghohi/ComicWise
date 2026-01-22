@@ -1,17 +1,17 @@
 import type { SQL } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 import {
-    boolean,
-    decimal,
-    index,
-    integer,
-    pgEnum,
-    pgTable,
-    primaryKey,
-    serial,
-    text,
-    timestamp,
-    unique,
+  boolean,
+  decimal,
+  index,
+  integer,
+  pgEnum,
+  pgTable,
+  primaryKey,
+  serial,
+  text,
+  timestamp,
+  unique,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
 

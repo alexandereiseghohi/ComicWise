@@ -273,6 +273,8 @@ const appConfig = {
     rateLimiting: hasEnvironment("UPSTASH_REDIS_REST_URL"),
     imageUpload: hasEnvironment("IMAGEKIT_PUBLIC_KEY") || hasEnvironment("CLOUDINARY_CLOUD_NAME"),
   },
+  ci: (env.MYCI === "true" ||  "false"),
+
 } as const;
 
 // ═══════════════════════════════════════════════════

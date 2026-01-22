@@ -101,6 +101,61 @@ async function cleanupTempFiles() {
 }
 
 /**
+ * Remove unused documentation and log files
+ */
+async function cleanupDocumentationFiles() {
+  console.log("\n📝 Cleaning up unused documentation and log files...");
+
+  const excludedFiles = new Set([
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "CODE_OF_CONDUCT.md",
+    "SECURITY.md",
+  ]);
+
+  const rootPath = process.cwd();
+
+  try {
+    const files = await readdir(rootPath);
+
+    for (const file of files) {
+      const filePath = join(rootPath, file);
+
+      try {
+        const fileStat = await stat(filePath);
+
+        // Skip directories
+        if (fileStat.isDirectory()) continue;
+
+        // Check for .md, .txt, or .log files (excluding important ones)
+        const shouldDelete =
+          (file.endsWith(".md") && !excludedFiles.has(file)) ||
+          (file.endsWith(".txt") && !file.startsWith(".")) ||
+          file.endsWith(".log") ||
+          file.endsWith(".logs");
+
+        if (shouldDelete) {
+          const size = fileStat.size;
+          await rm(filePath);
+
+          stats.filesRemoved++;
+          stats.bytesFreed += size;
+
+          console.log(`  ✓ Removed ${file}`);
+        }
+      } catch (error) {
+        stats.errors.push(`Failed to process ${file}: ${error}`);
+      }
+    }
+  } catch (error) {
+    stats.errors.push(`Documentation cleanup failed: ${error}`);
+    console.error(`  ✗ Error: ${error}`);
+  }
+}
+
+/**
  * Remove node_modules (optional, requires confirmation)
  */
 async function cleanupNodeModules() {
@@ -184,7 +239,7 @@ async function getDirSize(dirPath: string): Promise<number> {
       const filePath = join(dirPath, file);
       const fileStat = await stat(filePath);
 
-      size += fileStat.isDirectory() ? (await getDirSize(filePath)) : fileStat.size;
+      size += fileStat.isDirectory() ? await getDirSize(filePath) : fileStat.size;
     }
   } catch {
     // Ignore errors
@@ -201,7 +256,7 @@ async function getDirSize(dirPath: string): Promise<number> {
 async function removeFilesByPattern(dirPath: string, pattern: string) {
   try {
     const files = await readdir(dirPath);
-    const regex = new RegExp(pattern.replaceAll('*', ".*"));
+    const regex = new RegExp(pattern.replaceAll("*", ".*"));
 
     for (const file of files) {
       const filePath = join(dirPath, file);
@@ -256,6 +311,7 @@ async function cleanup() {
     console.log("  --backups   Only clean old backups");
     console.log("  --build     Only clean build artifacts");
     console.log("  --uploads   Only clean local uploads");
+    console.log("  --docs      Only clean unused .md, .txt, .log files");
     console.log("  --help      Show this help message");
     return;
   }
@@ -263,6 +319,7 @@ async function cleanup() {
   const backupsOnly = process.argv.includes("--backups");
   const buildOnly = process.argv.includes("--build");
   const uploadsOnly = process.argv.includes("--uploads");
+  const docsOnly = process.argv.includes("--docs");
 
   if (backupsOnly) {
     await cleanupOldBackups();
@@ -270,10 +327,13 @@ async function cleanup() {
     await cleanupBuildArtifacts();
   } else if (uploadsOnly) {
     await cleanupUploads();
+  } else if (docsOnly) {
+    await cleanupDocumentationFiles();
   } else {
     // Full cleanup
     await cleanupBuildArtifacts();
     await cleanupTempFiles();
+    await cleanupDocumentationFiles();
     await cleanupOldBackups();
     await cleanupUploads();
     await cleanupNodeModules();

@@ -23,7 +23,9 @@ export function isActionSuccess<T>(result: ActionResult<T>): result is ActionSuc
  * @param result - The ActionResult to check
  * @throws Error if the result is an error
  */
-export function assertActionSuccess<T>(result: ActionResult<T>): asserts result is ActionSuccess<T> {
+export function assertActionSuccess<T>(
+  result: ActionResult<T>
+): asserts result is ActionSuccess<T> {
   if (!result.success) {
     throw new Error(isActionError(result) ? result.error : "Action failed");
   }

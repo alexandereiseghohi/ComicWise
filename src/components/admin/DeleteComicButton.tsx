@@ -31,19 +31,22 @@ export function DeleteComicButton({ comicId }: DeleteComicButtonProps) {
       <Button
         variant="destructive"
         onClick={() =>
-          confirm({
-            title: "Delete Comic",
-            description:
-              "Are you sure you want to delete this comic? This will also delete all associated chapters and cannot be undone.",
-            confirmText: "Delete",
-            cancelText: "Cancel",
-            variant: "destructive",
-          }, async () => {
-            const result = await deleteComicAction(comicId);
-            if (result.success) {
-              redirect("/admin/comics");
+          confirm(
+            {
+              title: "Delete Comic",
+              description:
+                "Are you sure you want to delete this comic? This will also delete all associated chapters and cannot be undone.",
+              confirmText: "Delete",
+              cancelText: "Cancel",
+              variant: "destructive",
+            },
+            async () => {
+              const result = await deleteComicAction(comicId);
+              if (result.success) {
+                redirect("/admin/comics");
+              }
             }
-          })
+          )
         }
       >
         <Trash2 className="mr-2 size-4" />

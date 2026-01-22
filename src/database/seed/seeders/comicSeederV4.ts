@@ -24,7 +24,10 @@ import {
   type as comicType,
   genre,
 } from "@/database/schema";
-import { downloadImagesWithConcurrency, getOriginalFilename } from "@/database/seed/helpers/imageDownloader";
+import {
+  downloadImagesWithConcurrency,
+  getOriginalFilename,
+} from "@/database/seed/helpers/imageDownloader";
 import { ComicSeedSchema, type ComicSeedData } from "@/database/seed/helpers/validationSchemas";
 import { logger } from "@/database/seed/logger";
 import { and, eq } from "drizzle-orm";
@@ -102,10 +105,7 @@ async function getOrCreateGenre(name: string): Promise<number> {
     return existing[0].id;
   }
 
-  const [created] = await db
-    .insert(genre)
-    .values({ name, slug })
-    .returning({ id: genre.id });
+  const [created] = await db.insert(genre).values({ name, slug }).returning({ id: genre.id });
 
   if (!created) {
     throw new Error(`Failed to create genre: ${name}`);
@@ -129,10 +129,7 @@ async function getOrCreateAuthor(name: string): Promise<number> {
     return existing[0].id;
   }
 
-  const [created] = await db
-    .insert(author)
-    .values({ name })
-    .returning({ id: author.id });
+  const [created] = await db.insert(author).values({ name }).returning({ id: author.id });
 
   if (!created) {
     throw new Error(`Failed to create author: ${name}`);
@@ -156,10 +153,7 @@ async function getOrCreateArtist(name: string): Promise<number> {
     return existing[0].id;
   }
 
-  const [created] = await db
-    .insert(artist)
-    .values({ name })
-    .returning({ id: artist.id });
+  const [created] = await db.insert(artist).values({ name }).returning({ id: artist.id });
 
   if (!created) {
     throw new Error(`Failed to create artist: ${name}`);
@@ -183,10 +177,7 @@ async function getOrCreateType(name: string): Promise<number> {
     return existing[0].id;
   }
 
-  const [created] = await db
-    .insert(comicType)
-    .values({ name })
-    .returning({ id: comicType.id });
+  const [created] = await db.insert(comicType).values({ name }).returning({ id: comicType.id });
 
   if (!created) {
     throw new Error(`Failed to create type: ${name}`);
@@ -227,9 +218,7 @@ async function downloadComicImages(
   const cached = successful.filter((r) => r.cached).length;
   const paths = successful.map((r) => r.path);
 
-  logger.info(
-    `📸 Comic images: ${downloaded} downloaded, ${cached} cached (${comicData.title})`
-  );
+  logger.info(`📸 Comic images: ${downloaded} downloaded, ${cached} cached (${comicData.title})`);
 
   return { downloaded, cached, paths };
 }
@@ -248,24 +237,24 @@ async function seedComic(comicData: ComicSeedData): Promise<{
       typeof comicData.type === "string"
         ? comicData.type
         : typeof comicData.type === "object" && comicData.type?.name
-        ? comicData.type.name
-        : comicData.category || "Manga";
+          ? comicData.type.name
+          : comicData.category || "Manga";
 
     // Extract author name
     const authorName =
       typeof comicData.author === "string"
         ? comicData.author
         : typeof comicData.author === "object" && comicData.author?.name
-        ? comicData.author.name
-        : "_";
+          ? comicData.author.name
+          : "_";
 
     // Extract artist name
     const artistName =
       typeof comicData.artist === "string"
         ? comicData.artist
         : typeof comicData.artist === "object" && comicData.artist?.name
-        ? comicData.artist.name
-        : "_";
+          ? comicData.artist.name
+          : "_";
 
     // Get or create related entities
     const typeId = await getOrCreateType(typeName);
@@ -298,19 +287,13 @@ async function seedComic(comicData: ComicSeedData): Promise<{
 
     if (existing.length > 0 && existing[0]) {
       // Update existing comic
-      await db
-        .update(comic)
-        .set(comicRecord)
-        .where(eq(comic.slug, comicData.slug));
+      await db.update(comic).set(comicRecord).where(eq(comic.slug, comicData.slug));
 
       comicId = existing[0].id;
       logger.debug(`🔄 Updated comic: ${comicData.title}`);
     } else {
       // Create new comic
-      const [created] = await db
-        .insert(comic)
-        .values(comicRecord)
-        .returning({ id: comic.id });
+      const [created] = await db.insert(comic).values(comicRecord).returning({ id: comic.id });
 
       if (!created) {
         throw new Error(`Failed to create comic: ${comicData.title}`);
@@ -321,9 +304,7 @@ async function seedComic(comicData: ComicSeedData): Promise<{
     }
 
     // Handle genres
-    const genreNames = comicData.genres.map((g) =>
-      typeof g === "string" ? g : g.name
-    );
+    const genreNames = comicData.genres.map((g) => (typeof g === "string" ? g : g.name));
 
     for (const genreName of genreNames) {
       const genreId = await getOrCreateGenre(genreName);
@@ -332,10 +313,7 @@ async function seedComic(comicData: ComicSeedData): Promise<{
       const existingRelation = await db
         .select()
         .from(comicToGenre)
-        .where(and(
-          eq(comicToGenre.comicId, comicId),
-          eq(comicToGenre.genreId, genreId)
-        ))
+        .where(and(eq(comicToGenre.comicId, comicId), eq(comicToGenre.genreId, genreId)))
         .limit(1);
 
       if (existingRelation.length === 0) {
@@ -351,10 +329,7 @@ async function seedComic(comicData: ComicSeedData): Promise<{
       const existing = await db
         .select()
         .from(comicImage)
-        .where(and(
-          eq(comicImage.comicId, comicId),
-          eq(comicImage.imageUrl, imagePath)
-        ))
+        .where(and(eq(comicImage.comicId, comicId), eq(comicImage.imageUrl, imagePath)))
         .limit(1);
 
       if (existing.length === 0) {

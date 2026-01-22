@@ -347,7 +347,10 @@ function generatePromptsSection(promptsDir) {
     // Create badges for installation links
     const badges = makeBadges(link, "prompt");
 
-    promptsContent += customDescription && customDescription !== "null" ? `| [${title}](../${link})<br />${badges} | ${customDescription} |\n` : `| [${title}](../${link})<br />${badges} | | |\n`;
+    promptsContent +=
+      customDescription && customDescription !== "null"
+        ? `| [${title}](../${link})<br />${badges} | ${customDescription} |\n`
+        : `| [${title}](../${link})<br />${badges} | | |\n`;
   }
 
   return `${TEMPLATES.promptsSection}\n${TEMPLATES.promptsUsage}\n\n${promptsContent}`;
@@ -576,11 +579,13 @@ function generateUnifiedModeSection(cfg) {
       mcpServerCell = generateMcpServerLinks(servers, registryNames);
     }
 
-    content += includeMcpServers ? `| [${title}](../${link})<br />${badges} | ${
-        description && description !== "null" ? description : ""
-      } | ${mcpServerCell} |\n` : `| [${title}](../${link})<br />${badges} | ${
-        description && description !== "null" ? description : ""
-      } |\n`;
+    content += includeMcpServers
+      ? `| [${title}](../${link})<br />${badges} | ${
+          description && description !== "null" ? description : ""
+        } | ${mcpServerCell} |\n`
+      : `| [${title}](../${link})<br />${badges} | ${
+          description && description !== "null" ? description : ""
+        } |\n`;
   }
 
   return `${sectionTemplate}\n${usageTemplate}\n\n${content}`;
@@ -761,7 +766,9 @@ function generateCollectionReadme(collection, collectionId, registryNames = []) 
   const hasAgents = collection.items.some((item) => item.kind === "agent");
 
   // Generate appropriate table header
-  content += hasAgents ? `| Title | Type | Description | MCP Servers |\n| ----- | ---- | ----------- | ----------- |\n` : `| Title | Type | Description |\n| ----- | ---- | ----------- |\n`;
+  content += hasAgents
+    ? `| Title | Type | Description | MCP Servers |\n| ----- | ---- | ----------- | ----------- |\n`
+    : `| Title | Type | Description |\n| ----- | ---- | ----------- |\n`;
 
   const collectionUsageHeader = "## Collection Usage\n\n";
   const collectionUsageContent = [];

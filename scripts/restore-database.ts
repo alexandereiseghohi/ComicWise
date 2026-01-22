@@ -124,7 +124,9 @@ async function restoreDatabase(filepath: string): Promise<void> {
     // Handle compressed files
     let restoreCommand: string;
 
-    restoreCommand = filepath.endsWith(".gz") ? `gunzip -c "${filepath}" | psql "${env.DATABASE_URL}"` : `psql "${env.DATABASE_URL}" < "${filepath}"`;
+    restoreCommand = filepath.endsWith(".gz")
+      ? `gunzip -c "${filepath}" | psql "${env.DATABASE_URL}"`
+      : `psql "${env.DATABASE_URL}" < "${filepath}"`;
 
     const { stderr } = await execAsync(restoreCommand);
 
@@ -253,7 +255,9 @@ async function main() {
     console.log("📋 Summary:");
     console.log(`   Restored from: ${backupFile}`);
     console.log(`   Safety backup: ${safetyBackup}`);
-    console.log(`   Database: ${env.DATABASE_URL?.split("@")[1]?.split("?")[0] || env.NEON_DATABASE_URL?.split("@")[1]?.split("?")[0] || "connected"}\n`);
+    console.log(
+      `   Database: ${env.DATABASE_URL?.split("@")[1]?.split("?")[0] || env.NEON_DATABASE_URL?.split("@")[1]?.split("?")[0] || "connected"}\n`
+    );
 
     console.log("📋 Next steps:");
     console.log("   1. Test application: pnpm dev");

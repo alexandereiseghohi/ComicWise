@@ -295,7 +295,10 @@ async function main() {
     // Exit with appropriate code
     process.exit(report.summary.failed > 0 ? 1 : 0);
   } catch (error) {
-    log(`\n❌ Verification failed: ${error instanceof Error ? error.message : String(error)}\n`, "red");
+    log(
+      `\n❌ Verification failed: ${error instanceof Error ? error.message : String(error)}\n`,
+      "red"
+    );
     process.exit(1);
   }
 }

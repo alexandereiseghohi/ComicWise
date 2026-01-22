@@ -81,8 +81,24 @@ export async function POST(request: Request) {
 
     const result = {
       users: { total: 0, created: 0, updated: 0, skipped: 0, errors: 0 },
-      comics: { total: 0, created: 0, updated: 0, skipped: 0, errors: 0, imagesDownloaded: 0, imagesCached: 0 },
-      chapters: { total: 0, created: 0, updated: 0, skipped: 0, errors: 0, imagesDownloaded: 0, imagesCached: 0 },
+      comics: {
+        total: 0,
+        created: 0,
+        updated: 0,
+        skipped: 0,
+        errors: 0,
+        imagesDownloaded: 0,
+        imagesCached: 0,
+      },
+      chapters: {
+        total: 0,
+        created: 0,
+        updated: 0,
+        skipped: 0,
+        errors: 0,
+        imagesDownloaded: 0,
+        imagesCached: 0,
+      },
     };
 
     if (options.dryRun) {
@@ -100,11 +116,7 @@ export async function POST(request: Request) {
     switch (entities) {
       case "all":
         result.users = await seedUsersV4(["users.json"]);
-        result.comics = await seedComicsV4([
-          "comics.json",
-          "comicsdata1.json",
-          "comicsdata2.json",
-        ]);
+        result.comics = await seedComicsV4(["comics.json", "comicsdata1.json", "comicsdata2.json"]);
         result.chapters = await seedChaptersV4([
           "chapters.json",
           "chaptersdata1.json",
@@ -117,11 +129,7 @@ export async function POST(request: Request) {
         break;
 
       case "comics":
-        result.comics = await seedComicsV4([
-          "comics.json",
-          "comicsdata1.json",
-          "comicsdata2.json",
-        ]);
+        result.comics = await seedComicsV4(["comics.json", "comicsdata1.json", "comicsdata2.json"]);
         break;
 
       case "chapters":

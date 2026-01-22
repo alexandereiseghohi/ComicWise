@@ -97,8 +97,7 @@ export type ChapterSeedData = z.infer<typeof ChapterSeedSchema>;
 
 // Re-export for convenience
 export type {
-    ChapterSeedData as ChapterSeed,
-    ComicSeedData as ComicSeed,
-    UserSeedData as UserSeed
+  ChapterSeedData as ChapterSeed,
+  ComicSeedData as ComicSeed,
+  UserSeedData as UserSeed,
 };
-

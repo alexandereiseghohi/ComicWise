@@ -74,15 +74,17 @@ async function loadUsersFromFile(filePath: string): Promise<UserSeedData[]> {
  * @param userData
  * @param customPassword
  */
-async function seedUser(userData: UserSeedData, customPassword: string): Promise<"created" | "updated" | "error"> {
+async function seedUser(
+  userData: UserSeedData,
+  customPassword: string
+): Promise<"created" | "updated" | "error"> {
   try {
     // Hash password using CUSTOM_PASSWORD
     const hashedPassword = await hashPassword(customPassword);
 
     // Use fallback image for users
-    const userImage = userData.image && userData.image.trim() !== ""
-      ? userData.image
-      : FALLBACK_USER_IMAGE;
+    const userImage =
+      userData.image && userData.image.trim() !== "" ? userData.image : FALLBACK_USER_IMAGE;
 
     const userRecord = {
       id: userData.id,
@@ -170,19 +172,20 @@ export async function seedUsersV4(
       const action = await seedUser(userData, password);
 
       switch (action) {
-      case "created":
-      result.created++;
-      break;
+        case "created":
+          result.created++;
+          break;
 
-      case "updated":
-      result.updated++;
-      break;
+        case "updated":
+          result.updated++;
+          break;
 
-      case "error": {
-      result.errors++;
-      // No default
-      }
-      break;
+        case "error":
+          {
+            result.errors++;
+            // No default
+          }
+          break;
       }
 
       // Log progress every 10 users

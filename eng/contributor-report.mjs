@@ -163,9 +163,7 @@ export const getContributionTypes = (files) => {
     types.add("code");
   }
 
-  return [...types]
-    .sort((a, b) => a.localeCompare(b))
-    .join(",");
+  return [...types].sort((a, b) => a.localeCompare(b)).join(",");
 };
 
 /**
@@ -482,7 +480,7 @@ export const generateMarkdownReport = (reports, missingCount = 0) => {
   for (const report of reports) {
     lines.push(`## @${report.username}`);
 
-    const prs = [...report.prs || []].sort((a, b) => {
+    const prs = [...(report.prs || [])].sort((a, b) => {
       // Prefer most recent PRs first.
       const aTime = a.mergedAt ? Date.parse(a.mergedAt) : 0;
       const bTime = b.mergedAt ? Date.parse(b.mergedAt) : 0;

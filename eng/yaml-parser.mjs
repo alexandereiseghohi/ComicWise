@@ -162,7 +162,7 @@ function parseSkillMetadata(skillPath) {
             const relativePath = path.relative(skillPath, filePath);
             if (relativePath !== "SKILL.md") {
               // Normalize path separators to forward slashes for cross-platform consistency
-              arrayOfFiles.push(relativePath.replaceAll('\\', "/"));
+              arrayOfFiles.push(relativePath.replaceAll("\\", "/"));
             }
           }
         });

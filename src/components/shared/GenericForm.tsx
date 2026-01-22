@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTransition } from "react";
-import { useForm   } from "react-hook-form";
-import type {FieldValues, UseFormReturn} from "react-hook-form";
+import type { FieldValues, UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import type {z} from "zod";
+import type { z } from "zod";
 
 interface GenericFormProps<T extends FieldValues> {
   schema: z.ZodSchema<T>;

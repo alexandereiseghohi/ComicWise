@@ -209,9 +209,7 @@ describe("AvatarUpload", () => {
       );
 
       const file = new File(["test"], format.name, { type: format.type });
-      const input = screen.getByLabelText(
-        /drop image here or click to upload/i
-      );
+      const input = screen.getByLabelText(/drop image here or click to upload/i);
 
       fireEvent.change(input, { target: { files: [file] } });
 
