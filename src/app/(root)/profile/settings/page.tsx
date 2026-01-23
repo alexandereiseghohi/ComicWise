@@ -1,29 +1,73 @@
-import { SettingsForm } from "@/components/profile/settings-form";
-import { auth } from "auth";
+"use client";
+
+import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
 
-import type { Metadata } from "next";
+/**
+ * Settings page - User preferences and account settings
+ */
+export default function SettingsPage() {
+  const { data: session } = useSession();
 
-export const metadata: Metadata = {
-  title: "Settings - ComicWise",
-  description: "Manage your account settings and preferences",
-};
-
-export default async function SettingsPage() {
-  const session = await auth();
-
-  if (!session?.user) {
-    redirect("/sign-in?callbackUrl=/profile/settings");
+  if (!session) {
+    redirect("/auth/signin");
   }
 
   return (
-    <div className="container mx-auto max-w-2xl px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold md:text-4xl">Settings</h1>
-        <p className="mt-2 text-muted-foreground">Manage your account settings and preferences</p>
-      </div>
+    <div className="container py-8">
+      <div className="space-y-6">
+        {/* Notification Settings */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Notification Settings</CardTitle>
+            <CardDescription>Manage how you receive notifications</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <label>Email Notifications</label>
+              <Switch defaultChecked />
+            </div>
+            <div className="flex items-center justify-between">
+              <label>Weekly Digest</label>
+              <Switch />
+            </div>
+            <Button>Save Settings</Button>
+          </CardContent>
+        </Card>
 
-      <SettingsForm userId={session.user.id} />
+        {/* Privacy Settings */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Privacy Settings</CardTitle>
+            <CardDescription>Control who can see your profile</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <label>Public Profile</label>
+              <Switch defaultChecked />
+            </div>
+            <div className="flex items-center justify-between">
+              <label>Show Activity</label>
+              <Switch />
+            </div>
+            <Button>Save Settings</Button>
+          </CardContent>
+        </Card>
+
+        {/* Account Settings */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Account Settings</CardTitle>
+            <CardDescription>Manage your account</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button variant="destructive">Delete Account</Button>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

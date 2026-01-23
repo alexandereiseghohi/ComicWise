@@ -1,0 +1,365 @@
+name: 🔄 Dependency Updates
+
+on:
+  schedule:
+    # Run every Monday at 9:00 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+    inputs:
+      update-type:
+        description: 'Type of update'
+        required: true
+        default: 'minor'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+          - all
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  PNPM_VERSION: "9"
+  NODE_VERSION: "20"
+
+jobs:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # JOB 1: Check for Updates
+  # ═══════════════════════════════════════════════════════════════════════════
+  check-updates:
+    name: Check for Updates
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      has-updates: ${{ steps.check.outputs.has-updates }}
+      update-summary: ${{ steps.check.outputs.summary }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Check for dependency updates
+        id: check
+        run: |
+          # Install npm-check-updates
+          pnpm dlx npm-check-updates --version
+
+          # Check for updates
+          UPDATE_TYPE="${{ github.event.inputs.update-type || 'minor' }}"
+
+          case "$UPDATE_TYPE" in
+            patch)
+              pnpm dlx npm-check-updates --target patch --format json > updates.json
+              ;;
+            minor)
+              pnpm dlx npm-check-updates --target minor --format json > updates.json
+              ;;
+            major)
+              pnpm dlx npm-check-updates --target latest --format json > updates.json
+              ;;
+            all)
+              pnpm dlx npm-check-updates --target latest --format json > updates.json
+              ;;
+          esac
+
+          # Check if there are updates
+          if [ -s updates.json ]; then
+            HAS_UPDATES=$(jq 'length > 0' updates.json)
+            if [ "$HAS_UPDATES" = "true" ]; then
+              echo "has-updates=true" >> $GITHUB_OUTPUT
+
+              # Generate summary
+              SUMMARY=$(jq -r 'to_entries | map("\(.key): \(.value.current) → \(.value.wanted)") | join("\n")' updates.json)
+              echo "summary<<EOF" >> $GITHUB_OUTPUT
+              echo "$SUMMARY" >> $GITHUB_OUTPUT
+              echo "EOF" >> $GITHUB_OUTPUT
+            else
+              echo "has-updates=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "has-updates=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload updates report
+        if: steps.check.outputs.has-updates == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-updates
+          path: updates.json
+          retention-days: 7
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # JOB 2: Apply Updates
+  # ═══════════════════════════════════════════════════════════════════════════
+  apply-updates:
+    name: Apply Updates
+    runs-on: ubuntu-latest
+    needs: check-updates
+    if: needs.check-updates.outputs.has-updates == 'true'
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Configure git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create update branch
+        run: |
+          BRANCH_NAME="deps/automated-updates-$(date +%Y%m%d-%H%M%S)"
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+          git checkout -b "$BRANCH_NAME"
+
+      - name: Apply dependency updates
+        run: |
+          UPDATE_TYPE="${{ github.event.inputs.update-type || 'minor' }}"
+
+          case "$UPDATE_TYPE" in
+            patch)
+              pnpm dlx npm-check-updates --target patch -u
+              ;;
+            minor)
+              pnpm dlx npm-check-updates --target minor -u
+              ;;
+            major)
+              pnpm dlx npm-check-updates --target latest -u
+              ;;
+            all)
+              pnpm dlx npm-check-updates --target latest -u
+              ;;
+          esac
+
+      - name: Install updated dependencies
+        run: pnpm install
+
+      - name: Run tests
+        id: tests
+        run: |
+          pnpm type-check
+          pnpm lint
+          pnpm test:unit:run
+        continue-on-error: true
+
+      - name: Commit changes
+        run: |
+          git add package.json pnpm-lock.yaml
+          git commit -m "chore(deps): automated dependency updates
+
+          Update type: ${{ github.event.inputs.update-type || 'minor' }}
+
+          ${{ needs.check-updates.outputs.update-summary }}
+
+          Automated by GitHub Actions"
+
+      - name: Push changes
+        run: |
+          git push origin "$BRANCH_NAME"
+
+      - name: Create Pull Request
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const updateSummary = `${{ needs.check-updates.outputs.update-summary }}`;
+            const testsStatus = '${{ steps.tests.outcome }}' === 'success' ? '✅ All tests passed' : '⚠️ Some tests failed - please review';
+
+            const body = `## 🔄 Automated Dependency Updates
+
+            This PR contains automated dependency updates.
+
+            ### Update Type
+            \`${{ github.event.inputs.update-type || 'minor' }}\`
+
+            ### Updated Dependencies
+            \`\`\`
+            ${updateSummary}
+            \`\`\`
+
+            ### Test Results
+            ${testsStatus}
+
+            ### Review Checklist
+            - [ ] Review breaking changes in changelogs
+            - [ ] Test locally if tests failed
+            - [ ] Check for security advisories
+            - [ ] Verify compatibility with existing code
+
+            ---
+            *This PR was created automatically by the Dependency Updates workflow*`;
+
+            const { data: pullRequest } = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🔄 chore(deps): automated dependency updates',
+              head: process.env.BRANCH_NAME,
+              base: 'main',
+              body: body,
+            });
+
+            // Add labels
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pullRequest.number,
+              labels: ['dependencies', 'automated'],
+            });
+
+            // Request review if tests failed
+            if ('${{ steps.tests.outcome }}' !== 'success') {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pullRequest.number,
+                labels: ['needs-review'],
+              });
+            }
+
+            core.setOutput('pr-number', pullRequest.number);
+            core.setOutput('pr-url', pullRequest.html_url);
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # JOB 3: Security Audit
+  # ═══════════════════════════════════════════════════════════════════════════
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    needs: apply-updates
+    timeout-minutes: 15
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BRANCH_NAME }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run pnpm audit
+        run: pnpm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Run Snyk security scan
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+
+      - name: Comment security results on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = ${{ needs.apply-updates.outputs.pr-number }};
+
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: '🔒 Security audit completed. Check the workflow logs for details.'
+            });
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # JOB 4: Update Browserslist
+  # ═══════════════════════════════════════════════════════════════════════════
+  update-browserslist:
+    name: Update Browserslist DB
+    runs-on: ubuntu-latest
+    if: github.event.schedule || github.event.inputs.update-type == 'all'
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Update browserslist database
+        run: pnpm dlx update-browserslist-db@latest
+
+      - name: Commit browserslist updates
+        run: |
+          if [[ -n $(git status -s) ]]; then
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            git add .
+            git commit -m "chore: update browserslist database"
+            git push
+          fi
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # JOB 5: Notify on Completion
+  # ═══════════════════════════════════════════════════════════════════════════
+  # notify:
+  #   name: Send Notification
+  #   runs-on: ubuntu-latest
+  #   needs: [check-updates, apply-updates]
+  #   if: always()
+  #   steps:
+  #     - name: Send Slack notification
+  #       uses: slackapi/slack-github-action@v1.24.0
+  #       with:
+  #         webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+  #         payload: |
+  #           {
+  #             "text": "🔄 Dependency Updates Summary",
+  #             "blocks": [
+  #               {
+  #                 "type": "section",
+  #                 "text": {
+  #                   "type": "mrkdwn",
+  #                   "text": "*ComicWise Dependency Updates*\n*Status*: ${{ needs.apply-updates.result == 'success' && '✅ PR Created' || needs.check-updates.outputs.has-updates == 'false' && 'ℹ️ No updates available' || '❌ Failed' }}\n*Type*: ${{ github.event.inputs.update-type || 'minor' }}"
+  #                 }
+  #               },
+  #               {
+  #                 "type": "section",
+  #                 "text": {
+  #                   "type": "mrkdwn",
+  #                   "text": "${{ needs.check-updates.outputs.update-summary }}"
+  #                 }
+  #               }
+  #             ]
+  #           }
+  #       continue-on-error: true

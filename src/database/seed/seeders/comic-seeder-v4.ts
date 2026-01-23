@@ -28,7 +28,8 @@ import {
   downloadImagesWithConcurrency,
   getOriginalFilename,
 } from "@/database/seed/helpers/image-downloader";
-import { ComicSeedSchema, type ComicSeedData } from "@/database/seed/helpers/validation-schemas";
+import type { ComicSeedData } from "@/database/seed/helpers/validation-schemas";
+import { ComicSeedSchema } from "@/database/seed/helpers/validation-schemas";
 import { logger } from "@/database/seed/logger";
 import { and, eq } from "drizzle-orm";
 import fs from "fs/promises";
@@ -50,6 +51,7 @@ const IMAGE_CONCURRENCY = 5;
 
 /**
  * Load and validate comics from JSON file
+ * @param filePath
  */
 async function loadComicsFromFile(filePath: string): Promise<ComicSeedData[]> {
   try {
@@ -86,13 +88,14 @@ async function loadComicsFromFile(filePath: string): Promise<ComicSeedData[]> {
 
 /**
  * Get or create genre with slug
+ * @param name
  */
 async function getOrCreateGenre(name: string): Promise<number> {
   const slug = name
     .toLowerCase()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-")
+    .replaceAll(/[^\s\w-]/g, "")
+    .replaceAll(/\s+/g, "-")
+    .replaceAll(/-+/g, "-")
     .trim();
 
   const existing = await db
@@ -117,6 +120,7 @@ async function getOrCreateGenre(name: string): Promise<number> {
 
 /**
  * Get or create author
+ * @param name
  */
 async function getOrCreateAuthor(name: string): Promise<number> {
   const existing = await db
@@ -141,6 +145,7 @@ async function getOrCreateAuthor(name: string): Promise<number> {
 
 /**
  * Get or create artist
+ * @param name
  */
 async function getOrCreateArtist(name: string): Promise<number> {
   const existing = await db
@@ -165,6 +170,7 @@ async function getOrCreateArtist(name: string): Promise<number> {
 
 /**
  * Get or create comic type
+ * @param name
  */
 async function getOrCreateType(name: string): Promise<number> {
   const existing = await db
@@ -189,12 +195,14 @@ async function getOrCreateType(name: string): Promise<number> {
 
 /**
  * Download comic cover images
+ * @param comicData
+ * @param comicSlug
  */
 async function downloadComicImages(
   comicData: ComicSeedData,
   comicSlug: string
 ): Promise<{ downloaded: number; cached: number; paths: string[] }> {
-  const imageUrls = comicData.images?.map((img) => img.url) || comicData.image_urls || [];
+  const imageUrls = comicData.images?.map((img) => (typeof img === 'string' ? img : img.url)) || comicData.image_urls || [];
 
   if (imageUrls.length === 0) {
     logger.warn(`⚠️  No images found for comic: ${comicData.title}`);
@@ -225,6 +233,7 @@ async function downloadComicImages(
 
 /**
  * Seed a single comic with relations
+ * @param comicData
  */
 async function seedComic(comicData: ComicSeedData): Promise<{
   action: "created" | "updated" | "error";
@@ -293,14 +302,40 @@ async function seedComic(comicData: ComicSeedData): Promise<{
       logger.debug(`🔄 Updated comic: ${comicData.title}`);
     } else {
       // Create new comic
-      const [created] = await db.insert(comic).values(comicRecord).returning({ id: comic.id });
+      try {
+        const [created] = await db
+          .insert(comic)
+          .values(comicRecord)
+          .returning({ id: comic.id });
 
-      if (!created) {
-        throw new Error(`Failed to create comic: ${comicData.title}`);
+        if (!created) {
+          throw new Error(`No record returned from insert`);
+        }
+
+        comicId = created.id;
+        logger.info(`✨ Created comic: ${comicData.title}`);
+      } catch (error: unknown) {
+        // If insert fails, try to find existing by slug
+        const existingBySlug = await db
+          .select({ id: comic.id })
+          .from(comic)
+          .where(eq(comic.slug, comicData.slug))
+          .limit(1);
+
+        if (existingBySlug.length > 0 && existingBySlug[0]) {
+          comicId = existingBySlug[0].id;
+          logger.debug(`🔄 Found existing comic by slug: ${comicData.title}`);
+        } else {
+          // Log but don't throw - continue processing
+          const errorMsg = error instanceof Error ? error.message : String(error);
+          logger.warn(`⚠️  Could not create comic "${comicData.title}": ${errorMsg.substring(0, 100)}`);
+          return {
+            action: "error",
+            imagesDownloaded: 0,
+            imagesCached: 0,
+          };
+        }
       }
-
-      comicId = created.id;
-      logger.info(`✨ Created comic: ${comicData.title}`);
     }
 
     // Handle genres
@@ -348,7 +383,8 @@ async function seedComic(comicData: ComicSeedData): Promise<{
       imagesCached: imageResults.cached,
     };
   } catch (error) {
-    logger.error(`💥 Failed to seed comic ${comicData.title}: ${error}`);
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    logger.warn(`⚠️  Failed to seed comic "${comicData.title}": ${errorMsg.substring(0, 80)}`);
     return {
       action: "error",
       imagesDownloaded: 0,
@@ -359,6 +395,7 @@ async function seedComic(comicData: ComicSeedData): Promise<{
 
 /**
  * Seed comics from multiple JSON files
+ * @param filePatterns
  */
 export async function seedComicsV4(filePatterns: string[]): Promise<SeedResult> {
   const result: SeedResult = {
@@ -387,9 +424,22 @@ export async function seedComicsV4(filePatterns: string[]): Promise<SeedResult> 
 
       const seedResult = await seedComic(comicData);
 
-      if (seedResult.action === "created") result.created++;
-      else if (seedResult.action === "updated") result.updated++;
-      else if (seedResult.action === "error") result.errors++;
+      switch (seedResult.action) {
+        case "created":
+          result.created++;
+          break;
+
+        case "updated":
+          result.updated++;
+          break;
+
+        case "error":
+          {
+            result.errors++;
+            // No default
+          }
+          break;
+      }
 
       result.imagesDownloaded += seedResult.imagesDownloaded;
       result.imagesCached += seedResult.imagesCached;

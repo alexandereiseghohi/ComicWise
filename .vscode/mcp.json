@@ -1,396 +1,151 @@
 {
-  "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/servers/main/schema/mcp-config.schema.json",
-  "// Description": "ComicWise - Enhanced Model Context Protocol Configuration",
-  "// FEATURE FLAGS": "Enable/disable specific MCP features",
-  "// Last Updated": "2026-01-18",
-  "// PROJECT-SPECIFIC SETTINGS": "ComicWise customizations",
-  "// Package Manager": "pnpm",
-  "// Platform": "Windows, Linux, macOS (Cross-Platform)",
-  "// Project": "Next.js 16 + PostgreSQL + Redis + AI Comic Platform",
-  "// Version": "3.0.0",
-
-  "features": {
-    "enableCaching": true,
-    "enableMetrics": true,
-    "enableHealthChecks": true,
-    "enableAutoReconnect": true,
-    "enableRequestLogging": true,
-    "enableErrorReporting": true
+  "$schema": "https://modelcontextprotocol.io/schema/mcp.schema.json",
+  "featureFlags": {
+    "enableAutoComplete": true,
+    "enableCodeActions": true,
+    "enableDiagnostics": true,
+    "enableHover": true,
+    "enableSignatureHelp": true,
+    "enableDefinition": true,
+    "enableReferences": true,
+    "enableDocumentSymbols": true,
+    "enableWorkspaceSymbols": true,
+    "enableCodeLens": true,
+    "enableInlayHints": true,
+    "enableSemanticTokens": true,
+    "enableCallHierarchy": true,
+    "enableTypeHierarchy": true
   },
   "globalSettings": {
-    "retries": 3,
-    "cacheEnabled": true,
-    "maxConcurrentRequests": 100,
-    "logFile": "${workspaceFolder}\\.vscode\\logs\\mcp.log",
-    "cacheTTL": 7200,
-    "enableMetrics": true,
-    "timeout": 600000,
-    "metricsInterval": 300000,
-    "logLevel": "info",
-    "healthCheckInterval": 60000,
-    "enableCompression": true,
-    "maxLogFileSize": 104857600,
-    "enableDetailedErrors": true,
-    "errorNotifications": true,
-    "autoReconnect": true,
-    "reconnectDelay": 5000,
-    "maxReconnectAttempts": 5
+    "logging": {
+      "level": "info",
+      "file": "${workspaceFolder}/.logs/mcp.log",
+      "maxSize": "10MB",
+      "maxFiles": 5,
+      "console": false
+    },
+    "timeout": {
+      "default": 30000,
+      "database": 60000,
+      "longRunning": 120000
+    },
+    "retry": {
+      "maxAttempts": 3,
+      "backoffMs": 1000,
+      "exponential": true
+    },
+    "cache": {
+      "enabled": true,
+      "ttl": 300000,
+      "maxSize": "100MB"
+    }
   },
-
-  "loggingSettings": {
-    "enableFileLogging": true,
-    "enableConsoleLogging": false,
-    "logRotation": true,
-    "maxLogFiles": 10,
-    "logFormat": "json",
-    "includeTimestamp": true,
-    "includeServerName": true,
-    "logPerformance": true,
-    "logErrors": true,
-    "logWarnings": true
-  },
-
   "mcpServers": {
-    "// CORE DEVELOPMENT SERVERS": "Essential for ComicWise Next.js development",
-
-    "filesystem": {
+    "nextjs-dev": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-nextjs",
+        "--workspace",
+        "${workspaceFolder}",
+        "--framework",
+        "nextjs-16"
+      ],
+      "env": {
+        "NODE_ENV": "development",
+        "NEXT_TELEMETRY_DISABLED": "1"
+      },
+      "description": "Next.js 16 development server with App Router support",
+      "enabledByDefault": true,
+      "priority": 100
+    },
+    "typescript-enhanced": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-typescript",
+        "--strict",
+        "--workspace",
+        "${workspaceFolder}"
+      ],
+      "env": {
+        "TS_NODE_PROJECT": "${workspaceFolder}/tsconfig.json"
+      },
+      "description": "TypeScript IntelliSense with strict mode validation",
+      "enabledByDefault": true,
+      "priority": 95
+    },
+    "postgresql-database": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "--connection-string",
+        "${env:DATABASE_URL}"
+      ],
+      "env": {
+        "PGDATABASE": "comicwise",
+        "PGSCHEMA": "public"
+      },
+      "description": "PostgreSQL database access with Drizzle ORM integration",
+      "enabledByDefault": true,
+      "priority": 90,
+      "requiresEnvironment": ["DATABASE_URL"]
+    },
+    "redis-cache": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-redis",
+        "--url",
+        "${env:UPSTASH_REDIS_REST_URL}",
+        "--token",
+        "${env:UPSTASH_REDIS_REST_TOKEN}"
+      ],
+      "description": "Redis cache management (Upstash)",
+      "enabledByDefault": true,
+      "priority": 85,
+      "requiresEnvironment": [
+        "UPSTASH_REDIS_REST_URL",
+        "UPSTASH_REDIS_REST_TOKEN"
+      ]
+    },
+    "filesystem-ops": {
       "command": "npx",
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
         "${workspaceFolder}"
       ],
-      "timeout": 120000,
-      "retries": 3,
-      "disabled": false,
-      "priority": "critical",
-      "autoApprove": [
-        "read_file",
-        "write_file",
-        "edit_file",
-        "list_directory",
-        "directory_tree",
-        "create_directory",
-        "move_file",
-        "search_files",
-        "get_file_info",
-        "read_multiple_files",
-        "list_allowed_directories"
-      ],
-      "description": "Full filesystem access for Next.js project management"
+      "description": "Secure filesystem operations",
+      "enabledByDefault": true,
+      "priority": 80
     },
-
-    "git": {
+    "git-integration": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-git", "${workspaceFolder}"],
-      "timeout": 90000,
-      "retries": 3,
-      "disabled": false,
-      "priority": "high",
-      "autoApprove": [
-        "git_status",
-        "git_diff",
-        "git_log",
-        "git_show",
-        "git_commit",
-        "git_add",
-        "git_reset",
-        "git_branch",
-        "list_branches",
-        "git_checkout",
-        "git_stash",
-        "git_stash_pop",
-        "git_remote",
-        "git_fetch",
-        "git_pull",
-        "git_push"
-      ],
-      "description": "Complete Git version control integration"
+      "description": "Git repository operations",
+      "enabledByDefault": true,
+      "priority": 75
     },
-
-    "github": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
-      "timeout": 120000,
-      "retries": 3,
-      "disabled": false,
-      "priority": "high",
-      "autoApprove": [
-        "search_repositories",
-        "search_code",
-        "search_issues",
-        "search_pull_requests",
-        "get_file_contents",
-        "list_commits",
-        "get_commit",
-        "list_issues",
-        "list_pull_requests",
-        "get_issue",
-        "get_pull_request",
-        "list_branches",
-        "fork_repository",
-        "create_repository",
-        "create_issue",
-        "create_pull_request",
-        "update_issue",
-        "create_or_update_file",
-        "push_files"
-      ],
-      "description": "GitHub API integration for repository management"
-    },
-
-    "// DATABASE SERVERS": "PostgreSQL and data management",
-
-    "postgres": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-postgres",
-        "${env:DATABASE_URL}"
-      ],
-      "timeout": 60000,
-      "retries": 3,
-      "disabled": false,
-      "priority": "high",
-      "autoApprove": [
-        "query",
-        "list_tables",
-        "describe_table",
-        "list_schemas",
-        "execute_query",
-        "get_table_schema"
-      ],
-      "description": "PostgreSQL database management and query execution",
-      "env": {
-        "POSTGRES_CONNECTION_POOL_SIZE": "20",
-        "POSTGRES_TIMEOUT": "30000"
-      }
-    },
-
-    "redis": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-redis"],
-      "timeout": 60000,
-      "retries": 3,
-      "disabled": false,
-      "priority": "high",
-      "autoApprove": [
-        "get",
-        "set",
-        "del",
-        "keys",
-        "exists",
-        "expire",
-        "ttl",
-        "hgetall",
-        "hset",
-        "lpush",
-        "lpop",
-        "rpush",
-        "rpop",
-        "lrange",
-        "sadd",
-        "smembers",
-        "srem"
-      ],
-      "description": "Redis caching and session management",
-      "env": {
-        "REDIS_URL": "${env:REDIS_URL}",
-        "UPSTASH_REDIS_REST_URL": "${env:UPSTASH_REDIS_REST_URL}",
-        "UPSTASH_REDIS_REST_TOKEN": "${env:UPSTASH_REDIS_REST_TOKEN}"
-      }
-    },
-
-    "// AI & ANALYSIS SERVERS": "AI-powered development assistance",
-
-    "brave-search": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-brave-search"],
-      "timeout": 60000,
-      "retries": 3,
-      "disabled": false,
-      "priority": "medium",
-      "autoApprove": ["brave_web_search", "brave_local_search"],
-      "description": "Web search for documentation and solutions",
-      "env": {
-        "BRAVE_API_KEY": "${env:BRAVE_API_KEY}"
-      }
-    },
-
-    "// CODE ANALYSIS SERVERS": "Static analysis and code quality",
-
     "sequential-thinking": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
-      "timeout": 120000,
-      "retries": 2,
-      "disabled": false,
-      "priority": "medium",
-      "autoApprove": ["sequentialThinking"],
-      "description": "Enhanced reasoning for complex problem-solving"
-    },
-
-    "// UTILITY SERVERS": "Development productivity tools",
-
-    "memory": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-memory"],
-      "timeout": 30000,
-      "retries": 3,
-      "disabled": false,
-      "priority": "medium",
-      "autoApprove": [
-        "create_entities",
-        "create_relations",
-        "add_observations",
-        "delete_observations",
-        "delete_entities",
-        "delete_relations",
-        "read_graph",
-        "search_nodes",
-        "open_nodes"
-      ],
-      "description": "Knowledge graph for project context retention"
-    },
-
-    "fetch": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-fetch"],
-      "timeout": 45000,
-      "retries": 3,
-      "disabled": false,
-      "priority": "medium",
-      "autoApprove": ["fetch"],
-      "description": "HTTP client for API testing and documentation fetching"
-    },
-
-    "// TYPESCRIPT & NEXT.JS SERVERS": "Framework-specific tooling",
-
-    "typescript-language-server": {
-      "command": "npx",
-      "args": ["-y", "@vtsls/language-server", "--stdio"],
-      "timeout": 90000,
-      "retries": 2,
-      "disabled": false,
-      "priority": "high",
-      "autoApprove": [
-        "initialize",
-        "textDocument/definition",
-        "textDocument/references",
-        "textDocument/hover",
-        "textDocument/completion",
-        "textDocument/codeAction",
-        "workspace/symbol",
-        "textDocument/rename",
-        "textDocument/formatting",
-        "textDocument/rangeFormatting",
-        "textDocument/typeDefinition",
-        "textDocument/implementation",
-        "textDocument/documentSymbol",
-        "workspace/executeCommand"
-      ],
-      "description": "TypeScript language server for intelligent code analysis",
-      "env": {
-        "TSSERVER_LOG_FILE": "${workspaceFolder}\\.vscode\\logs\\tsserver.log",
-        "TSSERVER_MAX_MEMORY": "8192",
-        "TSC_COMPILE_ON_SAVE_ENABLED": "true"
-      }
-    },
-
-    "nextjs-mcp": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-everything"],
-      "timeout": 120000,
-      "retries": 3,
-      "disabled": false,
-      "priority": "critical",
-      "autoApprove": [
-        "read_resource",
-        "list_resources",
-        "call_tool",
-        "list_tools",
-        "get_prompt",
-        "list_prompts"
-      ],
-      "description": "Next.js-specific MCP server for App Router, Server Components, and React 19 features",
-      "env": {
-        "NEXTJS_VERSION": "16.1.3",
-        "REACT_VERSION": "19.2.3",
-        "PROJECT_ROOT": "${workspaceFolder}",
-        "TURBOPACK_ENABLED": "true"
-      }
-    },
-
-    "drizzle-orm": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-everything"],
-      "timeout": 90000,
-      "retries": 3,
-      "disabled": false,
-      "priority": "high",
-      "autoApprove": [
-        "introspect_schema",
-        "generate_migration",
-        "list_tables",
-        "describe_table",
-        "query_builder",
-        "relation_mapper"
-      ],
-      "description": "Drizzle ORM schema management and query optimization",
-      "env": {
-        "DATABASE_URL": "${env:DATABASE_URL}",
-        "DRIZZLE_VERSION": "0.45.1"
-      }
-    },
-
-    "// DEVELOPMENT TOOLS": "Code generation and scaffolding",
-
-    "puppeteer": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-puppeteer"],
-      "timeout": 90000,
-      "retries": 2,
-      "disabled": true,
-      "priority": "low",
-      "autoApprove": [
-        "puppeteer_navigate",
-        "puppeteer_screenshot",
-        "puppeteer_click",
-        "puppeteer_fill",
-        "puppeteer_evaluate"
-      ],
-      "description": "Browser automation for E2E testing and scraping"
-    },
-
-    "// MONITORING & LOGGING": "Application observability",
-
-    "sentry": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sentry"],
-      "timeout": 60000,
-      "retries": 3,
-      "disabled": true,
-      "priority": "low",
-      "autoApprove": ["get_issues", "get_issue_details", "get_project_stats"],
-      "description": "Error tracking and monitoring integration",
-      "env": {
-        "SENTRY_AUTH_TOKEN": "${env:SENTRY_AUTH_TOKEN}",
-        "SENTRY_ORG": "${env:SENTRY_ORG}",
-        "SENTRY_PROJECT": "${env:SENTRY_PROJECT}"
-      }
+      "description": "AI-powered sequential reasoning",
+      "enabledByDefault": false,
+      "priority": 50
     }
   },
-
-  "projectContext": {
-    "framework": "Next.js 16.1.3",
-    "language": "TypeScript 5+",
-    "database": "PostgreSQL with Drizzle ORM",
-    "cache": "Redis (ioredis + Upstash)",
-    "authentication": "NextAuth v5",
-    "styling": "Tailwind CSS 4.1",
-    "testing": "Vitest + Playwright",
-    "deployment": "Vercel/Docker",
-    "packageManager": "pnpm",
-    "nodeVersion": "20+"
-  }
+  "securityPolicy": {
+    "allowedCommands": ["npx", "pnpm", "node"],
+    "blockedPaths": [
+      "**/node_modules/**",
+      "**/.git/**",
+      "**/.env",
+      "**/.env.local"
+    ],
+    "requireEnvironmentValidation": true,
+    "sandboxMode": false
+  },
+  "version": "4.0.0"
 }

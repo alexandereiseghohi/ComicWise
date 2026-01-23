@@ -579,7 +579,7 @@ Features:
 
 1. **Add to Bookmark Component**
    **Location:** `src/components/comics/AddToBookmarkButton.tsx`
-   
+
    Features:
    - Icon button (bookmark icon)
    - Loading state
@@ -591,7 +591,7 @@ Features:
 
 2. **Remove from Bookmark Component**
    **Location:** `src/components/comics/RemoveFromBookmarkButton.tsx`
-   
+
    Features:
    - Icon button (bookmarked icon)
    - Confirmation dialog
@@ -602,7 +602,7 @@ Features:
 
 3. **Bookmark Status Component**
    **Location:** `src/components/comics/BookmarkStatus.tsx`
-   
+
    Features:
    - Display current bookmark status
    - Quick status change dropdown

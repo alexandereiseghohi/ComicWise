@@ -70,7 +70,7 @@ describe("Store Integration Tests", () => {
     beforeEach(() => {
       const { result } = renderHook(() => useBookmarks());
       act(() => {
-        // @ts-ignore
+        // @ts-expect-error - clearAll is not exposed in the public API
         result.current.clearAll();
       });
     });

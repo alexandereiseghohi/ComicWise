@@ -23,7 +23,7 @@ export const UserSeedSchema = z.object({
 export const ComicSeedSchema = z.object({
   title: z.string().min(1),
   slug: z.string().min(1),
-  description: z.string(),
+  description: z.string().optional().default(""),
   url: z.string().url().optional(),
   rating: z.coerce.number().min(0).max(10).default(0),
   status: z
@@ -33,37 +33,52 @@ export const ComicSeedSchema = z.object({
   updatedAt: z.string().optional(),
   category: z.string().optional(), // Alternative to type
   type: z
-    .object({
-      name: z.string(),
-    })
-    .optional(),
-  artist: z
-    .object({
-      name: z.string(),
-    })
-    .optional(),
-  author: z
-    .object({
-      name: z.string(),
-    })
-    .optional(),
-  genres: z
-    .array(
+    .union([
+      z.string(),
       z.object({
         name: z.string(),
-      })
-    )
+      }),
+    ])
+    .optional(),
+  artist: z
+    .union([
+      z.string(),
+      z.object({
+        name: z.string(),
+      }),
+    ])
+    .optional(),
+  author: z
+    .union([
+      z.string(),
+      z.object({
+        name: z.string(),
+      }),
+    ])
+    .optional(),
+  genres: z
+    .union([
+      z.array(z.string()),
+      z.array(
+        z.object({
+          name: z.string(),
+        })
+      ),
+    ])
     .optional()
     .default([]),
   images: z
     .array(
-      z.object({
-        url: z.string().url(),
-      })
+      z.union([
+        z.object({
+          url: z.string().url(),
+        }),
+        z.string().url(),
+      ])
     )
     .optional()
     .default([]),
-  image_urls: z.array(z.string()).optional(),
+  image_urls: z.array(z.string().url()).optional(),
 });
 
 export const ChapterSeedSchema = z.object({

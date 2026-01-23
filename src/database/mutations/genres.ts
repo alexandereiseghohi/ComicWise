@@ -18,8 +18,8 @@ export async function createGenre(data: {
 }): Promise<typeof genre.$inferSelect | undefined> {
   const slug = data.name
     .toLowerCase()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/\s+/g, "-")
+    .replaceAll(/[^\s\w-]/g, "")
+    .replaceAll(/\s+/g, "-")
     .trim();
 
   const [newGenre] = await database

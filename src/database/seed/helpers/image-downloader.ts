@@ -241,6 +241,7 @@ export function getImageExtension(url: string, contentType?: string): string {
 
 /**
  * Extract filename from URL with extension
+ * @param url
  */
 export function getOriginalFilename(url: string): string {
   try {
@@ -255,6 +256,8 @@ export function getOriginalFilename(url: string): string {
 
 /**
  * Download multiple images with concurrency control
+ * @param downloads
+ * @param concurrency
  */
 export async function downloadImagesWithConcurrency(
   downloads: Array<{

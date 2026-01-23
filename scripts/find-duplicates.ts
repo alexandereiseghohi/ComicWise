@@ -48,6 +48,7 @@ function initProject(): Project {
 
 /**
  * Find duplicate Zod schemas
+ * @param project
  */
 function findDuplicateZodSchemas(project: Project) {
   console.log(chalk.blue("📋 Analyzing Zod schemas...\n"));
@@ -87,6 +88,7 @@ function findDuplicateZodSchemas(project: Project) {
 
 /**
  * Find duplicate React components
+ * @param project
  */
 function findDuplicateComponents(project: Project) {
   console.log(chalk.blue("⚛️  Analyzing React components...\n"));
@@ -130,6 +132,7 @@ function findDuplicateComponents(project: Project) {
 
 /**
  * Find duplicate functions
+ * @param project
  */
 function findDuplicateFunctions(project: Project) {
   console.log(chalk.blue("🔧 Analyzing functions...\n"));
@@ -166,6 +169,7 @@ function findDuplicateFunctions(project: Project) {
 
 /**
  * Find duplicate interfaces/types
+ * @param project
  */
 function findDuplicateInterfaces(project: Project) {
   console.log(chalk.blue("📐 Analyzing interfaces and types...\n"));
@@ -211,6 +215,7 @@ function findDuplicateInterfaces(project: Project) {
 
 /**
  * Find empty folders recursively
+ * @param dir
  */
 async function findEmptyFolders(dir: string = "src"): Promise<void> {
   console.log(chalk.blue("📁 Finding empty folders...\n"));
@@ -229,7 +234,7 @@ async function findEmptyFolders(dir: string = "src"): Promise<void> {
         if (folder.name === "node_modules" || folder.name === ".git") continue;
         await scanDir(join(currentDir, folder.name));
       }
-    } catch (error) {
+    } catch {
       // Ignore permission errors
     }
   }
@@ -240,6 +245,7 @@ async function findEmptyFolders(dir: string = "src"): Promise<void> {
 
 /**
  * Find blank files (empty or only whitespace)
+ * @param dir
  */
 async function findBlankFiles(dir: string = "src"): Promise<void> {
   console.log(chalk.blue("📄 Finding blank files...\n"));
@@ -261,7 +267,7 @@ async function findBlankFiles(dir: string = "src"): Promise<void> {
           }
         }
       }
-    } catch (error) {
+    } catch {
       // Ignore permission errors
     }
   }
@@ -340,6 +346,7 @@ function printReport() {
 
 /**
  * Delete empty folders and blank files (optional)
+ * @param dryRun
  */
 async function cleanup(dryRun: boolean = true) {
   if (dryRun) {
@@ -354,7 +361,7 @@ async function cleanup(dryRun: boolean = true) {
     try {
       await unlink(file);
       console.log(chalk.green(`✓ Deleted: ${file}`));
-    } catch (error) {
+    } catch {
       console.log(chalk.red(`✗ Failed to delete: ${file}`));
     }
   }
@@ -364,7 +371,7 @@ async function cleanup(dryRun: boolean = true) {
     try {
       await rmdir(folder);
       console.log(chalk.green(`✓ Deleted: ${folder}`));
-    } catch (error) {
+    } catch {
       console.log(chalk.red(`✗ Failed to delete: ${folder}`));
     }
   }
@@ -380,9 +387,9 @@ async function main() {
   console.log(chalk.bold.cyan("║   ComicWise - Duplicate Code Finder (ts-morph)        ║"));
   console.log(chalk.bold.cyan("╚═══════════════════════════════════════════════════════╝\n"));
 
-  const args = process.argv.slice(2);
-  const shouldCleanup = args.includes("--cleanup");
-  const dryRun = !args.includes("--no-dry-run");
+  const args = new Set(process.argv.slice(2));
+  const shouldCleanup = args.has("--cleanup");
+  const dryRun = !args.has("--no-dry-run");
 
   try {
     const project = initProject();

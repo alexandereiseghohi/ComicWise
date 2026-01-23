@@ -50,6 +50,10 @@ export const rateLimitConfigs = {
 
 /**
  * Check if rate limit has been exceeded
+ * @param key
+ * @param options
+ * @param options.limit
+ * @param options.window
  */
 export async function checkRateLimit(
   key: string,
@@ -71,6 +75,7 @@ export async function checkRateLimit(
 
 /**
  * Create a rate limit error response
+ * @param retryAfter
  */
 export function createRateLimitError<T = unknown>(retryAfter?: number): ActionResult<T> {
   return {
@@ -83,6 +88,10 @@ export function createRateLimitError<T = unknown>(retryAfter?: number): ActionRe
 
 /**
  * Wrapper for rate-limited actions
+ * @param action
+ * @param options
+ * @param options.limit
+ * @param options.window
  */
 export function rateLimitAction<T extends (...args: any[]) => Promise<ActionResult>>(
   action: T,
@@ -99,6 +108,10 @@ export function rateLimitAction<T extends (...args: any[]) => Promise<ActionResu
 
 /**
  * HOC for rate-limiting middleware
+ * @param handler
+ * @param options
+ * @param options.limit
+ * @param options.window
  */
 export function withRateLimit<T extends (...args: any[]) => Promise<any>>(
   handler: T,
@@ -115,6 +128,7 @@ export function withRateLimit<T extends (...args: any[]) => Promise<any>>(
 
 /**
  * Clear rate limit for identifier (useful for testing)
+ * @param identifier
  */
 export async function clearRateLimit(identifier: string): Promise<void> {
   // Stub implementation

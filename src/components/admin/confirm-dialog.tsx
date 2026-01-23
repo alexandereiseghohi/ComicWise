@@ -19,11 +19,11 @@ import * as React from "react";
 
 export interface ConfirmDialogProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onOpenChange(open: boolean): void;
   title: string;
   description: string;
-  onConfirm: () => void | Promise<void>;
-  onCancel?: () => void;
+  onConfirm(): void | Promise<void>;
+  onCancel?(): void;
   confirmText?: string;
   cancelText?: string;
   variant?: "default" | "destructive";

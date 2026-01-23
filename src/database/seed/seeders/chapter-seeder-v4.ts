@@ -21,10 +21,8 @@ import {
   downloadImagesWithConcurrency,
   getOriginalFilename,
 } from "@/database/seed/helpers/image-downloader";
-import {
-  ChapterSeedSchema,
-  type ChapterSeedData,
-} from "@/database/seed/helpers/validation-schemas";
+import type { ChapterSeedData } from "@/database/seed/helpers/validation-schemas";
+import { ChapterSeedSchema } from "@/database/seed/helpers/validation-schemas";
 import { logger } from "@/database/seed/logger";
 import { and, eq } from "drizzle-orm";
 import fs from "fs/promises";
@@ -45,13 +43,15 @@ const IMAGE_CONCURRENCY = 5;
 
 /**
  * Generate slug from chapter name
+ * @param chapterName
+ * @param comicSlug
  */
 function generateChapterSlug(chapterName: string, comicSlug: string): string {
   const baseSlug = chapterName
     .toLowerCase()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-")
+    .replaceAll(/[^\s\w-]/g, "")
+    .replaceAll(/\s+/g, "-")
+    .replaceAll(/-+/g, "-")
     .trim();
 
   return `${comicSlug}-${baseSlug}`;
@@ -59,6 +59,7 @@ function generateChapterSlug(chapterName: string, comicSlug: string): string {
 
 /**
  * Load and validate chapters from JSON file
+ * @param filePath
  */
 async function loadChaptersFromFile(filePath: string): Promise<ChapterSeedData[]> {
   try {
@@ -96,25 +97,89 @@ async function loadChaptersFromFile(filePath: string): Promise<ChapterSeedData[]
 }
 
 /**
- * Get comic ID by slug
+ * Get comic ID by slug or title (with fallback)
+ * Searches in this order: slug → title → partial title match
+ * @param slug
+ * @param title
  */
-async function getComicIdBySlug(slug: string): Promise<number | null> {
+async function getComicIdBySlugOrTitle(slug: string | null, title: string | null): Promise<number | null> {
   try {
-    const result = await db
-      .select({ id: comic.id })
-      .from(comic)
-      .where(eq(comic.slug, slug))
-      .limit(1);
+    // 1. Try exact slug match first
+    if (slug) {
+      const resultBySlug = await db
+        .select({ id: comic.id })
+        .from(comic)
+        .where(eq(comic.slug, slug.toLowerCase().trim()))
+        .limit(1);
 
-    return result.length > 0 && result[0] ? result[0].id : null;
+      if (resultBySlug.length > 0 && resultBySlug[0]) {
+        logger.debug(`✓ Found comic by slug: ${slug}`);
+        return resultBySlug[0].id;
+      }
+    }
+
+    // 2. Try exact title match
+    if (title) {
+      const resultByTitle = await db
+        .select({ id: comic.id })
+        .from(comic)
+        .where(eq(comic.title, title.trim()))
+        .limit(1);
+
+      if (resultByTitle.length > 0 && resultByTitle[0]) {
+        logger.debug(`✓ Found comic by title: ${title}`);
+        return resultByTitle[0].id;
+      }
+
+      // 3. Try normalized title match (without special characters)
+      const normalizedTitle = title
+        .toLowerCase()
+        .trim()
+        .replaceAll(/[^\w\s]/g, "")
+        .replaceAll(/\s+/g, " ");
+
+      const allComics = await db
+        .select({ id: comic.id, title: comic.title })
+        .from(comic)
+        .limit(1000); // Reasonable limit
+
+      for (const c of allComics) {
+        const normalizedComic = c.title
+          .toLowerCase()
+          .replaceAll(/[^\w\s]/g, "")
+          .replaceAll(/\s+/g, " ");
+
+        if (normalizedComic === normalizedTitle) {
+          logger.debug(`✓ Found comic by normalized title match: ${title}`);
+          return c.id;
+        }
+      }
+
+      // 4. Try partial title match (first N words)
+      const titleWords = title.trim().split(/\s+/).slice(0, 3).join(" ").toLowerCase();
+      for (const c of allComics) {
+        if (c.title.toLowerCase().startsWith(titleWords)) {
+          logger.debug(`✓ Found comic by partial title match: ${title} → ${c.title}`);
+          return c.id;
+        }
+      }
+    }
+
+    // Not found
+    logger.warn(`⊘ Comic not found for slug: "${slug}" or title: "${title}"`);
+    return null;
   } catch (error) {
-    logger.error(`Failed to get comic by slug ${slug}: ${error}`);
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    logger.error(`Failed to find comic: ${errorMsg}`);
     return null;
   }
 }
 
 /**
  * Download chapter images
+ * @param chapterData
+ * @param comicSlug
+ * @param chapterSlug
  */
 async function downloadChapterImages(
   chapterData: ChapterSeedData,
@@ -153,6 +218,7 @@ async function downloadChapterImages(
 
 /**
  * Seed a single chapter with images
+ * @param chapterData
  */
 async function seedChapter(chapterData: ChapterSeedData): Promise<{
   action: "created" | "updated" | "skipped" | "error";
@@ -160,32 +226,37 @@ async function seedChapter(chapterData: ChapterSeedData): Promise<{
   imagesCached: number;
 }> {
   try {
-    // Extract comic slug
+    // Extract comic slug and title for flexible lookup
     const comicSlug =
       typeof chapterData.comic === "object" && chapterData.comic.slug
         ? chapterData.comic.slug
-        : chapterData.comicslug || "";
+        : chapterData.comicslug || null;
 
-    if (!comicSlug) {
-      logger.error(`❌ Chapter ${chapterData.name} has no comic slug`);
-      return { action: "error", imagesDownloaded: 0, imagesCached: 0 };
-    }
+    const comicTitle =
+      typeof chapterData.comic === "object" && chapterData.comic.title
+        ? chapterData.comic.title
+        : null;
 
-    // Get comic ID
-    const comicId = await getComicIdBySlug(comicSlug);
+    // Try to find comic by slug or title (with multiple fallback strategies)
+    const comicId = await getComicIdBySlugOrTitle(comicSlug, comicTitle);
     if (!comicId) {
-      logger.error(`❌ Comic not found for slug: ${comicSlug}`);
+      logger.warn(
+        `⊘ Comic not found for slug: "${comicSlug}" or title: "${comicTitle}" - skipping chapter "${chapterData.name}"`
+      );
       return { action: "skipped", imagesDownloaded: 0, imagesCached: 0 };
     }
+
+    // Use the slug for directory structure (fallback to generated slug if needed)
+    const dirSlug = comicSlug || `comic-${comicId}`;
 
     // Generate chapter slug
     const chapterSlug =
       chapterData.slug ||
       chapterData.chapterslug ||
-      generateChapterSlug(chapterData.name || "untitled", comicSlug);
+      generateChapterSlug(chapterData.name || "untitled", dirSlug);
 
     // Download images
-    const imageResults = await downloadChapterImages(chapterData, comicSlug, chapterSlug);
+    const imageResults = await downloadChapterImages(chapterData, dirSlug, chapterSlug);
 
     // Check if chapter exists
     const existing = await db
@@ -196,7 +267,7 @@ async function seedChapter(chapterData: ChapterSeedData): Promise<{
 
     // Extract chapter number from name or use sequential number
     const chapterNumberMatch = (chapterData.name ?? "").match(/\d+/);
-    const chapterNumber = chapterNumberMatch ? parseInt(chapterNumberMatch[0], 10) : 1;
+    const chapterNumber = chapterNumberMatch ? Number.parseInt(chapterNumberMatch[0], 10) : 1;
 
     // Get release date from data or use current date
     const releaseDate = new Date();
@@ -221,13 +292,40 @@ async function seedChapter(chapterData: ChapterSeedData): Promise<{
       logger.debug(`🔄 Updated chapter: ${chapterData.name}`);
     } else {
       // Create new chapter
-      const [created] = await db
-        .insert(chapter)
-        .values(chapterRecord)
-        .returning({ id: chapter.id });
+      try {
+        const [created] = await db
+          .insert(chapter)
+          .values(chapterRecord)
+          .returning({ id: chapter.id });
 
-      chapterId = created?.id || 0;
-      logger.info(`✨ Created chapter: ${chapterData.name} (${comicSlug})`);
+        chapterId = created?.id || 0;
+        if (chapterId === 0) {
+          throw new Error(`No record returned from insert`);
+        }
+
+        logger.info(`✨ Created chapter: ${chapterData.name} (${comicSlug})`);
+      } catch (error: unknown) {
+        // If insert fails, try to find existing by slug
+        const existingBySlug = await db
+          .select({ id: chapter.id })
+          .from(chapter)
+          .where(eq(chapter.slug, chapterSlug))
+          .limit(1);
+
+        if (existingBySlug.length > 0 && existingBySlug[0]) {
+          chapterId = existingBySlug[0].id;
+          logger.debug(`🔄 Found existing chapter by slug: ${chapterData.name}`);
+        } else {
+          // Log but don't throw - continue processing
+          const errorMsg = error instanceof Error ? error.message : String(error);
+          logger.warn(`⚠️  Could not create chapter "${chapterData.name}": ${errorMsg.substring(0, 100)}`);
+          return {
+            action: "error",
+            imagesDownloaded: 0,
+            imagesCached: 0,
+          };
+        }
+      }
     }
 
     // Save image records to database with pageNumber
@@ -257,7 +355,8 @@ async function seedChapter(chapterData: ChapterSeedData): Promise<{
       imagesCached: imageResults.cached,
     };
   } catch (error) {
-    logger.error(`💥 Failed to seed chapter ${chapterData.name}: ${error}`);
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    logger.warn(`⚠️  Failed to seed chapter: ${errorMsg.substring(0, 80)}`);
     return {
       action: "error",
       imagesDownloaded: 0,
@@ -268,6 +367,7 @@ async function seedChapter(chapterData: ChapterSeedData): Promise<{
 
 /**
  * Seed chapters from multiple JSON files
+ * @param filePatterns
  */
 export async function seedChaptersV4(filePatterns: string[]): Promise<SeedResult> {
   const result: SeedResult = {
@@ -295,10 +395,26 @@ export async function seedChaptersV4(filePatterns: string[]): Promise<SeedResult
       if (!chapterData) continue;
       const seedResult = await seedChapter(chapterData);
 
-      if (seedResult.action === "created") result.created++;
-      else if (seedResult.action === "updated") result.updated++;
-      else if (seedResult.action === "skipped") result.skipped++;
-      else if (seedResult.action === "error") result.errors++;
+      switch (seedResult.action) {
+        case "created":
+          result.created++;
+          break;
+
+        case "updated":
+          result.updated++;
+          break;
+
+        case "skipped":
+          result.skipped++;
+          break;
+
+        case "error":
+          {
+            result.errors++;
+            // No default
+          }
+          break;
+      }
 
       result.imagesDownloaded += seedResult.imagesDownloaded;
       result.imagesCached += seedResult.imagesCached;
