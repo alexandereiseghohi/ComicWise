@@ -1,3 +1,44 @@
+import { createHash } from "crypto";
+import fs from "fs";
+import fsp from "fs/promises";
+
+/**
+ * Compute SHA256 hash of a file on disk.
+ */
+export async function fileHash(filePath: string): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
+    const hash = createHash("sha256");
+    const rs = fs.createReadStream(filePath);
+    rs.on("error", reject);
+    rs.on("data", (chunk) => hash.update(chunk));
+    rs.on("end", () => resolve(hash.digest("hex")));
+  });
+}
+
+/**
+ * Given an array of existing file paths, determine if candidatePath matches
+ * any of them by content hash. Returns the matching path or null.
+ */
+export async function findDuplicate(
+  existingPaths: string[],
+  candidatePath: string
+): Promise<string | null> {
+  try {
+    const candidateHash = await fileHash(candidatePath);
+    for (const p of existingPaths) {
+      try {
+        const h = await fileHash(p);
+        if (h === candidateHash) return p;
+      } catch {
+        // ignore unreadable files
+      }
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
+}
 /**
  * ═══════════════════════════════════════════════════════════════════════════
  * Image Deduplication & Caching System
@@ -19,7 +60,6 @@
  */
 
 import crypto from "crypto";
-import fs from "fs/promises";
 import path from "path";
 
 // Import Logger class type from seedLogger
@@ -133,10 +173,10 @@ export async function fileExistsWithCache(
     }
 
     // Use path.resolve() to get absolute path, satisfying security linter
-    // This ensures the path is safe before passing to fs.stat()
+    // This ensures the path is safe before passing to fsp.stat()
     const safePath = path.resolve(normalizedPath);
     // eslint-disable-next-line security/detect-non-literal-fs-filename
-    await fs.stat(safePath);
+    await fsp.stat(safePath);
     fileCache.set(filePath, true);
     return true;
   } catch {
@@ -214,12 +254,24 @@ export async function initializeFileCache(
     // Use path.resolve() to get absolute path, satisfying security linter
     const safePath = path.resolve(normalizedPath);
 
-    // eslint-disable-next-line security/detect-non-literal-fs-filename
-    const files = await fs.readdir(safePath, { recursive: true });
+    // Walk directory recursively to gather files
+    async function walk(dir: string): Promise<string[]> {
+      const entries = await fsp.readdir(dir, { withFileTypes: true });
+      const results: string[] = [];
+      for (const ent of entries) {
+        const resPath = path.join(dir, ent.name);
+        if (ent.isDirectory()) {
+          results.push(...(await walk(resPath)));
+        } else if (ent.isFile()) {
+          results.push(resPath);
+        }
+      }
+      return results;
+    }
 
+    const files = await walk(safePath);
     for (const file of files) {
-      const fullPath = path.join(safePath, file.toString());
-      fileCache.set(fullPath, true);
+      fileCache.set(file, true);
     }
 
     return files.length;

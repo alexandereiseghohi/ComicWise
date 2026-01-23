@@ -1,3 +1,8 @@
+import { logger } from "@/database/seed/logger";
+import axios from "axios";
+import crypto from "crypto";
+import fsp from "fs/promises";
+import path from "path";
 /**
  * ═══════════════════════════════════════════════════════════════════════════
  * Image Downloader - Optimized Image Download & Caching System
@@ -10,12 +15,6 @@
  * - Progress tracking and logging
  * - Error handling and recovery
  */
-
-import { logger } from "@/database/seed/logger";
-import axios from "axios";
-import crypto from "crypto";
-import fs from "fs/promises";
-import path from "path";
 
 export interface ImageDownloadOptions {
   url: string;
@@ -51,7 +50,7 @@ export async function downloadImage(options: ImageDownloadOptions): Promise<Imag
 
   try {
     // Ensure destination directory exists
-    await fs.mkdir(destinationPath, { recursive: true });
+    await fsp.mkdir(destinationPath, { recursive: true });
 
     // Determine filename
     let finalFilename = filename;
@@ -71,7 +70,7 @@ export async function downloadImage(options: ImageDownloadOptions): Promise<Imag
     // Check if file already exists
     if (skipIfExists) {
       try {
-        const stats = await fs.stat(filePath);
+        const stats = await fsp.stat(filePath);
         if (stats.size > 0) {
           logger.debug(`Image already exists: ${finalFilename}`);
           return {
@@ -103,9 +102,9 @@ export async function downloadImage(options: ImageDownloadOptions): Promise<Imag
         });
 
         // Save to file
-        await fs.writeFile(filePath, Buffer.from(response.data));
+        await fsp.writeFile(filePath, Buffer.from(response.data));
 
-        const stats = await fs.stat(filePath);
+        const stats = await fsp.stat(filePath);
 
         logger.info(`✓ Downloaded: ${finalFilename} (${(stats.size / 1024).toFixed(2)} KB)`);
 
@@ -156,8 +155,8 @@ export function getImageHash(url: string): string {
  */
 export async function imageExists(filePath: string): Promise<boolean> {
   try {
-    const stats = await fs.stat(filePath);
-    return stats.isFile() && stats.size > 0;
+    const stats = await fsp.stat(filePath);
+    return typeof stats.isFile === "function" ? stats.isFile() && stats.size > 0 : stats.size > 0;
   } catch {
     return false;
   }

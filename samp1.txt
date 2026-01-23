@@ -45,11 +45,11 @@ If any task involves working with images, ensure that image handling is efficien
 If any task is time-consuming, ensure that progress is logged and reported at regular intervals with clear, concise logs while running in the background.
 Read and understand  #file:samp.txt, #file:Prompts.prompt.txt,#file:recommendations-list.md, #file:sample.txt, #file:*.txt, #file:*.md  then modify #file:.github\prompts\setup.prompt.md to include all Prerequisites and Context for all Phase and include all content,tasks,recommendations from #file:samp.txt, #file:Prompts.prompt.txt,#file:recommendations-list.md, #file:sample.txt, #file:*.txt, #file:*.md, all tasks listed below as github copilot prompts using DRY and well documented comments for all functions,interfaces,types,modules,classes,components,routes using jsDoc  log all created or updated files to file:.github\prompts\main.prompt.md and create a prompt at file:.github\prompts\run.prompt.md to make all inserts and edits described in file:.github\prompts\main.prompt.md
 Tasks:
-1 - Create or Modify and Validate #file:.vscode/mcp.json to include configurations for This Project, Next.js, TypeScript, PostgreSQL, Redis, and AI development then create a script to verify and start the mcp servers using VS Code Cli.
-2 - Create or Modify and Validate #file:.vscode/extensions.json to include recommended extensions for This Project, Next.js, TypeScript, PostgreSQL, Redis, and AI development then verify and install them using the VS Code Cli.
+1 - Modify #file:.vscode/mcp.json to include mcp servers for Next.js, TypeScript, PostgreSQL, Redis, Playwright, Context7, Github, All recommended mcp servers for this project,and AI development then create a script to install, configure, verify and start the mcp servers using VS Code Cli.
+2 - Create or Modify and Validate #file:.vscode/extensions.json to include recommended extensions for Next.js, TypeScript, PostgreSQL, Redis, Playwright, Context7, Github, All recommended mcp servers for this project,and AI development then verify and install them using the VS Code Cli.
 3 - Create or Modify and Validate #file:.vscode/launch.json to include configurations for This Project, debugging Next.js applications with TypeScript, PostgreSQL, Redis, and AI features.
 4 - Create or Modify and Validate #file:.vscode/tasks.json to include tasks for building, testing, and deploying Next.js applications with TypeScript, PostgreSQL, Redis, and AI features.
-5 - Create or Modify and Validate #file:.vscode/settings.json to include settings optimized for This Project, Next.js, TypeScript, PostgreSQL, Redis, and AI development ensure all settings are properly configured for both development and production environments, ensure all extensions are properly configured.
+5 - Create or Modify and Validate #file:.vscode/settings.json to include settings optimized for Next.js, TypeScript, PostgreSQL, Redis, Playwright, Context7, Github, All recommended mcp servers for this project,and AI development ensure all settings are properly configured for both development and production environments, ensure all extensions are properly configured.
 6 - Create or Modify and Validate  #file:next.config.ts for optimization and Next.js best practices.
 7 - Create or Modify and Validate  #file:nextSitemap.config.ts for optimization and Next.js best practices.
 8 - Create or Modify and Validate  #file:package.json for optimization and Next.js best practices.
@@ -81,4 +81,4 @@ Tasks:
 34 - fix all type-check errors
 35 - fix all lint:fix warnings and errors
 36 - fix all build warnings and errors
-37 - Complete optimized new setup of this project include all existing files
+37 - Complete an optimized prompt for a clean setup of this project include all existing files use pnpm create next-app@latest at .github/prompts newSetup.prompt.md
