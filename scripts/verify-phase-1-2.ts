@@ -3,11 +3,11 @@
  * ═══════════════════════════════════════════════════════════════════════════
  * Phase 1 & 2 Verification Script - Foundation & Seed Optimization
  * ═══════════════════════════════════════════════════════════════════════════
- * 
+ *
  * Verifies:
  * ✅ Phase 1: Foundation & Setup completion
  * ✅ Phase 2: Seed System Optimization completion
- * 
+ *
  * Checks:
  * - Configuration files exist and contain correct content
  * - Database seeding completed successfully
@@ -17,9 +17,9 @@
  * - Build successful
  */
 
+import { execSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
-import { execSync } from "child_process";
 
 interface VerificationResult {
   name: string;
@@ -38,7 +38,7 @@ const projectRoot = process.cwd();
 function fileExists(filePath: string, description: string): VerificationResult {
   const fullPath = path.join(projectRoot, filePath);
   const exists = fs.existsSync(fullPath);
-  
+
   return {
     name: description,
     status: exists ? "PASS" : "FAIL",
@@ -46,9 +46,13 @@ function fileExists(filePath: string, description: string): VerificationResult {
   };
 }
 
-function fileContains(filePath: string, searchText: string, description: string): VerificationResult {
+function fileContains(
+  filePath: string,
+  searchText: string,
+  description: string
+): VerificationResult {
   const fullPath = path.join(projectRoot, filePath);
-  
+
   if (!fs.existsSync(fullPath)) {
     return {
       name: description,
@@ -63,9 +67,7 @@ function fileContains(filePath: string, searchText: string, description: string)
   return {
     name: description,
     status: contains ? "PASS" : "FAIL",
-    message: contains 
-      ? `✅ ${description}: Found`
-      : `❌ ${description}: Not found in ${filePath}`,
+    message: contains ? `✅ ${description}: Found` : `❌ ${description}: Not found in ${filePath}`,
   };
 }
 
@@ -123,7 +125,9 @@ results.push(fileExists("drizzle.config.ts", "Drizzle ORM configuration"));
 results.push(fileExists("src/database/schema.ts", "Database schema"));
 results.push(fileContains("src/database/schema.ts", "export const user", "User table schema"));
 results.push(fileContains("src/database/schema.ts", "export const comic", "Comic table schema"));
-results.push(fileContains("src/database/schema.ts", "export const chapter", "Chapter table schema"));
+results.push(
+  fileContains("src/database/schema.ts", "export const chapter", "Chapter table schema")
+);
 
 // Directories
 results.push(directoryExists("src/app", "App directory"));
@@ -134,13 +138,33 @@ results.push(directoryExists("src/lib", "Libraries directory"));
 console.log("📋 Phase 2: Seed System Optimization Verification\n");
 
 // Seed files
-results.push(fileExists("src/database/seed/seed-runner-v4enhanced.ts", "Ultra-optimized seed runner"));
-results.push(fileContains("src/database/seed/seed-runner-v4enhanced.ts", "ULTRA-OPTIMIZED", "Seed runner optimizations"));
-results.push(fileContains("src/database/seed/seed-runner-v4enhanced.ts", "PerformanceMetrics", "Performance tracking"));
+results.push(
+  fileExists("src/database/seed/seed-runner-v4enhanced.ts", "Ultra-optimized seed runner")
+);
+results.push(
+  fileContains(
+    "src/database/seed/seed-runner-v4enhanced.ts",
+    "ULTRA-OPTIMIZED",
+    "Seed runner optimizations"
+  )
+);
+results.push(
+  fileContains(
+    "src/database/seed/seed-runner-v4enhanced.ts",
+    "PerformanceMetrics",
+    "Performance tracking"
+  )
+);
 
 // Chapter seeder
 results.push(fileExists("src/database/seed/seeders/chapter-seeder-v4.ts", "Chapter seeder v4"));
-results.push(fileContains("src/database/seed/seeders/chapter-seeder-v4.ts", "getComicIdBySlugOrTitle", "Comic lookup enhancement"));
+results.push(
+  fileContains(
+    "src/database/seed/seeders/chapter-seeder-v4.ts",
+    "getComicIdBySlugOrTitle",
+    "Comic lookup enhancement"
+  )
+);
 
 // Comic seeder
 results.push(fileExists("src/database/seed/seeders/comic-seeder-v4.ts", "Comic seeder v4"));

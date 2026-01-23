@@ -1,17 +1,17 @@
 "use client";
 
-import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ProfileUpdateSchema } from "@/schemas/profileSchemas";
 import { updateProfileAction } from "@/lib/actions/profile";
 import type { ProfileUpdate } from "@/schemas/profileSchemas";
+import { ProfileUpdateSchema } from "@/schemas/profileSchemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 /**
  * Profile edit page - Allows users to edit their profile information
@@ -76,12 +76,23 @@ export default function ProfileEditPage() {
 
             <div>
               <label className="text-sm font-medium">Bio</label>
-              <Textarea {...register("bio")} placeholder="Tell us about yourself" className="h-24" />
+              <Textarea
+                {...register("bio")}
+                placeholder="Tell us about yourself"
+                className="h-24"
+              />
               {errors.bio && <span className="text-sm text-red-500">{errors.bio.message}</span>}
             </div>
 
             {message && (
-              <div className={"text-sm p-2 rounded " + (message.type === "success" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800")}>
+              <div
+                className={
+                  "text-sm p-2 rounded " +
+                  (message.type === "success"
+                    ? "bg-green-100 text-green-800"
+                    : "bg-red-100 text-red-800")
+                }
+              >
                 {message.text}
               </div>
             )}

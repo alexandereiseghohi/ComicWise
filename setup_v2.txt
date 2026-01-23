@@ -1,0 +1,2006 @@
+# ComicWise - Consolidated Project Commands & Setup Guide
+
+This document consolidates all command instructions for the ComicWise web application, a modern comic reading platform built with Next.js, PostgreSQL, and Drizzle ORM.
+
+---
+
+## 🎯 Project Overview
+
+**ComicWise** is a full-stack web application for comic reading and management, featuring:
+- 📚 Comic catalog with chapters and reading interface
+- 🔐 User authentication (email/password, OAuth) and session management
+- 🔖 Bookmark system for tracking reading progress
+- 🎨 Responsive UI with theme customization (light/dark mode)
+- 👨‍💼 Admin dashboard for content management
+- 📧 Email notifications (React Email)
+- 🔄 Background job processing (QStash)
+- ☁️ Image upload (ImageKit/Cloudinary)
+- 🔒 Rate limiting and security features
+
+**Tech Stack:**
+- **Framework**: Next.js 16 (App Router with Turbopack)
+- **Language**: TypeScript 5.9+
+- **Database**: PostgreSQL (Neon) + Drizzle ORM 0.44+
+- **Auth**: Next-Auth v5 (@auth/core 0.34+)
+- **State**: Zustand 5.0+
+- **Styling**: Tailwind CSS 4.1+ (shadcn/ui components)
+- **Icons**: Lucide React 0.555+
+- **Package Manager**: pnpm 9+
+- **Node**: v20+
+
+---
+
+## 📁 Project Structure
+
+```
+comicwise/
+├── .github/
+│   └── workflows/
+│       └── ci.yml                      # CI/CD pipeline
+├── .husky/
+│   └── pre-commit                      # Git hooks
+├── .vscode/
+│   ├── extensions.json                 # Recommended extensions
+│   └── settings.json                   # Workspace settings
+├── public/
+│   ├── static/
+│   │   └── uploads/                    # Local uploads (dev)
+│   └── favicon.ico
+├── src/
+│   ├── app/
+│   │   ├── (auth)/                     # Auth pages group
+│   │   │   ├── layout.tsx              # Auth layout
+│   │   │   ├── sign-in/
+│   │   │   │   └── page.tsx
+│   │   │   ├── register/
+│   │   │   │   └── page.tsx
+│   │   │   ├── forgot-password/
+│   │   │   │   └── page.tsx
+│   │   │   └── verify-request/
+│   │   │       └── page.tsx
+│   │   ├── (root)/                     # Main app group
+│   │   │   ├── layout.tsx              # Main layout
+│   │   │   ├── page.tsx                # Home page
+│   │   │   ├── comics/
+│   │   │   │   ├── page.tsx            # Comics listing
+│   │   │   │   └── [id]/
+│   │   │   │       ├── page.tsx        # Comic detail
+│   │   │   │       └── read/
+│   │   │   │           └── [chapterId]/
+│   │   │   │               └── page.tsx # Chapter reader
+│   │   │   ├── bookmarks/
+│   │   │   │   └── page.tsx            # User bookmarks
+│   │   │   └── profile/
+│   │   │       └── page.tsx            # User profile
+│   │   ├── admin/                      # Admin dashboard
+│   │   │   ├── layout.tsx
+│   │   │   ├── page.tsx
+│   │   │   ├── users/
+│   │   │   ├── comics/
+│   │   │   ├── chapters/
+│   │   │   ├── authors/
+│   │   │   ├── artists/
+│   │   │   └── genres/
+│   │   ├── api/
+│   │   │   ├── auth/
+│   │   │   │   └── [...nextauth]/
+│   │   │   │       └── route.ts        # Next-Auth routes
+│   │   │   ├── upload/
+│   │   │   │   └── route.ts            # Image upload endpoint
+│   │   │   └── workflows/
+│   │   │       └── onboarding/
+│   │   │           └── route.ts        # QStash webhook
+│   │   ├── globals.css                 # Global styles
+│   │   ├── layout.tsx                  # Root layout
+│   │   └── Providers.tsx               # App providers
+│   ├── app-config/
+│   │   ├── env.ts                      # Type-safe env vars
+│   │   └── index.ts                    # Config exports
+│   ├── components/
+│   │   ├── admin/                      # Admin components
+│   │   │   ├── users/
+│   │   │   ├── comics/
+│   │   │   ├── DataTable.tsx
+│   │   │   ├── ImageUploader.tsx
+│   │   │   └── AdminSidebar.tsx
+│   │   ├── emails/                     # Email templates
+│   │   │   ├── WelcomeEmail.tsx
+│   │   │   ├── PasswordResetEmail.tsx
+│   │   │   └── VerificationEmail.tsx
+│   │   ├── ui/                         # shadcn/ui components
+│   │   ├── AppNavbar.tsx               # Main navigation
+│   │   ├── Card.tsx                    # Comic card
+│   │   ├── ComicGallery.tsx            # Image gallery
+│   │   ├── ChapterReader.tsx           # Chapter viewer
+│   │   ├── BookmarkButton.tsx          # Bookmark toggle
+│   │   ├── Filters.tsx                 # Comic filters
+│   │   └── Pagination.tsx              # Pagination
+│   ├── db/
+│   │   ├── schema/
+│   │   │   └── index.ts                # All database schemas
+│   │   ├── queries/                    # Database queries
+│   │   │   ├── users.ts
+│   │   │   ├── comics.ts
+│   │   │   ├── chapters.ts
+│   │   │   └── bookmarks.ts
+│   │   ├── mutations/                  # Database mutations
+│   │   │   ├── users.ts
+│   │   │   ├── comics.ts
+│   │   │   └── chapters.ts
+│   │   ├── client.ts                   # Drizzle client
+│   │   └── index.ts                    # Database exports
+│   ├── hooks/
+│   │   ├── use-debounce.ts
+│   │   ├── use-media-query.ts
+│   │   └── use-toast.ts
+│   ├── lib/
+│   │   ├── actions/                    # Server actions
+│   │   │   ├── auth/
+│   │   │   │   └── actions.ts          # Auth actions
+│   │   │   ├── comic.ts                # Comic actions
+│   │   │   ├── bookmark.ts             # Bookmark actions
+│   │   │   ├── ratelimit.ts            # Rate limiting
+│   │   │   └── workflow.ts             # Background jobs
+│   │   ├── auth.ts                     # Next-Auth config
+│   │   ├── nodemailer.ts               # Email sender
+│   │   ├── seedHelpers.ts              # Seed utilities
+│   │   ├── utils.ts                    # General utilities
+│   │   └── validators.ts               # Zod schemas
+│   ├── scripts/
+│   │   └── seed.ts                     # Database seeder
+│   ├── services/
+│   │   └── upload/                     # Upload adapters
+│   │       ├── index.ts                # Adapter factory
+│   │       ├── imagekit.ts             # ImageKit adapter
+│   │       └── cloudinary.ts           # Cloudinary adapter
+│   ├── stores/                         # Zustand stores
+│   │   ├── bookmark.store.ts           # Bookmark state
+│   │   ├── ui.store.ts                 # UI state
+│   │   └── upload.store.ts             # Upload state
+│   └── types/
+│       ├── index.ts                    # Shared types
+│       ├── comic.ts                    # Comic types
+│       └── auth.ts                     # Auth types
+├── .env.example                        # Environment template
+├── .env.local                          # Local env (gitignored)
+├── .gitignore
+├── components.json                     # shadcn/ui config
+├── cspell.config.json                  # Spell checker config
+├── docker-compose.yml                  # Local services
+├── drizzle.config.ts                   # Drizzle Kit config
+├── eslint.config.ts                    # ESLint config
+├── middleware.ts                       # Next.js middleware
+├── next.config.ts                      # Next.js config
+├── package.json
+├── pnpm-lock.yaml
+├── pnpm-workspace.yaml
+├── postcss.config.ts                   # PostCSS config
+├── prettier.config.ts                  # Prettier config
+├── README.md
+└── tsconfig.json                       # TypeScript config
+```
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+```powershell
+# Ensure you have these installed:
+node --version  # v20 or higher
+pnpm --version  # v9 or higher
+```
+
+### Installation (PowerShell)
+```powershell
+# Clone repository
+git clone <repository-url>
+cd comicwise
+
+# Install dependencies
+pnpm install
+
+# Setup environment variables
+Copy-Item .env.example .env.local
+
+# Start local services (Docker)
+docker-compose up -d
+
+# Push database schema
+pnpm db:push
+
+# Seed database with sample data
+pnpm db:seed
+
+# Start development server
+pnpm dev
+```
+
+### Environment Setup
+Create `.env.local` with:
+```env
+# Database
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/comicwise"
+NEON_DATABASE_URL=""
+
+# Auth.js
+NEXTAUTH_SECRET="your-secret-key-min-32-chars-use-openssl-rand-base64-32"
+NEXTAUTH_URL="http://localhost:3000"
+
+# Upload Services (Choose one or both)
+UPLOAD_PROVIDER="imagekit" # or "cloudinary"
+
+# ImageKit
+IMAGEKIT_PUBLIC_KEY=""
+IMAGEKIT_PRIVATE_KEY=""
+IMAGEKIT_URL_ENDPOINT=""
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=""
+CLOUDINARY_API_KEY=""
+CLOUDINARY_API_SECRET=""
+
+# Email (Nodemailer)
+EMAIL_SERVER_HOST="smtp.gmail.com"
+EMAIL_SERVER_PORT="587"
+EMAIL_SERVER_USER=""
+EMAIL_SERVER_PASSWORD=""
+EMAIL_FROM="noreply@comicwise.com"
+
+# QStash (Background Jobs)
+QSTASH_TOKEN=""
+QSTASH_CURRENT_SIGNING_KEY=""
+QSTASH_NEXT_SIGNING_KEY=""
+QSTASH_URL=""
+
+# Upstash Redis (Rate Limiting)
+UPSTASH_REDIS_REST_URL=""
+UPSTASH_REDIS_REST_TOKEN=""
+
+# App
+NODE_ENV="development"
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+
+# Optional: OAuth Providers
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
+```
+
+---
+
+## 📊 DATABASE SCHEMA & SETUP
+
+### 1. Database Schema Overview
+
+The ComicWise database uses **Drizzle ORM 0.44+** with **PostgreSQL (Neon)**.
+
+**📋 Auth Tables:**
+- `user` - User accounts with role-based access (`user`, `admin`, `moderator`)
+- `account` - OAuth and credential accounts (Next-Auth adapter)
+- `session` - User sessions with JWT tokens
+- `verificationToken` - Email verification tokens (UUID)
+- `authenticator` - WebAuthn/2FA authenticators
+- `password_reset_token` - Password reset tokens with expiry
+
+**📚 Comic Content Tables:**
+- `comic` - Main comic entities (title, description, coverImage, status, rating, views)
+- `chapter` - Comic chapters (chapterNumber, releaseDate, views)
+- `comicImage` - Comic cover images (imageUrl, imageKit/Cloudinary)
+- `chapterImage` - Chapter page images (pageNumber, imageUrl)
+- `type` - Comic types (Manga, Manhwa, Manhua, Webtoon)
+- `author` - Comic authors (name, bio, image)
+- `artist` - Comic artists (name, bio, image)
+- `genre` - Comic genres (Action, Romance, Fantasy, etc.)
+- `comicToGenre` - Many-to-many comic-genre relationship (composite PK)
+
+**🔖 User Interaction Tables:**
+- `bookmark` - User reading progress (composite PK: userId + comicId)
+- `comment` - Chapter comments (userId, chapterId, content, createdAt)
+
+### 2. Complete Schema Code
+
+```typescript
+// src/db/schema/index.ts
+
+import { pgTable, serial, text, integer, timestamp, numeric, pgEnum, primaryKey } from "drizzle-orm/pg-core";
+
+// ═══════════════════════════════════════════════════
+// ENUMS
+// ═══════════════════════════════════════════════════
+
+export const userRole = pgEnum("user_role", ["user", "admin", "moderator"]);
+export const comicStatus = pgEnum("comic_status", ["Ongoing", "Hiatus", "Completed", "Dropped", "Coming Soon"]);
+
+// ═══════════════════════════════════════════════════
+// AUTHENTICATION TABLES
+// ═══════════════════════════════════════════════════
+
+export const user = pgTable("user", {
+  id: text("id").primaryKey().notNull().$defaultFn(() => crypto.randomUUID()),
+  name: text("name"),
+  email: text("email").unique().notNull(),
+  emailVerified: timestamp("emailVerified", { mode: "date" }),
+  image: text("image"),
+  role: userRole("role").default("user").notNull(),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+});
+
+export const account = pgTable("account", {
+  userId: text("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
+  type: text("type").notNull(),
+  provider: text("provider").notNull(),
+  providerAccountId: text("providerAccountId").notNull(),
+  refresh_token: text("refresh_token"),
+  access_token: text("access_token"),
+  expires_at: integer("expires_at"),
+  token_type: text("token_type"),
+  scope: text("scope"),
+  id_token: text("id_token"),
+  session_state: text("session_state"),
+}, (table) => ({
+  pk: primaryKey({ columns: [table.provider, table.providerAccountId] }),
+}));
+
+// Additional auth tables: session, verificationToken, authenticator, passwordResetToken...
+
+// ═══════════════════════════════════════════════════
+// COMIC CONTENT TABLES
+// ═══════════════════════════════════════════════════
+
+export const comic = pgTable("comic", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  coverImage: text("coverImage").notNull(),
+  status: comicStatus("status").default("Ongoing").notNull(),
+  publicationDate: timestamp("publicationDate", { mode: "date" }).notNull(),
+  rating: numeric("rating", { precision: 3, scale: 2 }).default("0"),
+  views: integer("views").default(0).notNull(),
+  authorId: integer("authorId").references(() => author.id),
+  artistId: integer("artistId").references(() => artist.id),
+  typeId: integer("typeId").references(() => type.id),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+});
+
+export const chapter = pgTable("chapter", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  chapterNumber: integer("chapter_number").notNull(),
+  releaseDate: timestamp("release_date", { mode: "date" }).notNull(),
+  comicId: integer("comic_id").references(() => comic.id, { onDelete: "cascade" }).notNull(),
+  views: integer("views").default(0).notNull(),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+});
+
+// ═══════════════════════════════════════════════════
+// USER INTERACTION TABLES
+// ═══════════════════════════════════════════════════
+
+export const bookmark = pgTable("bookmark", {
+  userId: text("user_id").references(() => user.id, { onDelete: "cascade" }).notNull(),
+  comicId: integer("comic_id").references(() => comic.id, { onDelete: "cascade" }).notNull(),
+  lastReadChapterId: integer("last_read_chapter_id").references(() => chapter.id),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+}, (table) => ({
+  pk: primaryKey({ columns: [table.userId, table.comicId] }),
+}));
+```
+
+### 3. Database Commands (PowerShell)
+
+```powershell
+# Generate migration files from schema
+pnpm db:generate
+# or: pnpm drizzle-kit generate
+
+# Push schema changes to database (development)
+pnpm db:push
+# or: pnpm drizzle-kit push
+
+# Run migrations (production)
+pnpm db:migrate
+# or: pnpm drizzle-kit migrate
+
+# Open Drizzle Studio (database GUI at http://localhost:4983)
+pnpm db:studio
+# or: pnpm drizzle-kit studio
+
+# Seed database with sample data
+pnpm db:seed
+# or: tsx src/scripts/seed.ts
+
+# Reset database (drop all → recreate → push → seed)
+pnpm db:reset
+
+# View database schema introspection
+pnpm drizzle-kit introspect
+```
+
+### 4. Seed Script Details
+
+**Location:** `src/scripts/seed.ts`
+
+**What it seeds:**
+- ✅ 15+ realistic comics with metadata
+- ✅ 30+ chapters across comics
+- ✅ Comic and chapter images (ImageKit/Cloudinary URLs)
+- ✅ Authors, artists, types, genres
+- ✅ Sample user accounts (with hashed passwords)
+- ✅ Bookmarks and reading progress
+
+**Running the Seed:**
+```powershell
+# Ensure database is connected
+pnpm db:push
+
+# Run seed script
+pnpm db:seed
+
+# Verify data in Drizzle Studio
+pnpm db:studio
+```
+
+**Seed Data Structure:**
+```typescript
+// Sample comic data
+const comics = [
+  {
+    title: "Solo Leveling",
+    description: "Epic action manhwa...",
+    coverImage: "https://ik.imagekit.io/...",
+    status: "Completed",
+    rating: "9.50",
+    views: 150000,
+    authorId: 1,
+    artistId: 1,
+    typeId: 2, // Manhwa
+  },
+  // ... more comics
+];
+```
+
+## 🔐 AUTHENTICATION SYSTEM
+
+### Implementation Overview
+
+ComicWise uses **Next-Auth v5 (@auth/core 0.34+)** with the **Drizzle adapter** for PostgreSQL.
+
+**📂 Implementation Location:**
+- Auth config: `src/lib/auth/config.ts` (Next-Auth configuration)
+- Auth actions: `src/lib/auth.ts` (exported `auth`, `signIn`, `signOut`)
+- Server actions: `src/lib/actions/auth/actions.ts` (register, reset password)
+- Middleware: `middleware.ts` (route protection)
+- Auth pages: `src/app/(auth)/sign-in`, `src/app/(auth)/sign-up`, `src/app/(auth)/forgot-password`
+- Auth layouts: `src/app/(auth)/layout.tsx` (centered auth UI)
+
+### Features Implemented
+
+**🔑 Authentication Methods:**
+- ✅ Email/password with **bcrypt** hashing (salt rounds: 10)
+- ✅ OAuth providers: Google, GitHub (configurable in `.env.local`)
+- ✅ Session-based authentication with **JWT strategy**
+- ✅ Cookie-based sessions (`HttpOnly`, `Secure`, `SameSite=strict`)
+
+**👤 User Management:**
+- ✅ User registration with Zod validation
+- ✅ Password reset flow with UUID tokens (1-hour expiry)
+- ✅ Email verification (optional, via Nodemailer)
+- ✅ Role-based access control (`user`, `admin`, `moderator`)
+- ✅ User profile management
+
+**⏱️ Session Management:**
+- ✅ 7-day session expiry (configurable via `maxAge`)
+- ✅ Session refresh on activity
+- ✅ Secure session storage in PostgreSQL `session` table
+- ✅ Session invalidation on logout
+
+### Auth Configuration
+
+```typescript
+// src/lib/auth/config.ts
+
+import NextAuth from "next-auth";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
+import { db } from "@/db";
+import { user, account, session } from "@/db/schema";
+import bcrypt from "bcryptjs";
+
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  adapter: DrizzleAdapter(db, {
+    usersTable: user,
+    accountsTable: account,
+    sessionsTable: session,
+  }),
+  session: {
+    strategy: "jwt",
+    maxAge: 7 * 24 * 60 * 60, // 7 days
+  },
+  providers: [
+    CredentialsProvider({
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        // Find user, verify password, return user object
+      },
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
+  ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = user.role;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      session.user.role = token.role;
+      return session;
+    },
+  },
+});
+```
+
+### Auth Server Actions
+
+```typescript
+// src/lib/actions/auth/actions.ts
+
+"use server";
+
+import { db } from "@/db";
+import { user, passwordResetToken } from "@/db/schema";
+import bcrypt from "bcryptjs";
+import { z } from "zod";
+
+// Register new user
+export async function registerUser(formData: FormData) {
+  const schema = z.object({
+    name: z.string().min(2),
+    email: z.string().email(),
+    password: z.string().min(8),
+  });
+
+  const data = schema.parse({
+    name: formData.get("name"),
+    email: formData.get("email"),
+    password: formData.get("password"),
+  });
+
+  const hashedPassword = await bcrypt.hash(data.password, 10);
+
+  await db.insert(user).values({
+    name: data.name,
+    email: data.email,
+    password: hashedPassword,
+    role: "user",
+  });
+
+  return { success: true };
+}
+
+// Request password reset
+export async function requestPasswordReset(formData: FormData) {
+  const email = formData.get("email") as string;
+  
+  const existingUser = await db.query.user.findFirst({
+    where: (users, { eq }) => eq(users.email, email),
+  });
+
+  if (!existingUser) return { error: "User not found" };
+
+  const token = crypto.randomUUID();
+  const expires = new Date(Date.now() + 3600 * 1000); // 1 hour
+
+  await db.insert(passwordResetToken).values({
+    email,
+    token,
+    expires,
+  });
+
+  // Send email with token
+  // await sendPasswordResetEmail(email, token);
+
+  return { success: true };
+}
+
+// Reset password with token
+export async function resetPassword(formData: FormData) {
+  const token = formData.get("token") as string;
+  const password = formData.get("password") as string;
+
+  const resetToken = await db.query.passwordResetToken.findFirst({
+    where: (tokens, { eq }) => eq(tokens.token, token),
+  });
+
+  if (!resetToken || resetToken.expires < new Date()) {
+    return { error: "Invalid or expired token" };
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  await db.update(user)
+    .set({ password: hashedPassword })
+    .where(eq(user.email, resetToken.email));
+
+  await db.delete(passwordResetToken).where(eq(passwordResetToken.token, token));
+
+  return { success: true };
+}
+```
+
+### Auth Routes
+
+```
+/sign-in             - Sign in page (email/password or OAuth)
+/sign-up             - Sign up page (new user registration)
+/forgot-password     - Password reset request page
+/reset-password      - Password reset page (with token)
+/api/auth/*          - Next-Auth API routes (auto-generated)
+```
+
+### Protected Routes (Middleware)
+
+```typescript
+// middleware.ts
+
+import { auth } from "@/lib/auth";
+import { NextResponse } from "next/server";
+
+export default auth((req) => {
+  const { pathname } = req.nextUrl;
+  const isLoggedIn = !!req.auth;
+
+  // Protected routes
+  const protectedRoutes = ["/profile", "/bookmarks", "/admin"];
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
+
+  if (isProtectedRoute && !isLoggedIn) {
+    return NextResponse.redirect(new URL("/sign-in", req.url));
+  }
+
+  // Admin-only routes
+  if (pathname.startsWith("/admin") && req.auth?.user?.role !== "admin") {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
+  return NextResponse.next();
+});
+
+export const config = {
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+};
+```
+
+### Using Auth in Components
+
+```typescript
+// Server Component
+import { auth } from "@/lib/auth";
+
+export default async function ProtectedPage() {
+  const session = await auth();
+
+  if (!session) {
+    redirect("/sign-in");
+  }
+
+  return <div>Welcome, {session.user.name}!</div>;
+}
+
+// Client Component
+"use client";
+
+import { useSession } from "next-auth/react";
+
+export default function ClientComponent() {
+  const { data: session, status } = useSession();
+
+  if (status === "loading") return <div>Loading...</div>;
+  if (!session) return <div>Not logged in</div>;
+
+  return <div>Welcome, {session.user.name}!</div>;
+}
+```
+
+## 📖 COMIC LISTING & DETAIL PAGES
+
+### 1. Comic Listing Page
+
+**📂 Location:** `src/app/(root)/comics/page.tsx`
+
+**✨ Features:**
+- ✅ Server-side rendering (SSR) with URL search params
+- ✅ Advanced filtering: type, genre, status, rating, publication date
+- ✅ Multi-sorting: latest, rating, title, views, alphabetical
+- ✅ Server-side pagination (default: 12 per page)
+- ✅ Full-text search (comic title, author, artist)
+- ✅ Responsive grid layout (1/2/3/4 columns)
+- ✅ Loading states with React Suspense
+- ✅ SEO-optimized with metadata
+
+**🔧 Server Actions:**
+```typescript
+// src/lib/actions/comic.ts
+
+"use server";
+
+import { db } from "@/db";
+import { comic, chapter, author, artist, type, genre, comicToGenre } from "@/db/schema";
+import { eq, desc, asc, like, and, or, gte, inArray } from "drizzle-orm";
+
+// Get all comics with advanced filters
+export async function getAllComics(params: {
+  search?: string;         // Full-text search
+  typeId?: number;         // Manga, Manhwa, etc.
+  genreIds?: number[];     // Multiple genres (OR logic)
+  status?: string;         // Ongoing, Completed, etc.
+  minRating?: number;      // Minimum rating filter
+  sortBy?: "latest" | "rating" | "title" | "views";
+  page?: number;
+  limit?: number;
+}) {
+  const { page = 1, limit = 12, sortBy = "latest" } = params;
+
+  let query = db
+    .select({
+      id: comic.id,
+      title: comic.title,
+      description: comic.description,
+      coverImage: comic.coverImage,
+      status: comic.status,
+      rating: comic.rating,
+      views: comic.views,
+      authorName: author.name,
+      artistName: artist.name,
+      typeName: type.name,
+    })
+    .from(comic)
+    .leftJoin(author, eq(comic.authorId, author.id))
+    .leftJoin(artist, eq(comic.artistId, artist.id))
+    .leftJoin(type, eq(comic.typeId, type.id));
+
+  // Apply filters
+  const conditions = [];
+  if (params.search) {
+    conditions.push(like(comic.title, `%${params.search}%`));
+  }
+  if (params.typeId) {
+    conditions.push(eq(comic.typeId, params.typeId));
+  }
+  if (params.status) {
+    conditions.push(eq(comic.status, params.status));
+  }
+  if (params.minRating) {
+    conditions.push(gte(comic.rating, params.minRating.toString()));
+  }
+  if (conditions.length > 0) {
+    query = query.where(and(...conditions));
+  }
+
+  // Apply sorting
+  switch (sortBy) {
+    case "rating":
+      query = query.orderBy(desc(comic.rating));
+      break;
+    case "title":
+      query = query.orderBy(asc(comic.title));
+      break;
+    case "views":
+      query = query.orderBy(desc(comic.views));
+      break;
+    default:
+      query = query.orderBy(desc(comic.createdAt));
+  }
+
+  // Pagination
+  const offset = (page - 1) * limit;
+  const results = await query.limit(limit).offset(offset);
+
+  return results;
+}
+
+// Get single comic with full details
+export async function getComic(comicId: number) {
+  const result = await db
+    .select({
+      comic: comic,
+      author: author,
+      artist: artist,
+      type: type,
+    })
+    .from(comic)
+    .leftJoin(author, eq(comic.authorId, author.id))
+    .leftJoin(artist, eq(comic.artistId, artist.id))
+    .leftJoin(type, eq(comic.typeId, type.id))
+    .where(eq(comic.id, comicId))
+    .limit(1);
+
+  if (!result[0]) return null;
+
+  // Get chapters
+  const chapters = await db
+    .select()
+    .from(chapter)
+    .where(eq(chapter.comicId, comicId))
+    .orderBy(asc(chapter.chapterNumber));
+
+  // Get genres
+  const genres = await db
+    .select({ genre })
+    .from(comicToGenre)
+    .leftJoin(genre, eq(comicToGenre.genreId, genre.id))
+    .where(eq(comicToGenre.comicId, comicId));
+
+  return {
+    ...result[0],
+    chapters,
+    genres: genres.map(g => g.genre),
+  };
+}
+
+// Get recommended comics (based on genre/type similarity)
+export async function getRecommendedComics(comicId: number, limit = 6) {
+  const currentComic = await db
+    .select()
+    .from(comic)
+    .where(eq(comic.id, comicId))
+    .limit(1);
+
+  if (!currentComic[0]) return [];
+
+  return await db
+    .select()
+    .from(comic)
+    .where(
+      and(
+        eq(comic.typeId, currentComic[0].typeId),
+        ne(comic.id, comicId)
+      )
+    )
+    .orderBy(desc(comic.rating))
+    .limit(limit);
+}
+```
+
+**🔗 URL Query Format:**
+```
+/comics?search=naruto&type=1&genre=2&genre=5&status=ongoing&rating=8&sort=rating&page=1
+```
+
+### 2. Comic Detail Page (PDP)
+
+**📂 Location:** `src/app/(root)/comics/[id]/page.tsx`
+
+**✨ Features:**
+- ✅ Dynamic route with comic ID
+- ✅ Server-side data fetching (getComic action)
+- ✅ Comic metadata (title, description, author, artist, type, genres, status, rating)
+- ✅ Chapter list with reading progress indicators
+- ✅ Chapter reader integration
+- ✅ Reviews section (React Suspense boundary)
+- ✅ Recommended comics (React Suspense boundary)
+- ✅ Bookmark button (client component with optimistic UI)
+- ✅ Share functionality
+- ✅ Responsive layout (desktop/tablet/mobile)
+
+**📦 Key Components:**
+- `ComicGallery.tsx` - Interactive image gallery (client component)
+- `ChapterList.tsx` - Sortable chapter list with filters
+- `BookmarkButton.tsx` - Bookmark toggle with Zustand state
+- `CollapsibleSection.tsx` - Expandable comic description
+- `Card.tsx` - Reusable comic card for recommendations
+
+**🖼️ Image Handling:**
+```typescript
+import Image from "next/image";
+
+<Image
+  src={comic.coverImage || "/placeholder-comic.png"}
+  alt={comic.title}
+  width={400}
+  height={600}
+  className="rounded-lg object-cover"
+  priority // For above-the-fold images
+  placeholder="blur"
+  blurDataURL="/blur-placeholder.png"
+/>
+```
+
+**⏳ Loading States:**
+```typescript
+// src/app/(root)/comics/[id]/loading.tsx
+export default function Loading() {
+  return (
+    <div className="container mx-auto py-8">
+      <Skeleton className="h-[400px] w-full mb-4" />
+      <Skeleton className="h-[40px] w-3/4 mb-2" />
+      <Skeleton className="h-[20px] w-full mb-8" />
+    </div>
+  );
+}
+```
+
+**🔐 Access Control:**
+```typescript
+// Protect premium chapters
+const isPremium = chapter.isPremium;
+const hasAccess = session?.user?.subscriptionTier === "premium";
+
+if (isPremium && !hasAccess) {
+  return <PremiumUpsell />;
+}
+```
+
+## 🔖 BOOKMARK SYSTEM
+
+### Implementation Overview
+
+ComicWise uses **Zustand 5.0+** for client-side bookmark state management with **database persistence**.
+
+**📂 Location:**
+- Server actions: `src/lib/actions/bookmark.ts` (DB operations)
+- Global state: `src/stores/bookmark.store.ts` (Zustand store)
+- Bookmark page: `src/app/(root)/bookmarks/page.tsx` (user's bookmarks)
+- Bookmark button: `src/components/BookmarkButton.tsx` (toggle component)
+
+### ✨ Features
+
+- ✅ Track reading progress per comic (last read chapter)
+- ✅ Chapter number tracking (resume reading from last position)
+- ✅ Personal notes on bookmarks (user annotations)
+- ✅ Session-based bookmarks (works without login for guest users)
+- ✅ Bookmark sync across devices (when logged in, synced via database)
+- ✅ Optimistic UI updates (instant feedback before server confirmation)
+- ✅ Bookmark count badge (realtime count in navbar)
+- ✅ Bookmark filtering and sorting (by date added, title, etc.)
+
+### 🗄️ Database Schema
+
+```typescript
+// src/db/schema/index.ts
+
+export const bookmark = pgTable("bookmark", {
+  userId: text("user_id")
+    .references(() => user.id, { onDelete: "cascade" })
+    .notNull(),
+  comicId: integer("comic_id")
+    .references(() => comic.id, { onDelete: "cascade" })
+    .notNull(),
+  lastReadChapterId: integer("last_read_chapter_id")
+    .references(() => chapter.id),
+  notes: text("notes"),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+}, (table) => ({
+  pk: primaryKey({ columns: [table.userId, table.comicId] }),
+}));
+```
+
+### 🔧 Server Actions
+
+```typescript
+// src/lib/actions/bookmark.ts
+
+"use server";
+
+import { db } from "@/db";
+import { bookmark } from "@/db/schema";
+import { auth } from "@/lib/auth";
+import { eq, and } from "drizzle-orm";
+
+// Add bookmark
+export async function addBookmark(comicId: number, chapterId?: number) {
+  const session = await auth();
+  if (!session?.user?.id) throw new Error("Unauthorized");
+
+  await db.insert(bookmark).values({
+    userId: session.user.id,
+    comicId,
+    lastReadChapterId: chapterId,
+  });
+
+  return { success: true };
+}
+
+// Remove bookmark
+export async function removeBookmark(comicId: number) {
+  const session = await auth();
+  if (!session?.user?.id) throw new Error("Unauthorized");
+
+  await db.delete(bookmark).where(
+    and(
+      eq(bookmark.userId, session.user.id),
+      eq(bookmark.comicId, comicId)
+    )
+  );
+
+  return { success: true };
+}
+
+// Update reading progress
+export async function updateReadingProgress(comicId: number, chapterId: number) {
+  const session = await auth();
+  if (!session?.user?.id) throw new Error("Unauthorized");
+
+  await db
+    .update(bookmark)
+    .set({ 
+      lastReadChapterId: chapterId,
+      updatedAt: new Date(),
+    })
+    .where(
+      and(
+        eq(bookmark.userId, session.user.id),
+        eq(bookmark.comicId, comicId)
+      )
+    );
+
+  return { success: true };
+}
+
+// Get user bookmarks
+export async function getUserBookmarks() {
+  const session = await auth();
+  if (!session?.user?.id) return [];
+
+  const bookmarks = await db
+    .select({
+      bookmark: bookmark,
+      comic: comic,
+      chapter: chapter,
+    })
+    .from(bookmark)
+    .leftJoin(comic, eq(bookmark.comicId, comic.id))
+    .leftJoin(chapter, eq(bookmark.lastReadChapterId, chapter.id))
+    .where(eq(bookmark.userId, session.user.id))
+    .orderBy(desc(bookmark.updatedAt));
+
+  return bookmarks;
+}
+
+// Check if comic is bookmarked
+export async function isBookmarked(comicId: number) {
+  const session = await auth();
+  if (!session?.user?.id) return false;
+
+  const result = await db
+    .select()
+    .from(bookmark)
+    .where(
+      and(
+        eq(bookmark.userId, session.user.id),
+        eq(bookmark.comicId, comicId)
+      )
+    )
+    .limit(1);
+
+  return result.length > 0;
+}
+```
+
+### 📦 Zustand Store
+
+```typescript
+// src/stores/bookmark.store.ts
+
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+
+interface BookmarkState {
+  bookmarks: Set<number>; // Comic IDs
+  readingProgress: Map<number, number>; // comicId -> chapterId
+  addBookmark: (comicId: number) => void;
+  removeBookmark: (comicId: number) => void;
+  updateProgress: (comicId: number, chapterId: number) => void;
+  isBookmarked: (comicId: number) => boolean;
+  getProgress: (comicId: number) => number | undefined;
+}
+
+export const useBookmarkStore = create<BookmarkState>()(
+  persist(
+    (set, get) => ({
+      bookmarks: new Set(),
+      readingProgress: new Map(),
+
+      addBookmark: (comicId) =>
+        set((state) => ({
+          bookmarks: new Set(state.bookmarks).add(comicId),
+        })),
+
+      removeBookmark: (comicId) =>
+        set((state) => {
+          const newBookmarks = new Set(state.bookmarks);
+          newBookmarks.delete(comicId);
+          return { bookmarks: newBookmarks };
+        }),
+
+      updateProgress: (comicId, chapterId) =>
+        set((state) => ({
+          readingProgress: new Map(state.readingProgress).set(comicId, chapterId),
+        })),
+
+      isBookmarked: (comicId) => get().bookmarks.has(comicId),
+
+      getProgress: (comicId) => get().readingProgress.get(comicId),
+    }),
+    {
+      name: "comicwise-bookmarks", // localStorage key
+    }
+  )
+);
+```
+
+### 🎨 Bookmark Button Component
+
+```typescript
+// src/components/BookmarkButton.tsx
+
+"use client";
+
+import { useState } from "react";
+import { useBookmarkStore } from "@/stores/bookmark.store";
+import { addBookmark, removeBookmark } from "@/lib/actions/bookmark";
+import { Bookmark, BookmarkCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+
+interface BookmarkButtonProps {
+  comicId: number;
+  chapterId?: number;
+}
+
+export function BookmarkButton({ comicId, chapterId }: BookmarkButtonProps) {
+  const { isBookmarked, addBookmark: addLocal, removeBookmark: removeLocal } = useBookmarkStore();
+  const [isLoading, setIsLoading] = useState(false);
+  const bookmarked = isBookmarked(comicId);
+
+  async function handleToggle() {
+    setIsLoading(true);
+
+    try {
+      if (bookmarked) {
+        // Optimistic update
+        removeLocal(comicId);
+        await removeBookmark(comicId);
+        toast.success("Removed from bookmarks");
+      } else {
+        // Optimistic update
+        addLocal(comicId);
+        await addBookmark(comicId, chapterId);
+        toast.success("Added to bookmarks");
+      }
+    } catch (error) {
+      // Rollback on error
+      if (bookmarked) {
+        addLocal(comicId);
+      } else {
+        removeLocal(comicId);
+      }
+      toast.error("Failed to update bookmark");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  return (
+    <Button
+      onClick={handleToggle}
+      disabled={isLoading}
+      variant={bookmarked ? "default" : "outline"}
+    >
+      {bookmarked ? <BookmarkCheck className="mr-2" /> : <Bookmark className="mr-2" />}
+      {bookmarked ? "Bookmarked" : "Bookmark"}
+    </Button>
+  );
+}
+```
+
+### 📄 Bookmarks Page
+
+```typescript
+// src/app/(root)/bookmarks/page.tsx
+
+import { getUserBookmarks } from "@/lib/actions/bookmark";
+import { Card } from "@/components/Card";
+
+export default async function BookmarksPage() {
+  const bookmarks = await getUserBookmarks();
+
+  if (bookmarks.length === 0) {
+    return (
+      <div className="container mx-auto py-16 text-center">
+        <h1 className="text-3xl font-bold mb-4">Your Bookmarks</h1>
+        <p className="text-muted-foreground">No bookmarks yet. Start reading!</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto py-8">
+      <h1 className="text-3xl font-bold mb-8">Your Bookmarks</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {bookmarks.map(({ bookmark, comic, chapter }) => (
+          <Card
+            key={bookmark.comicId}
+            comic={comic}
+            badge={chapter ? `Ch. ${chapter.chapterNumber}` : undefined}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+### Server Actions
+
+```typescript
+// src/lib/actions/bookmark.ts
+
+// Get user's bookmarks
+export async function getBookmarks(userId: string)
+
+// Add or update bookmark
+export async function addBookmark(data: {
+  userId: string
+  comicId: string
+  pageNumber: number
+  notes?: string
+})
+
+// Remove bookmark
+export async function removeBookmark(bookmarkId: string)
+
+// Get bookmark for specific comic
+export async function getComicBookmark(userId: string, comicId: string)
+```
+
+### Zustand Store Usage
+
+```typescript
+// src/stores/bookmark.store.ts
+
+import { create } from 'zustand'
+
+interface BookmarkStore {
+  bookmarks: Bookmark[]
+  addBookmark: (bookmark: Bookmark) => void
+  removeBookmark: (bookmarkId: string) => void
+  updateBookmark: (bookmarkId: string, data: Partial<Bookmark>) => void
+}
+
+export const useBookmarkStore = create<BookmarkStore>((set) => ({
+  // Implementation
+}))
+```
+
+---
+
+## 🎨 UI COMPONENTS & STYLING
+
+### Theme System
+
+**Location:** `src/app/globals.css`
+
+**CSS Custom Properties:**
+```css
+:root {
+  --background: #ffffff;
+  --foreground: #000000;
+  --primary: #1a1a1a;
+  --secondary: #f5f5f5;
+  --accent: #0070f3;
+  --muted: #666666;
+  --border: #e5e5e5;
+  /* ... more theme tokens */
+}
+
+.dark {
+  --background: #000000;
+  --foreground: #ffffff;
+  /* ... dark mode overrides */
+}
+```
+
+### Core Components
+
+**Navbar** - `src/components/AppNavbar.tsx`
+- Logo and navigation links
+- Search bar
+- User menu with avatar
+- Mobile hamburger menu
+- Bookmark indicator
+
+**Card** - `src/components/Card.tsx`
+- Reusable comic card
+- Displays cover, title, rating, status
+- Hover effects and animations
+- Responsive layout
+
+**App Sidebar** - `src/components/app-sidebar.tsx`
+- Admin navigation
+- Collapsible menu
+- Icon navigation
+- Theme toggle
+
+### Responsive Breakpoints
+
+```css
+/* Mobile first approach */
+@media (min-width: 640px) { /* sm */ }
+@media (min-width: 768px) { /* md */ }
+@media (min-width: 1024px) { /* lg */ }
+@media (min-width: 1280px) { /* xl */ }
+@media (min-width: 1536px) { /* 2xl */ }
+```
+
+---
+
+## 🛠️ DEVELOPMENT COMMANDS
+
+### Development Server
+
+```bash
+# Start development server (with Turbopack)
+pnpm dev
+
+# Development server will run at:
+# http://localhost:3000
+```
+
+### Building for Production
+
+```bash
+# Build production bundle
+pnpm build
+
+# Start production server
+pnpm start
+
+# Test production build locally
+pnpm build && pnpm start
+```
+
+### Code Quality
+
+```bash
+# Run ESLint
+pnpm lint
+
+# Fix ESLint errors
+pnpm lint:fix
+
+# Check formatting with Prettier
+pnpm format:check
+
+# Format code with Prettier
+pnpm format
+
+# Type checking
+pnpm type-check
+
+# Run all checks
+pnpm lint && pnpm type-check && pnpm format:check
+```
+
+### Testing
+
+```bash
+# Run tests
+pnpm test
+
+# Run tests in watch mode
+pnpm test:watch
+
+# Run tests with UI
+pnpm test:ui
+```
+
+### Spell Checking
+
+```bash
+# Run CSpell
+pnpm cspell
+```
+
+---
+
+## 📦 PACKAGE MANAGEMENT
+
+### Installing Packages
+
+```bash
+# Add production dependency
+pnpm add <package-name>
+
+# Add dev dependency
+pnpm add -D <package-name>
+
+# Remove package
+pnpm remove <package-name>
+
+# Update all dependencies
+pnpm update-deps
+```
+
+### Checking for Updates
+
+```bash
+# Check for outdated packages
+pnpm check-updates
+
+# Update dependencies interactively
+pnpm update-deps
+```
+
+---
+
+## 🔍 QUERY UTILITIES
+
+### URL Query Parsing
+
+**Location:** `src/lib/utils/query.ts`
+
+**Functions:**
+```typescript
+// Parse search params from URL
+export function parseFilterParams(searchParams: URLSearchParams) {
+  return {
+    search: searchParams.get('search') || '',
+    typeId: searchParams.get('type') || undefined,
+    genreIds: searchParams.getAll('genre'),
+    status: searchParams.get('status') || undefined,
+    sortBy: searchParams.get('sort') || 'latest',
+    page: parseInt(searchParams.get('page') || '1'),
+    limit: parseInt(searchParams.get('limit') || '24'),
+  }
+}
+
+// Build query string from params
+export function buildQueryString(params: Record<string, any>) {
+  const searchParams = new URLSearchParams()
+  
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== '') {
+      if (Array.isArray(value)) {
+        value.forEach(v => searchParams.append(key, v))
+      } else {
+        searchParams.set(key, String(value))
+      }
+    }
+  })
+  
+  return searchParams.toString()
+}
+```
+
+---
+
+## 🎯 FILTERS & SORTING
+
+### Filter Implementation
+
+**Client Component:** `src/components/Filters.tsx`
+
+**Filter Types:**
+- Type (Manga, Manhwa, Manhua, etc.)
+- Genre (Action, Adventure, Comedy, etc.)
+- Status (Ongoing, Completed, Hiatus, etc.)
+- Rating (1-5 stars)
+
+**Features:**
+- Multi-select with checkboxes
+- URL synchronization
+- Responsive drawer on mobile
+- Filter badges showing active filters
+
+### Sort Options
+
+**Client Component:** `src/components/Sort.tsx`
+
+**Sort By:**
+- Latest (newest first)
+- Rating (highest first)
+- Title (A-Z)
+- Updated (most recently updated)
+
+---
+
+## 🔐 RATE LIMITING
+
+**Location:** `src/lib/actions/ratelimit.ts`
+
+**Implementation:**
+```typescript
+import { Ratelimit } from "@upstash/ratelimit"
+import { Redis } from "@upstash/redis"
+
+const ratelimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(10, "10 s"),
+})
+
+export async function rateLimit(identifier: string) {
+  const { success, limit, reset, remaining } = await ratelimit.limit(identifier)
+  
+  if (!success) {
+    throw new Error("Rate limit exceeded")
+  }
+  
+  return { limit, reset, remaining }
+}
+```
+
+**Usage:**
+- API routes: 10 requests per 10 seconds
+- Auth endpoints: 5 requests per 15 minutes
+- Email sending: 3 requests per hour
+
+---
+
+## 📧 EMAIL TEMPLATES
+
+**Location:** `src/emails/` (if implemented)
+
+**React Email setup:**
+```bash
+# Start email development server
+pnpm email:dev
+```
+
+**Email Types:**
+- Welcome email
+- Password reset
+- Email verification
+- Comic updates notification
+
+---
+
+## 🎨 ICON SYSTEM
+
+**Primary:** Lucide React Icons
+
+**Usage:**
+```typescript
+import { Heart, BookmarkIcon, Star, Search } from 'lucide-react'
+
+export default function Component() {
+  return (
+    <>
+      <Heart className="w-5 h-5" />
+      <BookmarkIcon className="w-5 h-5" />
+      <Star className="w-5 h-5" fill="currentColor" />
+    </>
+  )
+}
+```
+
+---
+
+## 🚀 DEPLOYMENT
+
+### Environment Variables for Production
+
+```env
+# Database (Production)
+DATABASE_URL="postgresql://..."
+
+# Auth
+NEXTAUTH_URL="https://yourdomain.com"
+NEXTAUTH_SECRET="<production-secret>"
+
+# OAuth (if using)
+GOOGLE_CLIENT_ID="..."
+GOOGLE_CLIENT_SECRET="..."
+
+# Rate Limiting (Upstash)
+UPSTASH_REDIS_REST_URL="..."
+UPSTASH_REDIS_REST_TOKEN="..."
+```
+
+### Build & Deploy
+
+```bash
+# Run production build
+pnpm build
+
+# Test production build locally
+pnpm start
+
+# Deploy to Vercel (recommended)
+vercel deploy --prod
+```
+
+### Database Migrations in Production
+
+```bash
+# Generate migrations
+pnpm db:generate
+
+# Push to production database
+DATABASE_URL="production-url" pnpm db:push
+
+# Or run migrations
+DATABASE_URL="production-url" pnpm db:migrate
+```
+
+---
+
+## 🐛 DEBUGGING & TROUBLESHOOTING
+
+### Common Issues
+
+**Database Connection Errors:**
+```bash
+# Check connection string
+echo $DATABASE_URL
+
+# Test database connection
+pnpm db:studio
+```
+
+**Build Errors:**
+```bash
+# Clear Next.js cache
+rm -rf .next
+
+# Clear node modules
+rm -rf node_modules pnpm-lock.yaml
+pnpm install
+
+# Rebuild
+pnpm build
+```
+
+**Type Errors:**
+```bash
+# Generate Drizzle types
+pnpm db:generate
+
+# Run type check
+pnpm type-check
+```
+
+### Logging
+
+```typescript
+// Server-side logging
+console.log('[SERVER]', data)
+
+// Client-side logging
+console.log('[CLIENT]', data)
+```
+
+---
+
+## 📚 API ENDPOINTS
+
+### REST API Structure
+
+```
+/api/auth/[...nextauth]  - Next-Auth endpoints
+/api/comics              - Comic CRUD operations
+/api/chapters            - Chapter operations
+/api/bookmarks           - Bookmark operations
+/api/admin/*             - Admin operations
+```
+
+---
+
+## 🎯 BEST PRACTICES
+
+### Server Actions
+
+1. **Always use "use server" directive**
+```typescript
+'use server'
+
+export async function myAction() {
+  // Implementation
+}
+```
+
+2. **Validate inputs with Zod**
+```typescript
+const schema = z.object({
+  title: z.string().min(1),
+  description: z.string(),
+})
+
+const validated = schema.parse(data)
+```
+
+3. **Handle errors gracefully**
+```typescript
+try {
+  // Operation
+} catch (error) {
+  console.error('[ACTION_ERROR]', error)
+  return { error: 'Something went wrong' }
+}
+```
+
+### Database Queries
+
+1. **Use transactions for related operations**
+```typescript
+await db.transaction(async (tx) => {
+  await tx.insert(comics).values(...)
+  await tx.insert(chapters).values(...)
+})
+```
+
+2. **Optimize with proper indexes**
+```typescript
+// In schema
+.index('comic_title_idx', ['title'])
+.index('comic_status_idx', ['status'])
+```
+
+3. **Use relations for joins**
+```typescript
+const result = await db.query.comics.findMany({
+  with: {
+    chapters: true,
+    author: true,
+    genres: true,
+  },
+})
+```
+
+### Component Design
+
+1. **Separate server and client components**
+```typescript
+// Server component (default)
+export default async function Page() {}
+
+// Client component
+'use client'
+export default function InteractiveComponent() {}
+```
+
+2. **Use Suspense for async data**
+```typescript
+<Suspense fallback={<Skeleton />}>
+  <AsyncComponent />
+</Suspense>
+```
+
+3. **Memoize expensive computations**
+```typescript
+const computed = useMemo(() => {
+  return expensiveOperation(data)
+}, [data])
+```
+
+---
+
+## 🔄 STATE MANAGEMENT
+
+### Zustand Stores
+
+**Bookmark Store:**
+```typescript
+import { create } from 'zustand'
+
+export const useBookmarkStore = create((set) => ({
+  bookmarks: [],
+  addBookmark: (bookmark) => set((state) => ({
+    bookmarks: [...state.bookmarks, bookmark]
+  })),
+}))
+```
+
+**Usage in Components:**
+```typescript
+const { bookmarks, addBookmark } = useBookmarkStore()
+```
+
+---
+
+## 📱 RESPONSIVE DESIGN
+
+### Mobile-First Approach
+
+```css
+/* Base styles (mobile) */
+.container {
+  padding: 1rem;
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+  .container {
+    padding: 2rem;
+  }
+}
+
+/* Desktop and up */
+@media (min-width: 1024px) {
+  .container {
+    padding: 3rem;
+  }
+}
+```
+
+### Tailwind Responsive Classes
+
+```typescript
+<div className="
+  grid 
+  grid-cols-1        /* mobile */
+  md:grid-cols-2     /* tablet */
+  lg:grid-cols-3     /* desktop */
+  xl:grid-cols-4     /* large desktop */
+  gap-4
+">
+```
+
+---
+
+## 🔒 SECURITY CHECKLIST
+
+- [ ] Environment variables secured
+- [ ] Database connections use SSL
+- [ ] Authentication tokens properly hashed
+- [ ] CSRF protection enabled
+- [ ] Rate limiting configured
+- [ ] Input validation on all forms
+- [ ] SQL injection prevention (use Drizzle ORM)
+- [ ] XSS prevention (React escapes by default)
+- [ ] Secure headers configured
+- [ ] HTTPS in production
+
+---
+
+## 📈 PERFORMANCE OPTIMIZATION
+
+### Image Optimization
+
+```typescript
+import Image from 'next/image'
+
+<Image
+  src="/image.jpg"
+  alt="Description"
+  width={500}
+  height={300}
+  sizes="(max-width: 768px) 100vw, 50vw"
+  priority // for above-the-fold images
+/>
+```
+
+### Database Query Optimization
+
+1. Use indexes for filtered columns
+2. Limit results with pagination
+3. Use `select` to fetch only needed columns
+4. Avoid N+1 queries with relations
+
+### Caching Strategies
+
+```typescript
+// Static generation
+export const revalidate = 3600 // 1 hour
+
+// Dynamic with cache
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-cache'
+```
+
+---
+
+## 📝 GIT WORKFLOW
+
+```bash
+# Create feature branch
+git checkout -b feature/comic-filters
+
+# Make changes and commit
+git add .
+git commit -m "feat: add comic filtering system"
+
+# Push to remote
+git push origin feature/comic-filters
+
+# Create pull request on GitHub
+```
+
+### Commit Message Convention
+
+```
+feat: Add new feature
+fix: Fix bug
+docs: Update documentation
+style: Code style changes
+refactor: Code refactoring
+test: Add tests
+chore: Maintenance tasks
+```
+
+---
+
+## 🎓 LEARNING RESOURCES
+
+### Next.js
+- [Next.js Documentation](https://nextjs.org/docs)
+- [App Router Guide](https://nextjs.org/docs/app)
+
+### Drizzle ORM
+- [Drizzle Documentation](https://orm.drizzle.team/)
+- [Drizzle Kit CLI](https://orm.drizzle.team/kit-docs/overview)
+
+### Authentication
+- [Next-Auth Documentation](https://next-auth.js.org/)
+
+### UI/Styling
+- [Tailwind CSS](https://tailwindcss.com/docs)
+- [Lucide Icons](https://lucide.dev/)
+
+---
+
+## 🤝 CONTRIBUTING
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run tests and linting
+5. Submit a pull request
+
+---
+
+## 📞 SUPPORT
+
+For issues and questions:
+- Check existing documentation
+- Review GitHub issues
+- Contact development team
+
+---
+
+## 📄 LICENSE
+
+[Specify your license here]
+
+---
+
+## 🎉 QUICK REFERENCE
+
+```bash
+# Start development
+pnpm dev
+
+# Build for production
+pnpm build && pnpm start
+
+# Database operations
+pnpm db:push        # Push schema
+pnpm db:seed        # Seed data
+pnpm db:studio      # Open GUI
+
+# Code quality
+pnpm lint:fix
+pnpm format
+pnpm type-check
+
+# Testing
+pnpm test
+pnpm test:watch
+```
+
+---
+
+**Last Updated:** December 2, 2025
+**Project:** ComicWise v1.0.0
+**Framework:** Next.js 16 with App Router
+
+   

@@ -1,0 +1,33 @@
+Read and understand the entire codebase and structure of the project
+Delete all unused, duplicate imports,variables,files,folders,function parameters and any other unused files in the project
+ensure all missing package and types setup custom declarations for nodemailer and other needed package are installed
+create,update or generate an Optimized custom type definitions for all packages wth stub types definition.
+ensure all usage of process.env comes from app-config and verify its  properly typed and handled with fallbacks where necessary
+create,update or generate an Optimized mutations and queries for all tables in the src/db/schema/index.ts
+create,update or generate an Optimized actions using mutations and queries at src/lib/actions for all tables in the src/db/schema/index.ts
+create,update or generate an Optimized  components,pages,routes for src/app/(auth) pages to allow all sign-in sign-out newUser forgot-password verify-request functionality, implement zod validation and sending necessary emails functionality with reference my src/lib/ratelimit.ts src/app/api/workflows/onboarding/route.ts   update all existing code if needed
+create,update or generate an Optimized  components,pages,routes for crud operations for all tables in src/db/schema/index.ts with sending necessary emails functionality,  pagination,filtering and zod validation use shadcn components update all existing code if needed
+create,update or generate an Optimized  components,pages,routes,src/lib/seedHelpers.ts to be dynamic allowing the creation of data from my ./users.json ./data.json ./chapters.json ./comics.json   ./chaptersdata.json ./comicsdata.json ./chaptersdata*.json ./comicsdata*.json  implement zod validation and use in src/scripts reference ./src/scripts/* and update existing code if needed
+create,update or generate an Optimized  src/components/emails src/lib/validator.ts src/lib/nodemailer.ts src/lib/workflow.ts src/lib/actions/auth.ts src/types/index.ts  to allow sending necessary emails functionality with zod validation for all tables in src/db/schema/index.ts reference update existing code if needed reference ./src/components/ui ./src/components/blocks
+create,update or generate an Optimized  src/lib/workflow.ts to allow full crud functionality with zod validation reference update existing code if needed
+Read and understand the ./html
+create,update or generate an Optimized  styles,components,pages,routes for all html files in ./html using functional React components with JSX and next 16 best practices. Please ensure all attributes like class are changed to className, and data provided as props and self-closing tags are formatted correctly with the html title as the name transfer all needed files to ./public and integrate into my project
+create,update or generate an Optimized  tsconfig.json to use next 16 best practices
+create,update or generate an Optimized  prettier.config.ts to use next 16 best practices and all recommended plugins
+create,update or generate an Optimized  postcss.config.mjs to use next 16 best practices and all recommended plugins
+create,update or generate an Optimized  proxy.ts to use next 16 best practices
+create,update or generate an Optimized  eslint.config.mjs to use next 16 best practices and all recommended plugins
+create,update or generate an Optimized  Dockerfile in my compose folder to use next 16 best practices
+create,update or generate an Optimized  docker-compose files to use next 16 best practices 
+create,update or generate an Optimized both  Makefile and test-docker.sh to use next 16 best practices 
+create,update or generate an Optimized README.md reference *.md to use next 16 best practices
+Read ./setup.txt and follow all instructions there
+Read all files to ensure next 16 best practices are implemented
+fix all linting,typechecking and any other errors in the project
+
+# Task List
+- [x] Update coverImage validation in src/lib/validations/schemas.ts
+- [x] Fix password reset token query in src/lib/actions/auth/index.ts
+
+Read and understand the entire codebase and structure of the project
+create,update or generate an Optimized generate.txt to setup my project with next 16 best practices take into consideration copilot token limit

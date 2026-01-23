@@ -2,9 +2,9 @@
 
 import { db } from "@/database/db";
 import { user } from "@/database/schema";
-import { eq } from "drizzle-orm";
+import { ChangePasswordSchema, ProfileUpdateSchema } from "@/schemas/profileSchemas";
 import bcrypt from "bcryptjs";
-import { ProfileUpdateSchema, ChangePasswordSchema } from "@/schemas/profileSchemas";
+import { eq } from "drizzle-orm";
 
 /**
  * Update user profile information
@@ -36,11 +36,7 @@ export async function changePasswordAction(userId: string, data: unknown) {
     const validated = ChangePasswordSchema.parse(data);
 
     // Get current user
-    const currentUser = await db
-      .select()
-      .from(user)
-      .where(eq(user.id, userId))
-      .limit(1);
+    const currentUser = await db.select().from(user).where(eq(user.id, userId)).limit(1);
 
     if (!currentUser[0]) {
       return { success: false, error: "User not found" };
@@ -60,14 +56,14 @@ export async function changePasswordAction(userId: string, data: unknown) {
     const hashedPassword = await bcrypt.hash(validated.newPassword, 10);
 
     // Update password
-    await db
-      .update(user)
-      .set({ password: hashedPassword })
-      .where(eq(user.id, userId));
+    await db.update(user).set({ password: hashedPassword }).where(eq(user.id, userId));
 
     return { success: true, message: "Password changed successfully" };
   } catch (error) {
-    return { success: false, error: error instanceof Error ? error.message : "Password change failed" };
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Password change failed",
+    };
   }
 }
 

@@ -102,7 +102,10 @@ async function loadChaptersFromFile(filePath: string): Promise<ChapterSeedData[]
  * @param slug
  * @param title
  */
-async function getComicIdBySlugOrTitle(slug: string | null, title: string | null): Promise<number | null> {
+async function getComicIdBySlugOrTitle(
+  slug: string | null,
+  title: string | null
+): Promise<number | null> {
   try {
     // 1. Try exact slug match first
     if (slug) {
@@ -318,7 +321,9 @@ async function seedChapter(chapterData: ChapterSeedData): Promise<{
         } else {
           // Log but don't throw - continue processing
           const errorMsg = error instanceof Error ? error.message : String(error);
-          logger.warn(`⚠️  Could not create chapter "${chapterData.name}": ${errorMsg.substring(0, 100)}`);
+          logger.warn(
+            `⚠️  Could not create chapter "${chapterData.name}": ${errorMsg.substring(0, 100)}`
+          );
           return {
             action: "error",
             imagesDownloaded: 0,

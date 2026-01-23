@@ -1,10 +1,10 @@
 "use client";
 
-import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 /**
  * Settings page - User preferences and account settings

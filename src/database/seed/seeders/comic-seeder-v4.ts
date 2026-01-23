@@ -202,7 +202,10 @@ async function downloadComicImages(
   comicData: ComicSeedData,
   comicSlug: string
 ): Promise<{ downloaded: number; cached: number; paths: string[] }> {
-  const imageUrls = comicData.images?.map((img) => (typeof img === 'string' ? img : img.url)) || comicData.image_urls || [];
+  const imageUrls =
+    comicData.images?.map((img) => (typeof img === "string" ? img : img.url)) ||
+    comicData.image_urls ||
+    [];
 
   if (imageUrls.length === 0) {
     logger.warn(`⚠️  No images found for comic: ${comicData.title}`);
@@ -303,10 +306,7 @@ async function seedComic(comicData: ComicSeedData): Promise<{
     } else {
       // Create new comic
       try {
-        const [created] = await db
-          .insert(comic)
-          .values(comicRecord)
-          .returning({ id: comic.id });
+        const [created] = await db.insert(comic).values(comicRecord).returning({ id: comic.id });
 
         if (!created) {
           throw new Error(`No record returned from insert`);
@@ -328,7 +328,9 @@ async function seedComic(comicData: ComicSeedData): Promise<{
         } else {
           // Log but don't throw - continue processing
           const errorMsg = error instanceof Error ? error.message : String(error);
-          logger.warn(`⚠️  Could not create comic "${comicData.title}": ${errorMsg.substring(0, 100)}`);
+          logger.warn(
+            `⚠️  Could not create comic "${comicData.title}": ${errorMsg.substring(0, 100)}`
+          );
           return {
             action: "error",
             imagesDownloaded: 0,

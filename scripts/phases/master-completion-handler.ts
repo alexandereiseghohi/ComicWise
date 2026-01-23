@@ -5,8 +5,6 @@
  */
 
 import { execSync } from "node:child_process";
-import fs from "node:fs";
-import path from "node:path";
 
 const COLORS = {
   reset: "\x1b[0m",
@@ -66,7 +64,7 @@ async function runPhases(): Promise<void> {
   try {
     // PHASE 1: Check and setup project
     logPhase(1, "Project Setup & Validation");
-    
+
     logTask("Verifying Node.js and package manager");
     executeCommand("node --version");
     executeCommand("pnpm --version");
@@ -117,14 +115,16 @@ async function runPhases(): Promise<void> {
     // PHASE 7: Summary
     logPhase(7, "Completion Summary");
     log("✓ All phases completed successfully!", COLORS.green + COLORS.bright);
-    log(`\nProject Status:
+    log(
+      `\nProject Status:
   • TypeScript: Checked
   • Database: Seeded
   • Linting: Fixed
   • Validation: Passed
   • Build: Complete
-`, COLORS.green);
-
+`,
+      COLORS.green
+    );
   } catch (error) {
     logError(`\nFatal error during execution: ${error}`);
     process.exit(1);
