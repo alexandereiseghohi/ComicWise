@@ -8,6 +8,8 @@ import { eq } from "drizzle-orm";
 
 /**
  * Update user profile information
+ * @param userId
+ * @param data
  */
 export async function updateProfileAction(userId: string, data: unknown) {
   try {
@@ -30,6 +32,8 @@ export async function updateProfileAction(userId: string, data: unknown) {
 
 /**
  * Change user password
+ * @param userId
+ * @param data
  */
 export async function changePasswordAction(userId: string, data: unknown) {
   try {
@@ -69,30 +73,27 @@ export async function changePasswordAction(userId: string, data: unknown) {
 
 /**
  * Update notification settings
+ * @param userId
+ * @param settings
  */
 export async function updateNotificationSettingsAction(userId: string, settings: any) {
-  try {
-    // Implementation would update notification settings table
-    return { success: true, message: "Settings updated" };
-  } catch (error) {
-    return { success: false, error: error instanceof Error ? error.message : "Update failed" };
-  }
+  // Implementation would update notification settings table
+  return { success: true, message: "Settings updated" };
 }
 
 /**
  * Update privacy settings
+ * @param userId
+ * @param settings
  */
 export async function updatePrivacySettingsAction(userId: number, settings: any) {
-  try {
-    // Implementation would update privacy settings table
-    return { success: true, message: "Settings updated" };
-  } catch (error) {
-    return { success: false, error: error instanceof Error ? error.message : "Update failed" };
-  }
+  // Implementation would update privacy settings table
+  return { success: true, message: "Settings updated" };
 }
 
 /**
  * Delete user account
+ * @param userId
  */
 export async function deleteAccountAction(userId: string) {
   try {

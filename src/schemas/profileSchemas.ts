@@ -23,8 +23,8 @@ export const ChangePasswordSchema = z
       .min(8)
       .regex(/[A-Z]/)
       .regex(/[a-z]/)
-      .regex(/[0-9]/)
-      .regex(/[^A-Za-z0-9]/),
+      .regex(/\d/)
+      .regex(/[^\dA-Za-z]/),
     confirmPassword: z.string(),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {

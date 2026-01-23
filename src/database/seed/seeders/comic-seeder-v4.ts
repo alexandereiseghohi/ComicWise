@@ -329,7 +329,7 @@ async function seedComic(comicData: ComicSeedData): Promise<{
           // Log but don't throw - continue processing
           const errorMsg = error instanceof Error ? error.message : String(error);
           logger.warn(
-            `⚠️  Could not create comic "${comicData.title}": ${errorMsg.substring(0, 100)}`
+            `⚠️  Could not create comic "${comicData.title}": ${errorMsg.slice(0, 100)}`
           );
           return {
             action: "error",
@@ -386,7 +386,7 @@ async function seedComic(comicData: ComicSeedData): Promise<{
     };
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : String(error);
-    logger.warn(`⚠️  Failed to seed comic "${comicData.title}": ${errorMsg.substring(0, 80)}`);
+    logger.warn(`⚠️  Failed to seed comic "${comicData.title}": ${errorMsg.slice(0, 80)}`);
     return {
       action: "error",
       imagesDownloaded: 0,

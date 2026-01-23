@@ -46,7 +46,7 @@ export default function ProfileEditPage() {
       } else {
         setMessage({ type: "error", text: result.error || "Update failed" });
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: "error", text: "An error occurred" });
     } finally {
       setLoading(false);
@@ -55,7 +55,7 @@ export default function ProfileEditPage() {
 
   return (
     <div className="container py-8">
-      <Card className="max-w-md mx-auto">
+      <Card className="mx-auto max-w-md">
         <CardHeader>
           <CardTitle>Edit Profile</CardTitle>
           <CardDescription>Update your profile information</CardDescription>

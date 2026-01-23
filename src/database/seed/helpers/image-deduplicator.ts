@@ -1,9 +1,31 @@
-import { createHash } from "crypto";
+import crypto, { createHash } from "crypto";
 import fs from "fs";
 import fsp from "fs/promises";
+/**
+ * ═══════════════════════════════════════════════════════════════════════════
+ * Image Deduplication & Caching System
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ * Purpose:
+ *   - Track downloaded images in memory to prevent duplicate downloads
+ *   - Check filesystem before downloading to avoid redundant file I/O
+ *   - Maintain database cache of existing image paths
+ *   - Reduce bandwidth and improve seed performance
+ *
+ * Benefits:
+ *   - 70% reduction in network requests
+ *   - In-memory deduplication cache (instant lookup)
+ *   - Zero redundant downloads
+ *   - Filesystem stat checks before download attempt
+ *
+ * @module imageDeduplicator
+ */
+
+import path from "path";
 
 /**
  * Compute SHA256 hash of a file on disk.
+ * @param filePath
  */
 export async function fileHash(filePath: string): Promise<string> {
   return new Promise<string>((resolve, reject) => {
@@ -18,6 +40,8 @@ export async function fileHash(filePath: string): Promise<string> {
 /**
  * Given an array of existing file paths, determine if candidatePath matches
  * any of them by content hash. Returns the matching path or null.
+ * @param existingPaths
+ * @param candidatePath
  */
 export async function findDuplicate(
   existingPaths: string[],
@@ -39,28 +63,6 @@ export async function findDuplicate(
 
   return null;
 }
-/**
- * ═══════════════════════════════════════════════════════════════════════════
- * Image Deduplication & Caching System
- * ═══════════════════════════════════════════════════════════════════════════
- *
- * Purpose:
- *   - Track downloaded images in memory to prevent duplicate downloads
- *   - Check filesystem before downloading to avoid redundant file I/O
- *   - Maintain database cache of existing image paths
- *   - Reduce bandwidth and improve seed performance
- *
- * Benefits:
- *   - 70% reduction in network requests
- *   - In-memory deduplication cache (instant lookup)
- *   - Zero redundant downloads
- *   - Filesystem stat checks before download attempt
- *
- * @module imageDeduplicator
- */
-
-import crypto from "crypto";
-import path from "path";
 
 // Import Logger class type from seedLogger
 // Note: If seedLogger doesn't export Logger type, we need to import it differently

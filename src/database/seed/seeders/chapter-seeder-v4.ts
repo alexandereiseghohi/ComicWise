@@ -138,7 +138,7 @@ async function getComicIdBySlugOrTitle(
       const normalizedTitle = title
         .toLowerCase()
         .trim()
-        .replaceAll(/[^\w\s]/g, "")
+        .replaceAll(/[^\s\w]/g, "")
         .replaceAll(/\s+/g, " ");
 
       const allComics = await db
@@ -149,7 +149,7 @@ async function getComicIdBySlugOrTitle(
       for (const c of allComics) {
         const normalizedComic = c.title
           .toLowerCase()
-          .replaceAll(/[^\w\s]/g, "")
+          .replaceAll(/[^\s\w]/g, "")
           .replaceAll(/\s+/g, " ");
 
         if (normalizedComic === normalizedTitle) {
@@ -322,7 +322,7 @@ async function seedChapter(chapterData: ChapterSeedData): Promise<{
           // Log but don't throw - continue processing
           const errorMsg = error instanceof Error ? error.message : String(error);
           logger.warn(
-            `⚠️  Could not create chapter "${chapterData.name}": ${errorMsg.substring(0, 100)}`
+            `⚠️  Could not create chapter "${chapterData.name}": ${errorMsg.slice(0, 100)}`
           );
           return {
             action: "error",
@@ -361,7 +361,7 @@ async function seedChapter(chapterData: ChapterSeedData): Promise<{
     };
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : String(error);
-    logger.warn(`⚠️  Failed to seed chapter: ${errorMsg.substring(0, 80)}`);
+    logger.warn(`⚠️  Failed to seed chapter: ${errorMsg.slice(0, 80)}`);
     return {
       action: "error",
       imagesDownloaded: 0,

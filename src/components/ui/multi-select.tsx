@@ -146,13 +146,13 @@ export function MultiSelectValue({
   const shouldWrap = overflowBehavior === "wrap" || (overflowBehavior === "wrap-when-open" && open);
 
   const checkOverflow = useCallback(() => {
-    if (valueRef.current == null) return;
+    if (valueRef.current === null) return;
 
     const containerElement = valueRef.current;
     const overflowElement = overflowRef.current;
     const items = containerElement.querySelectorAll<HTMLElement>("[data-selected-item]");
 
-    if (overflowElement != null) overflowElement.style.display = "none";
+    if (overflowElement !== null) overflowElement.style.display = "none";
     items.forEach((child) => child.style.removeProperty("display"));
     let amount = 0;
     for (let i = items.length - 1; i >= 0; i--) {

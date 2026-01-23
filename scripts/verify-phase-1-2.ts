@@ -89,7 +89,7 @@ function runCommand(command: string, description: string): VerificationResult {
       name: description,
       status: "PASS",
       message: `✅ ${description}: Success`,
-      details: output.substring(0, 500), // Show first 500 chars
+      details: output.slice(0, 500), // Show first 500 chars
     };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
@@ -97,7 +97,7 @@ function runCommand(command: string, description: string): VerificationResult {
       name: description,
       status: "FAIL",
       message: `❌ ${description}: Failed`,
-      details: message.substring(0, 500),
+      details: message.slice(0, 500),
     };
   }
 }

@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 /**
  * Hash a plaintext password using bcrypt (async).
  * Returned value is the bcrypt hash string.
+ * @param password
  */
 export async function hashPassword(password: string): Promise<string> {
   const saltRounds = 10;
@@ -11,6 +12,8 @@ export async function hashPassword(password: string): Promise<string> {
 
 /**
  * Verify a plaintext password against a bcrypt hash.
+ * @param password
+ * @param hash
  */
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
   return await bcrypt.compare(password, hash);

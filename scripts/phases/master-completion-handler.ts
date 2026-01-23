@@ -7,12 +7,12 @@
 import { execSync } from "node:child_process";
 
 const COLORS = {
-  reset: "\x1b[0m",
-  bright: "\x1b[1m",
-  green: "\x1b[32m",
-  yellow: "\x1b[33m",
-  red: "\x1b[31m",
-  blue: "\x1b[34m",
+  reset: "\x1B[0m",
+  bright: "\x1B[1m",
+  green: "\x1B[32m",
+  yellow: "\x1B[33m",
+  red: "\x1B[31m",
+  blue: "\x1B[34m",
 };
 
 interface PhaseTask {
