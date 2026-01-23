@@ -29,14 +29,14 @@ const CONCURRENT_DOWNLOADS = 5;
 // IMAGE CACHE - In-memory deduplication
 // ─────────────────────────────────────────────────────────────────────────
 
-interface ImageCache {
+interface ImageCacheEntry {
   url: string;
   localPath: string;
   timestamp: number;
 }
 
 class ImageCache {
-  private cache = new Map<string, ImageCache>();
+  private cache = new Map<string, ImageCacheEntry>();
   private fsChecked = new Set<string>();
 
   set(url: string, localPath: string): void {
@@ -44,7 +44,7 @@ class ImageCache {
       url,
       localPath,
       timestamp: Date.now(),
-    } as any);
+    });
   }
 
   get(url: string): string | undefined {

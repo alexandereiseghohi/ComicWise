@@ -330,7 +330,7 @@ export function MultiSelectSeparator(props: ComponentPropsWithoutRef<typeof Comm
 
 function useMultiSelectContext() {
   const context = useContext(MultiSelectContext);
-  if (context == null) {
+  if (context === null || context === undefined) {
     throw new Error("useMultiSelectContext must be used within a MultiSelectContext");
   }
   return context;

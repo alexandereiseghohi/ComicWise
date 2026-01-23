@@ -17,5 +17,7 @@ ActionPlanBullets:
 
 Notes:
 
-- Current blockers identified: ~5000 lint warnings; 13 critical lint errors (regex escapes, React Compiler/import issues).
-- Next immediate action: address the 13 critical lint errors before large-scale automated changes.
+- Current blockers identified: ~5000 lint warnings; 13 critical lint errors
+  (regex escapes, React Compiler/import issues).
+- Next immediate action: address the 13 critical lint errors before large-scale
+  automated changes.

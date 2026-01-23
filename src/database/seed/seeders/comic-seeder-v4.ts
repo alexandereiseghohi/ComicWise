@@ -328,9 +328,7 @@ async function seedComic(comicData: ComicSeedData): Promise<{
         } else {
           // Log but don't throw - continue processing
           const errorMsg = error instanceof Error ? error.message : String(error);
-          logger.warn(
-            `⚠️  Could not create comic "${comicData.title}": ${errorMsg.slice(0, 100)}`
-          );
+          logger.warn(`⚠️  Could not create comic "${comicData.title}": ${errorMsg.slice(0, 100)}`);
           return {
             action: "error",
             imagesDownloaded: 0,

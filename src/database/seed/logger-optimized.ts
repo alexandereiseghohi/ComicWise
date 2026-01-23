@@ -73,7 +73,7 @@ export class SeedLogger {
 
   info(message: string, context?: LogContext): void {
     const formatted = `ℹ️  ${message}`;
-    this.verboseMode && console.log(formatted);
+    if (this.verboseMode) console.log(formatted);
     this.logger.info({ ...context, message }, formatted);
   }
 
@@ -119,7 +119,7 @@ export class SeedLogger {
     return () => {
       const duration = (performance.now() - start).toFixed(2);
       const formatted = `⏱️  ${operation}: ${duration}ms`;
-      this.verboseMode && console.log(formatted);
+      if (this.verboseMode) console.log(formatted);
       return Number.parseFloat(duration);
     };
   }
