@@ -1,3 +1,46 @@
+// Central workspace types and utilities
+export type SortOrder = "asc" | "desc";
+
+export interface PaginationOptions {
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: SortOrder;
+}
+
+export interface ComicFilters extends PaginationOptions {
+  search?: string;
+  status?: "Ongoing" | "Hiatus" | "Completed" | "Dropped" | "Coming Soon";
+  genreId?: number;
+  typeId?: number;
+  authorId?: number;
+  artistId?: number;
+  minRating?: number;
+}
+
+export type ActionResponse<T = any> = {
+  success: boolean;
+  error?: string | null;
+  data?: T;
+};
+
+export interface SendEmailOptions {
+  to: string;
+  subject: string;
+  html: string;
+  from?: string;
+}
+
+export {
+  Artist,
+  Author,
+  Chapter,
+  Comic,
+  ComicWithDetails,
+  Genre,
+  PaginatedResponse,
+  Type,
+} from "./database";
 // ═══════════════════════════════════════════════════
 // TYPES INDEX - Centralized Type Exports
 // ═══════════════════════════════════════════════════

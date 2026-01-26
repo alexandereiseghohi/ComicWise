@@ -1,3 +1,96 @@
+// Central database types for ComicWise
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  image?: string | null;
+  role?: "user" | "admin" | "moderator";
+  emailVerified?: Date | null;
+}
+
+export interface Author {
+  id: number;
+  name: string;
+  bio?: string | null;
+  image?: string | null;
+}
+
+export interface Artist {
+  id: number;
+  name: string;
+  bio?: string | null;
+  image?: string | null;
+}
+
+export interface Genre {
+  id: number;
+  name: string;
+  description?: string | null;
+}
+
+export interface Type {
+  id: number;
+  name: string;
+  description?: string | null;
+}
+
+export interface Comic {
+  id: number;
+  title: string;
+  description: string;
+  coverImage: string;
+  status: "Ongoing" | "Hiatus" | "Completed" | "Dropped" | "Coming Soon";
+  publicationDate?: Date | null;
+  rating?: number | null;
+  views: number;
+  authorId?: number | null;
+  artistId?: number | null;
+  typeId?: number | null;
+  genres?: string[];
+}
+
+export interface Chapter {
+  id: number;
+  title: string;
+  chapterNumber: number;
+  releaseDate?: Date | null;
+  comicId: number | string;
+  views?: number;
+  content?: string | null;
+}
+
+export interface Bookmark {
+  userId: string;
+  comicId: number;
+  lastReadChapterId?: number | string | "current";
+  currentChapterId?: number | string | "current";
+  notes?: string;
+}
+
+export interface Comment {
+  id: number;
+  content: string;
+  userId?: string;
+  chapterId?: number | string;
+  comicId?: string;
+}
+
+export interface ComicWithDetails extends Comic {
+  author?: Author;
+  artist?: Artist;
+  genresList?: Genre[];
+}
+
+export interface PaginatedResponse<T> {
+  items: T[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export type DatabaseId = number | string;
+
+export type DB = unknown;
 // ═══════════════════════════════════════════════════
 // DATABASE TYPES - Single Source of Truth
 // ═══════════════════════════════════════════════════
