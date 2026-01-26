@@ -52,7 +52,7 @@ export default function NewGenrePage() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to create genre");
+        throw new Error(error.error ?? "Failed to create genre");
       }
 
       toast.success("Genre created successfully");

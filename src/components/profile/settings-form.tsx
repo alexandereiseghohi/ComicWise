@@ -51,7 +51,7 @@ export function SettingsForm({ userId }: SettingsFormProps) {
         if (result.success) {
           toast.success("Settings saved successfully!");
         } else {
-          toast.error(result.error || "Failed to save settings");
+          toast.error(result.error ?? "Failed to save settings");
         }
       } catch (error) {
         toast.error("An error occurred while saving settings");
@@ -69,7 +69,7 @@ export function SettingsForm({ userId }: SettingsFormProps) {
           toast.success("Account deleted successfully");
           router.push("/");
         } else {
-          toast.error(result.error || "Failed to delete account");
+          toast.error(result.error ?? "Failed to delete account");
         }
       } catch (error) {
         toast.error("An error occurred while deleting account");

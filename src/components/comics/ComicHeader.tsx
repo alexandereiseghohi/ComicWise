@@ -5,6 +5,7 @@
  */
 
 import { Badge } from "@/components/ui/badge";
+import { normalizeImagePath } from "@/lib/image-path";
 import Image from "next/image";
 
 /**
@@ -31,8 +32,8 @@ export function ComicHeader({ comic }: ComicHeaderProps) {
         <div className="shrink-0">
           <div className="relative aspect-3/4 w-48 overflow-hidden rounded-lg shadow-lg">
             <Image
-              src={comic.image}
-              alt={comic.title || "Comic"}
+              src={normalizeImagePath(comic.image) ?? comic.image}
+              alt={comic.title ?? "Comic"}
               fill
               className="object-cover"
               priority

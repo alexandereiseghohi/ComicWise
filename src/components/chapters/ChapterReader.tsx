@@ -7,6 +7,7 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
+import { normalizeImagePath } from "@/lib/image-path";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -87,7 +88,7 @@ export function ChapterReader({
         <div className="relative aspect-9/16 w-full bg-muted sm:aspect-auto sm:min-h-[600px]">
           {currentImageUrl && (
             <Image
-              src={currentImageUrl}
+              src={normalizeImagePath(currentImageUrl) ?? currentImageUrl}
               alt={`Page ${currentPage + 1}`}
               fill
               className="object-contain"

@@ -114,7 +114,7 @@ export function extractFilenameFromUrl(imageUrl: string): string {
   try {
     const url = new URL(imageUrl);
     const pathname = url.pathname;
-    return path.basename(pathname) || "image";
+    return path.basename(pathname) ?? "image";
   } catch {
     return "image";
   }

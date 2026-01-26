@@ -193,7 +193,7 @@ export class ImageService {
           this.lastUploadTime = Date.now();
 
           if (!uploadResult.success) {
-            throw new Error(uploadResult.error || "Upload failed");
+            throw new Error(uploadResult.error ?? "Upload failed");
           }
 
           // Cache the result for future requests

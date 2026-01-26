@@ -66,7 +66,7 @@ export async function createChapter(input: unknown): Promise<ActionResult<{ id: 
     return { success: true, data: { id: chapterResult[0].id } };
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return { success: false, error: error.issues[0]?.message || "Validation failed" };
+      return { success: false, error: error.issues[0]?.message ?? "Validation failed" };
     }
     if (error instanceof Error && error.message === "admin role required") {
       return { success: false, error: "You don't have permission" };
@@ -120,7 +120,7 @@ export async function updateChapter(
     return { success: true, data: { id } };
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return { success: false, error: error.issues[0]?.message || "Validation failed" };
+      return { success: false, error: error.issues[0]?.message ?? "Validation failed" };
     }
     if (error instanceof Error && error.message === "admin role required") {
       return { success: false, error: "You don't have permission" };

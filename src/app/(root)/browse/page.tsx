@@ -11,6 +11,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { db } from "@/database";
 import { author, comic, comicToGenre, genre, type } from "@/database/schema";
+import { normalizeImagePath } from "@/lib/image-path";
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
 import Image from "next/image";
 import Link from "next/link";
@@ -156,7 +157,7 @@ function ComicCard({ comic }: { comic: Comic }) {
         <div className="relative aspect-2/3 overflow-hidden">
           {comic.coverImage ? (
             <Image
-              src={comic.coverImage}
+              src={normalizeImagePath(comic.coverImage) ?? comic.coverImage}
               alt={comic.title}
               fill
               className="object-cover transition-transform group-hover:scale-105"

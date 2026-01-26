@@ -27,7 +27,7 @@ export default async function EditTypeForm({ params }: { params: { id: string } 
       revalidatePath("/admin/types");
       redirect("/admin/types");
     }
-    throw new Error(result.error || "Failed to update type");
+    throw new Error(result.error ?? "Failed to update type");
   }
 
   async function handleDelete() {
@@ -36,7 +36,7 @@ export default async function EditTypeForm({ params }: { params: { id: string } 
       revalidatePath("/admin/types");
       redirect("/admin/types");
     }
-    throw new Error(result.error || "Failed to delete type");
+    throw new Error(result.error ?? "Failed to delete type");
   }
 
   return (

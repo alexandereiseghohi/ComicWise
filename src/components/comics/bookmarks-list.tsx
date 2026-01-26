@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { removeBookmark } from "@/lib/actions/bookmark";
+import { normalizeImagePath } from "@/lib/image-path";
 import { BookmarkX, Play } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -69,7 +70,7 @@ export function BookmarksList({ bookmarks }: BookmarksListProps) {
             <Link href={`/comics/${bookmark.comic.slug}`} className="shrink-0">
               <div className="relative h-32 w-24 overflow-hidden rounded-sm">
                 <Image
-                  src={bookmark.comic.coverImage}
+                  src={normalizeImagePath(bookmark.comic.coverImage) ?? bookmark.comic.coverImage}
                   alt={bookmark.comic.title}
                   fill
                   className="object-cover"

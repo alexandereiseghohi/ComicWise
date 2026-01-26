@@ -177,7 +177,7 @@ export async function fileExistsWithCache(
     // Use path.resolve() to get absolute path, satisfying security linter
     // This ensures the path is safe before passing to fsp.stat()
     const safePath = path.resolve(normalizedPath);
-    // eslint-disable-next-line security/detect-non-literal-fs-filename
+
     await fsp.stat(safePath);
     fileCache.set(filePath, true);
     return true;

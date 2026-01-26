@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-duplicate-string */
 // ═══════════════════════════════════════════════════
 // COMPREHENSIVE ZOD VALIDATION SCHEMAS (Next.js 16)
 // ═══════════════════════════════════════════════════

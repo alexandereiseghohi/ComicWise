@@ -61,7 +61,7 @@ export async function uploadAvatar(formData: FormData): Promise<ActionResult<{ u
 
     // Generate filename
     const timestamp = Date.now();
-    const extension = file.name.split(".").pop() || "jpg";
+    const extension = file.name.split(".").pop() ?? "jpg";
     const filename = `avatar-${session.user.id}-${timestamp}.${extension}`;
 
     // Upload to CDN
@@ -74,7 +74,7 @@ export async function uploadAvatar(formData: FormData): Promise<ActionResult<{ u
     if (!uploadResult.success) {
       return {
         success: false,
-        error: uploadResult.error || "Failed to upload image",
+        error: uploadResult.error ?? "Failed to upload image",
       };
     }
 

@@ -165,10 +165,10 @@ export async function getReadingHistory(
     const formattedHistory: ReadingHistory[] = history.map((item) => ({
       id: item.id,
       comicId: item.comicId,
-      comicTitle: item.comicTitle || "Unknown",
+      comicTitle: item.comicTitle ?? "Unknown",
       chapterId: item.chapterId,
-      chapterTitle: item.chapterTitle || "Unknown",
-      chapterNumber: item.chapterNumber || 0,
+      chapterTitle: item.chapterTitle ?? "Unknown",
+      chapterNumber: item.chapterNumber ?? 0,
       pageNumber: item.pageNumber,
       progressPercent: item.progressPercent,
       lastReadAt: item.lastReadAt,

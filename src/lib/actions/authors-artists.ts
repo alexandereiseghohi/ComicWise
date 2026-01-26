@@ -149,7 +149,7 @@ export async function listAuthors(input?: PaginationInput & { search?: string })
       .from(author)
       .where(whereClause);
 
-    const total = countResult?.count || 0;
+    const total = countResult?.count ?? 0;
 
     const results = await database.query.author.findMany({
       where: whereClause,
@@ -327,7 +327,7 @@ export async function listArtists(input?: PaginationInput & { search?: string })
       .from(artist)
       .where(whereClause);
 
-    const total = countResult?.count || 0;
+    const total = countResult?.count ?? 0;
 
     const results = await database.query.artist.findMany({
       where: whereClause,

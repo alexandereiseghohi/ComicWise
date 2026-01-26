@@ -161,7 +161,7 @@ export async function seedUsers(
             .set({
               name: userData.name,
               image: userData.image || existing.image,
-              role: (userData.role || "user") as any,
+              role: (userData.role ?? "user") as any,
               emailVerified: userData.emailVerified
                 ? new Date(userData.emailVerified as string)
                 : existing.emailVerified,
@@ -177,7 +177,7 @@ export async function seedUsers(
             name: userData.name,
             email: userData.email,
             image: userData.image || null,
-            role: (userData.role || "user") as any,
+            role: (userData.role ?? "user") as any,
             emailVerified: userData.emailVerified
               ? new Date(userData.emailVerified as string)
               : null,
@@ -270,7 +270,7 @@ export async function seedComics(
       const coverImage =
         options.imageHandler && comicData.images?.[0]?.url
           ? await options.imageHandler.processImage(comicData.images[0].url, "comic")
-          : comicData.coverImage || "/public/placeholder-comic.jpg";
+          : (comicData.coverImage ?? "/public/placeholder-comic.jpg");
 
       if (existing) {
         if (!options.dryRun) {
@@ -280,7 +280,7 @@ export async function seedComics(
               title: comicData.title,
               description: comicData.description,
               coverImage,
-              status: (comicData.status || "Ongoing") as any,
+              status: (comicData.status ?? "Ongoing") as any,
               rating: comicData.rating as any,
               typeId,
               authorId,
@@ -308,8 +308,8 @@ export async function seedComics(
               slug: comicData.slug,
               description: comicData.description,
               coverImage,
-              status: (comicData.status || "Ongoing") as any,
-              rating: String(comicData.rating || 0),
+              status: (comicData.status ?? "Ongoing") as any,
+              rating: String(comicData.rating ?? 0),
               publicationDate,
               typeId: typeId || null,
               authorId: authorId || null,
@@ -451,8 +451,8 @@ export async function seedChapters(
               try {
                 const imageUrl = typeof imageData === "object" ? imageData?.url : imageData;
                 const processedUrl = options.imageHandler
-                  ? await options.imageHandler.processImage(imageUrl || "", "comic")
-                  : imageUrl || "";
+                  ? await options.imageHandler.processImage(imageUrl ?? "", "comic")
+                  : (imageUrl ?? "");
 
                 await db
                   .insert(chapterImage)

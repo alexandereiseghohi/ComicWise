@@ -32,7 +32,7 @@ export async function createGenre(formData: FormData): Promise<ActionResult<{ id
     return { success: true, data: { id: genre.id } };
   } catch (error_) {
     if (error_ instanceof z.ZodError) {
-      return error(error_.issues[0]?.message || "Validation error");
+      return error(error_.issues[0]?.message ?? "Validation error");
     }
     console.error("Create genre error:", error_);
     return error("Failed to create genre");
@@ -56,7 +56,7 @@ export async function updateGenre(
     return { success: true };
   } catch (error_) {
     if (error_ instanceof z.ZodError) {
-      return error(error_.issues[0]?.message || "Validation error");
+      return error(error_.issues[0]?.message ?? "Validation error");
     }
     console.error("Update genre error:", error_);
     return error("Failed to update genre");

@@ -60,7 +60,7 @@ export class SeedImageManager {
   private getExtension(url: string): string {
     try {
       const urlPath = new URL(url).pathname;
-      const extension = path.extname(urlPath) || ".webp";
+      const extension = path.extname(urlPath) ?? ".webp";
       return extension;
     } catch {
       return ".webp";

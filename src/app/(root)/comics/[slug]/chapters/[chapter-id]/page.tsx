@@ -17,6 +17,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { normalizeImagePath } from "@/lib/image-path";
 import { useQuery } from "@tanstack/react-query";
 import {
   ChevronLeft,
@@ -146,7 +147,7 @@ export default function ChapterReaderPage({ params }: ChapterReaderProps) {
         {currentImage && (
           <div className="relative aspect-auto w-full max-w-4xl">
             <Image
-              src={currentImage.url}
+              src={normalizeImagePath(currentImage.url) ?? currentImage.url}
               alt={`Page ${currentImageIndex + 1}`}
               width={1200}
               height={1600}

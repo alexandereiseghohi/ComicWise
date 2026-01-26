@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-duplicate-string */
 // ═══════════════════════════════════════════════════
 // COMPREHENSIVE ZOD VALIDATION SCHEMAS (Next.js 16)
 // ═══════════════════════════════════════════════════
@@ -771,7 +770,7 @@ export const comicSeedSchema = z
           season_end: "Season End",
         };
         const normalized = value.toLowerCase();
-        return statusMap[normalized] || "Ongoing";
+        return statusMap[normalized] ?? "Ongoing";
       }),
     category: z.string().optional(),
     type: z

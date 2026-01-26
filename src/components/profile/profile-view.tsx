@@ -17,7 +17,7 @@ export function ProfileView({ user }: ProfileViewProps) {
       ?.split(" ")
       .map((n) => n[0])
       .join("")
-      .toUpperCase() || "U";
+      .toUpperCase() ?? "U";
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8">
@@ -37,7 +37,7 @@ export function ProfileView({ user }: ProfileViewProps) {
           <CardContent>
             <div className="flex flex-col items-center space-y-6 sm:flex-row sm:items-start sm:space-y-0 sm:space-x-6">
               <Avatar className="size-32">
-                <AvatarImage src={user.image || undefined} alt={user.name || "User"} />
+                <AvatarImage src={user.image || undefined} alt={user.name ?? "User"} />
                 <AvatarFallback className="text-3xl">{initials}</AvatarFallback>
               </Avatar>
 
@@ -46,7 +46,7 @@ export function ProfileView({ user }: ProfileViewProps) {
                   <UserIcon className="size-5 text-muted-foreground" />
                   <div>
                     <p className="text-sm text-muted-foreground">Name</p>
-                    <p className="font-medium">{user.name || "Not set"}</p>
+                    <p className="font-medium">{user.name ?? "Not set"}</p>
                   </div>
                 </div>
 

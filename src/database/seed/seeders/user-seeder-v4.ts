@@ -91,7 +91,7 @@ async function seedUser(
       email: userData.email,
       name: userData.name,
       password: hashedPassword,
-      role: userData.role || "user",
+      role: userData.role ?? "user",
       image: userImage,
       emailVerified: userData.emailVerified || new Date(),
       createdAt: userData.createdAt || new Date(),
@@ -153,7 +153,7 @@ export async function seedUsersV4(
   logger.info("🌱 Starting Enhanced User Seeding V4");
   logger.info("═══════════════════════════════════════════════════════════");
 
-  const password = customPassword || process.env["CUSTOM_PASSWORD"] || "DefaultPassword123!";
+  const password = (customPassword || process.env["CUSTOM_PASSWORD"]) ?? "DefaultPassword123!";
   logger.info(`🔐 Using ${customPassword ? "provided" : "environment"} password for all users`);
 
   for (const pattern of filePatterns) {

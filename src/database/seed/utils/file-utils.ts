@@ -2,6 +2,7 @@
  * File Utilities for Seed Operations
  */
 
+import { isImageFileName, normalizeImagePath } from "@/lib/image-path";
 import fs from "fs/promises";
 import path from "path";
 
@@ -34,7 +35,12 @@ export class FileUtils {
       // Handle wildcard patterns
       const dir = path.dirname(pattern);
       const basePattern = path.basename(pattern);
-      const regex = new RegExp("^" + basePattern.replaceAll("*", ".*").replaceAll("?", ".") + "$");
+      // Escape regex special chars, then convert wildcards '*' and '?' to regex equivalents
+      const escapeForRegex = (s: string) => s.replace(/[.+^${}()|[\]\\]/g, "\\$&");
+      const wildcardToRegex = escapeForRegex(basePattern)
+        .replace(/\\\*/g, ".*")
+        .replace(/\\\?/g, ".");
+      const regex = new RegExp("^" + wildcardToRegex + "$");
 
       const files = await fs.readdir(dir);
       const matches = files
@@ -61,6 +67,33 @@ export class FileUtils {
       for (const file of files) {
         try {
           const data = await this.readJsonFile<T | T[]>(file);
+          // Normalize image path values in parsed data so next/image receives valid URLs
+          const normalizeRecursively = (obj: any) => {
+            if (obj === null || obj === undefined) return obj;
+            if (Array.isArray(obj)) {
+              obj.forEach((v, i) => (obj[i] = normalizeRecursively(v)));
+              return obj;
+            }
+            if (typeof obj === "object") {
+              for (const key of Object.keys(obj)) {
+                const val = obj[key];
+                if (typeof val === "string" && isImageFileName(val)) {
+                  obj[key] = normalizeImagePath(val);
+                } else if (typeof val === "string") {
+                  // also normalize obvious relative paths that include 'public' or path separators
+                  if (val.includes("public\\") || val.includes("public/") || val.includes("\\")) {
+                    obj[key] = normalizeImagePath(val);
+                  }
+                } else if (typeof val === "object") {
+                  normalizeRecursively(val);
+                }
+              }
+              return obj;
+            }
+            return obj;
+          };
+
+          normalizeRecursively(data as any);
           if (Array.isArray(data)) {
             allData.push(...data);
           } else {

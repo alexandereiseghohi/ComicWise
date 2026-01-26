@@ -18,8 +18,8 @@ export function ProfileEditForm({ user }: ProfileEditFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [formData, setFormData] = useState({
-    name: user.name || "",
-    image: user.image || "",
+    name: user.name ?? "",
+    image: user.image ?? "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,11 +29,11 @@ export function ProfileEditForm({ user }: ProfileEditFormProps) {
       const result = await updateProfileActionOptimized(user.id!, formData);
 
       if (result.success) {
-        toast.success(result.message || "Profile updated successfully");
+        toast.success(result.message ?? "Profile updated successfully");
         router.push("/profile");
         router.refresh();
       } else {
-        toast.error(result.error || "Failed to update profile");
+        toast.error(result.error ?? "Failed to update profile");
       }
     });
   };

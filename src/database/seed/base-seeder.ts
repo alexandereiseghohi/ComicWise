@@ -151,7 +151,7 @@ export abstract class BaseSeeder<T = unknown> implements ISeeder<T> {
     records: T[],
     options: SeedOptions
   ): Promise<Omit<SeedResult, "duration">> {
-    const batchSize = options.batchSize || 100;
+    const batchSize = options.batchSize ?? 100;
     const batches = this.createBatches(records, batchSize);
 
     let inserted = 0;

@@ -26,7 +26,7 @@ export function ProfileManagement({ user, bookmarkCount = 0 }: ProfileManagement
       ?.split(" ")
       .map((n) => n[0])
       .join("")
-      .toUpperCase() || "U";
+      .toUpperCase() ?? "U";
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8">

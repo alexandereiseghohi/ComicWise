@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
 async function handleSearch(searchParams: URLSearchParams) {
   const filters: SearchFilters = {
     query: searchParams.get("q") || undefined,
-    searchMode: (searchParams.get("mode") as "simple" | "phrase" | "websearch") || "websearch",
+    searchMode: (searchParams.get("mode") as "simple" | "phrase" | "websearch") ?? "websearch",
     typeId: searchParams.get("typeId") ? Number.parseInt(searchParams.get("typeId")!) : undefined,
     status: searchParams.get("status") || undefined,
     minRating: searchParams.get("minRating")
@@ -77,9 +77,9 @@ async function handleSearch(searchParams: URLSearchParams) {
       ? Number.parseInt(searchParams.get("maxViews")!)
       : undefined,
     sortBy:
-      (searchParams.get("sortBy") as "title" | "rating" | "views" | "latest" | "relevance") ||
+      (searchParams.get("sortBy") as "title" | "rating" | "views" | "latest" | "relevance") ??
       "relevance",
-    sortOrder: (searchParams.get("sortOrder") as "asc" | "desc") || "desc",
+    sortOrder: (searchParams.get("sortOrder") as "asc" | "desc") ?? "desc",
     page: searchParams.get("page") ? Number.parseInt(searchParams.get("page")!) : 1,
     limit: searchParams.get("limit") ? Number.parseInt(searchParams.get("limit")!) : 12,
   };

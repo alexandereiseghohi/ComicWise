@@ -112,7 +112,7 @@ export default function NewChapterPage() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to create chapter");
+        throw new Error(error.error ?? "Failed to create chapter");
       }
 
       const chapter = await response.json();

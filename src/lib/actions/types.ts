@@ -32,7 +32,7 @@ export async function createType(formData: FormData): Promise<ActionResult<{ id:
     return { success: true, data: { id: type.id } };
   } catch (error_) {
     if (error_ instanceof z.ZodError) {
-      return error(error_.issues[0]?.message || "Validation error");
+      return error(error_.issues[0]?.message ?? "Validation error");
     }
     console.error("Create type error:", error_);
     return error("Failed to create type");
@@ -56,7 +56,7 @@ export async function updateType(
     return { success: true };
   } catch (error_) {
     if (error_ instanceof z.ZodError) {
-      return error(error_.issues[0]?.message || "Validation error");
+      return error(error_.issues[0]?.message ?? "Validation error");
     }
     console.error("Update type error:", error_);
     return error("Failed to update type");

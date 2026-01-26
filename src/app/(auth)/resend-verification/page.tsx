@@ -29,8 +29,8 @@ export default function ResendVerificationPage() {
         const result = await resendVerificationEmail(data);
 
         if (!result.success) {
-          setError(result.error || "Failed to send verification email");
-          toast.error(result.error || "Failed to send verification email");
+          setError(result.error ?? "Failed to send verification email");
+          toast.error(result.error ?? "Failed to send verification email");
         } else {
           setIsSubmitted(true);
           toast.success("Verification email sent!");

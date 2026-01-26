@@ -47,10 +47,10 @@ export interface CacheMiddlewareConfig {
 
 const getRedisConfig = (): Record<string, unknown> => {
   const baseConfig: Record<string, unknown> = {
-    host: env.REDIS_HOST || "localhost",
-    port: Number(env.REDIS_PORT) || 6379,
+    host: env.REDIS_HOST ?? "localhost",
+    port: Number(env.REDIS_PORT ?? "6379"),
     password: env.REDIS_PASSWORD || undefined,
-    database: Number(env.REDIS_DB ?? 0) || 0,
+    database: Number(env.REDIS_DB ?? "0"),
     maxRetriesPerRequest: 3,
     retryStrategy(times: number) {
       const delay = Math.min(times * 50, 2000);
@@ -237,7 +237,7 @@ export const CACHE_TTL = {
 
 export const cacheKeys = {
   comic: (id: number) => `comic:${id}`,
-  comics: (filters?: string) => `comics:${filters || "all"}`,
+  comics: (filters?: string) => `comics:${filters ?? "all"}`,
   comicsByGenre: (genreId: number) => `comics:genre:${genreId}`,
   comicsByAuthor: (authorId: number) => `comics:author:${authorId}`,
   comicsByStatus: (status: string) => `comics:status:${status}`,
@@ -564,9 +564,9 @@ export class RedisCache {
 
       const stats = {
         keys: databasesize,
-        memory: memory.match(/used_memory_human:([^\n\r]+)/)?.[1] || "N/A",
-        hits: Number.parseInt(info.match(/keyspace_hits:(\d+)/)?.[1] || "0"),
-        misses: Number.parseInt(info.match(/keyspace_misses:(\d+)/)?.[1] || "0"),
+        memory: memory.match(/used_memory_human:([^\n\r]+)/)?.[1] ?? "N/A",
+        hits: Number.parseInt(info.match(/keyspace_hits:(\d+)/)?.[1] ?? "0"),
+        misses: Number.parseInt(info.match(/keyspace_misses:(\d+)/)?.[1] ?? "0"),
         hitRate: 0,
       };
 
@@ -613,7 +613,7 @@ async function generateCacheKey(
   }
 
   const url = new URL(request.url);
-  let key = `${config.prefix || "api"}:${url.pathname}`;
+  let key = `${config.prefix ?? "api"}:${url.pathname}`;
 
   if (config.includeQuery && url.search) {
     const sortedParameters = [...url.searchParams.entries()]
@@ -850,14 +850,14 @@ export function withRateLimit(
 ) {
   return async (request: NextRequest) => {
     const identifier =
-      options.keyGenerator?.(request) ||
-      request.headers["get"]("x-forwarded-for") ||
-      request.headers["get"]("x-real-ip") ||
+      (options.keyGenerator?.(request) ||
+        request.headers["get"]("x-forwarded-for") ||
+        request.headers["get"]("x-real-ip")) ??
       "anonymous";
 
     const result = await rateLimit(identifier, {
-      window: options.window || 60,
-      max: options.max || 100,
+      window: options.window ?? 60,
+      max: options.max ?? 100,
     });
 
     if (!result.success) {
@@ -870,7 +870,7 @@ export function withRateLimit(
         {
           status: 429,
           headers: {
-            "X-RateLimit-Limit": options.max?.toString() || "100",
+            "X-RateLimit-Limit": options.max?.toString() ?? "100",
             "X-RateLimit-Remaining": result.remaining.toString(),
             "X-RateLimit-Reset": result.reset.toString(),
             "Retry-After": Math.ceil((result.reset - Date.now()) / 1000).toString(),
@@ -881,7 +881,7 @@ export function withRateLimit(
 
     const response = (await handler(request)) as Response;
 
-    response.headers["set"]("X-RateLimit-Limit", options.max?.toString() || "100");
+    response.headers["set"]("X-RateLimit-Limit", options.max?.toString() ?? "100");
     response.headers["set"]("X-RateLimit-Remaining", result.remaining.toString());
     response.headers["set"]("X-RateLimit-Reset", result.reset.toString());
 

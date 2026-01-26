@@ -25,13 +25,13 @@ export async function addBookmark(
       userId,
       comicId,
       lastReadChapterId: chapterId,
-      status: status || "Reading",
+      status: status ?? "Reading",
     })
     .onConflictDoUpdate({
       target: [bookmark.userId, bookmark.comicId],
       set: {
         lastReadChapterId: chapterId,
-        status: status || "Reading",
+        status: status ?? "Reading",
         updatedAt: new Date(),
       },
     })

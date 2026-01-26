@@ -86,10 +86,10 @@ export function AdminUsers({
   const handleEdit = (user: User) => {
     setSelectedUser(user);
     setFormData({
-      name: user.name || "",
+      name: user.name ?? "",
       email: user.email,
       password: "", // Empty password means no change
-      role: user.role || "user",
+      role: user.role ?? "user",
     });
     setErrors({});
     setEditOpen(true);
@@ -114,7 +114,7 @@ export function AdminUsers({
           setCreateOpen(false);
           router.refresh();
         } else {
-          toast.error(result.error || "Failed to create user");
+          toast.error(result.error ?? "Failed to create user");
         }
       } catch (error) {
         if (error instanceof Error) {
@@ -140,7 +140,7 @@ export function AdminUsers({
           setEditOpen(false);
           router.refresh();
         } else {
-          toast.error(result.error || "Failed to update user");
+          toast.error(result.error ?? "Failed to update user");
         }
       } catch (error) {
         if (error instanceof Error) {
@@ -162,7 +162,7 @@ export function AdminUsers({
           setDeleteOpen(false);
           router.refresh();
         } else {
-          toast.error(result.error || "Failed to delete user");
+          toast.error(result.error ?? "Failed to delete user");
         }
       } catch (error) {
         if (error instanceof Error) {
@@ -262,7 +262,7 @@ export function AdminUsers({
               <Input
                 id="password"
                 type="password"
-                value={formData.password || ""}
+                value={formData.password ?? ""}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 disabled={isPending}
               />

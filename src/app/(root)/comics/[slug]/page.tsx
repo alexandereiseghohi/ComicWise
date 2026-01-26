@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { normalizeImagePath } from "@/lib/image-path";
 import { useQuery } from "@tanstack/react-query";
 import { BookOpen, Calendar, Heart, Loader2, Star, Tag } from "lucide-react";
 import Image from "next/image";
@@ -128,7 +129,12 @@ export default function ComicDetailPage({ params }: ComicDetailPageProps) {
               {/* Cover Image */}
               <div className="relative aspect-3/4 w-full overflow-hidden rounded-t-lg bg-gray-200">
                 {comic.coverImage ? (
-                  <Image src={comic.coverImage} alt={comic.title} fill className="object-cover" />
+                  <Image
+                    src={normalizeImagePath(comic.coverImage) ?? comic.coverImage}
+                    alt={comic.title}
+                    fill
+                    className="object-cover"
+                  />
                 ) : (
                   <div className="flex h-full items-center justify-center bg-linear-to-br from-purple-400 to-pink-600">
                     <BookOpen className="size-12 text-white opacity-50" />

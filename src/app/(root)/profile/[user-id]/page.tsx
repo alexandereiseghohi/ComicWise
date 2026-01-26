@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { normalizeImagePath } from "@/lib/image-path";
 import { useQuery } from "@tanstack/react-query";
 import { BookOpen, Calendar, Heart, Loader2, Mail } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -120,7 +121,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
               <div className="relative size-32 shrink-0">
                 {profile.image ? (
                   <Image
-                    src={profile.image}
+                    src={normalizeImagePath(profile.image) ?? profile.image}
                     alt={profile.name}
                     fill
                     className="rounded-full object-cover"
@@ -208,7 +209,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
                       <div className="relative aspect-3/4 w-full bg-gray-200">
                         {comic.coverImage ? (
                           <Image
-                            src={comic.coverImage}
+                            src={normalizeImagePath(comic.coverImage) ?? comic.coverImage}
                             alt={comic.title}
                             fill
                             className="rounded-t-lg object-cover"

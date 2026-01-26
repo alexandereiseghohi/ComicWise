@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useImageUpload } from "@/hooks/use-image-upload";
+import { normalizeImagePath } from "@/lib/image-path";
 import { comicFormSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, Loader2, Upload } from "lucide-react";
@@ -67,11 +68,11 @@ export function ComicForm({
     // ts-expect-error - zodResolver type compatibility issue with react-hook-form
     resolver: zodResolver(comicFormSchema) as any,
     defaultValues: {
-      title: initialData?.title || "",
-      description: initialData?.description || "",
-      slug: initialData?.slug || "",
-      coverImage: initialData?.coverImage || "",
-      status: initialData?.status || "Ongoing",
+      title: initialData?.title ?? "",
+      description: initialData?.description ?? "",
+      slug: initialData?.slug ?? "",
+      coverImage: initialData?.coverImage ?? "",
+      status: initialData?.status ?? "Ongoing",
       publicationDate: initialData?.publicationDate
         ? new Date(initialData.publicationDate)
         : new Date(),
@@ -88,7 +89,7 @@ export function ComicForm({
       setIsSubmitting(true);
       const result = await onSubmit(data);
       if (result && !result.success) {
-        setSubmitError(result.error || "Failed to save comic");
+        setSubmitError(result.error ?? "Failed to save comic");
       }
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : "An error occurred");
@@ -125,7 +126,7 @@ export function ComicForm({
                     `}
                   >
                     <Image
-                      src={coverImageValue}
+                      src={normalizeImagePath(coverImageValue) ?? coverImageValue}
                       alt="Cover preview"
                       fill
                       className="object-cover"
@@ -275,7 +276,7 @@ export function ComicForm({
                   const dateValue =
                     field.value instanceof Date
                       ? field.value.toISOString().split("T")[0]
-                      : String(field.value || "");
+                      : String(field.value ?? "");
                   return (
                     <FormItem>
                       <FormLabel>Publication Date</FormLabel>

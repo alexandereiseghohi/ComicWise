@@ -37,10 +37,10 @@ export function ComicFilters({ types, genres }: ComicFiltersProps) {
   const { filters: storeFilters, applyFilters, clearFilters } = useComics();
 
   const [filters, setFilters] = useState({
-    search: searchParams.get("search") || "",
-    type: searchParams.get("type") || "",
-    status: searchParams.get("status") || "",
-    sort: searchParams.get("sort") || "latest",
+    search: searchParams.get("search") ?? "",
+    type: searchParams.get("type") ?? "",
+    status: searchParams.get("status") ?? "",
+    sort: searchParams.get("sort") ?? "latest",
   });
 
   useEffect(() => {

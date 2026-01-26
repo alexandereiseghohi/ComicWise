@@ -106,8 +106,8 @@ export async function listGenericEntity<TFilters, TOutput>(
       search: searchParams.get("search") || undefined,
       page: searchParams.get("page") ? Number.parseInt(searchParams.get("page")!) : 1,
       limit: searchParams.get("limit") ? Number.parseInt(searchParams.get("limit")!) : 50,
-      sortBy: searchParams.get("sortBy") || "name",
-      sortOrder: (searchParams.get("sortOrder") as "asc" | "desc") || "asc",
+      sortBy: searchParams.get("sortBy") ?? "name",
+      sortOrder: (searchParams.get("sortOrder") as "asc" | "desc") ?? "asc",
     };
 
     const validation = validateFn(filters);

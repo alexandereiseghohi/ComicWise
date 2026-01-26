@@ -254,7 +254,7 @@ export class ComicCacheService {
   async getViewCount(comicId: number): Promise<number> {
     const key = `${CACHE_KEYS.VIEW_COUNT}comic:${comicId}`;
     const count = await cache.get<number>(key);
-    return count || 0;
+    return count ?? 0;
   }
 
   /**
@@ -329,7 +329,7 @@ export class ComicCacheService {
   async getCommentCount(comicId: number): Promise<number> {
     const key = `${CACHE_KEYS.COMMENT_COUNT}${comicId}`;
     const count = await cache.get<number>(key);
-    return count || 0;
+    return count ?? 0;
   }
 
   /**

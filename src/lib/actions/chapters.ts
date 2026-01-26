@@ -212,7 +212,7 @@ export async function listChapters(input?: ChapterFilterInput) {
       .from(chapter)
       .where(whereClause);
 
-    const total = countResult?.count || 0;
+    const total = countResult?.count ?? 0;
 
     // Get chapters
     const results = await database.query.chapter.findMany({

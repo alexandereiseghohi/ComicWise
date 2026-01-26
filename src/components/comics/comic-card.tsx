@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { normalizeImagePath } from "@/lib/image-path";
 import { useComicStore } from "@/stores";
 import { Eye, Star } from "lucide-react";
 import Image from "next/image";
@@ -33,7 +34,7 @@ export function ComicCard({ comic }: ComicCardProps) {
       <Card className="group overflow-hidden transition-all hover:shadow-lg">
         <div className="relative aspect-2/3 overflow-hidden">
           <Image
-            src={comic.coverImage}
+            src={normalizeImagePath(comic.coverImage) ?? "/placeholder-comic.jpg"}
             alt={comic.title}
             fill
             className="object-cover transition-transform group-hover:scale-105"
@@ -50,7 +51,7 @@ export function ComicCard({ comic }: ComicCardProps) {
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <div className="flex items-center gap-1">
               <Star className="size-3 fill-yellow-400 text-yellow-400" />
-              <span>{comic.rating || "N/A"}</span>
+              <span>{comic.rating ?? "N/A"}</span>
             </div>
             <div className="flex items-center gap-1">
               <Eye className="size-3" />

@@ -19,9 +19,9 @@ export async function GET(request: NextRequest) {
     const searchParams = new URL(request.url).searchParams;
 
     const chapterId = searchParams.get("chapterId");
-    const page = Number.parseInt(searchParams.get("page") || "1");
-    const limit = Number.parseInt(searchParams.get("limit") || "20");
-    const sortOrder = (searchParams.get("sortOrder") as "asc" | "desc") || "desc";
+    const page = Number.parseInt(searchParams.get("page") ?? "1");
+    const limit = Number.parseInt(searchParams.get("limit") ?? "20");
+    const sortOrder = (searchParams.get("sortOrder") as "asc" | "desc") ?? "desc";
 
     if (!chapterId) {
       return NextResponse.json({ error: "Chapter ID is required" }, { status: 400 });
@@ -96,12 +96,12 @@ export async function POST(request: NextRequest) {
         Promise.all(
           body.notifyUsers.map((email: string) =>
             sendCommentNotificationEmail({
-              userName: body.recipientName || "User",
+              userName: body.recipientName ?? "User",
               userEmail: email,
-              commenterName: session.user.name || "Someone",
+              commenterName: session.user.name ?? "Someone",
               commenterAvatar: session.user.image ?? undefined,
               commentText: validation.data.content,
-              comicTitle: body.comicTitle || "a comic",
+              comicTitle: body.comicTitle ?? "a comic",
               chapterNumber: body.chapterNumber,
               commentId: newComment.id.toString(),
               commentType: "new",

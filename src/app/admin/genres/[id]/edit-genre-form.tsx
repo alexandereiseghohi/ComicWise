@@ -27,7 +27,7 @@ export default async function EditGenreForm({ params }: { params: { id: string }
       revalidatePath("/admin/genres");
       redirect("/admin/genres");
     }
-    throw new Error(result.error || "Failed to update genre");
+    throw new Error(result.error ?? "Failed to update genre");
   }
 
   async function handleDelete() {
@@ -36,7 +36,7 @@ export default async function EditGenreForm({ params }: { params: { id: string }
       revalidatePath("/admin/genres");
       redirect("/admin/genres");
     }
-    throw new Error(result.error || "Failed to delete genre");
+    throw new Error(result.error ?? "Failed to delete genre");
   }
 
   return (

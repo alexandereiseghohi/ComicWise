@@ -57,7 +57,7 @@ export async function downloadImage(options: ImageDownloadOptions): Promise<Imag
     if (!finalFilename) {
       // Extract filename from URL
       const urlParts = new URL(url).pathname.split("/");
-      finalFilename = urlParts[urlParts.length - 1] || `image_${Date.now()}.jpg`;
+      finalFilename = urlParts[urlParts.length - 1] ?? `image_${Date.now()}.jpg`;
     }
 
     // Ensure filename has extension
@@ -129,7 +129,7 @@ export async function downloadImage(options: ImageDownloadOptions): Promise<Imag
     // All retries failed
     return {
       success: false,
-      error: lastError?.message || "Download failed after all retries",
+      error: lastError?.message ?? "Download failed after all retries",
     };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
@@ -232,7 +232,7 @@ export function getImageExtension(url: string, contentType?: string): string {
       "image/gif": ".gif",
       "image/avif": ".avif",
     };
-    return typeMap[contentType] || ".jpg";
+    return typeMap[contentType] ?? ".jpg";
   }
 
   return ".jpg";
@@ -247,7 +247,7 @@ export function getOriginalFilename(url: string): string {
     const urlObj = new URL(url);
     const pathname = urlObj.pathname;
     const filename = path.basename(pathname);
-    return filename || `image-${Date.now()}.jpg`;
+    return filename ?? `image-${Date.now()}.jpg`;
   } catch {
     return `image-${Date.now()}.jpg`;
   }
@@ -288,7 +288,7 @@ export async function downloadImagesWithConcurrency(
         return {
           success: result.success,
           path: result.filePath || outputPath,
-          cached: result.fromCache || false,
+          cached: result.fromCache ?? false,
           error: result.error,
         };
       })

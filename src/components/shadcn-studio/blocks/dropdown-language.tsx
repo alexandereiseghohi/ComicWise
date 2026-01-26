@@ -23,7 +23,7 @@ const LanguageDropdown = ({ defaultOpen, align, trigger }: Props) => {
   return (
     <DropdownMenu defaultOpen={defaultOpen}>
       <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
-      <DropdownMenuContent className="w-50" align={align || "end"}>
+      <DropdownMenuContent className="w-50" align={align ?? "end"}>
         <DropdownMenuRadioGroup value={language} onValueChange={setLanguage}>
           <DropdownMenuRadioItem
             value="english"

@@ -83,7 +83,7 @@ export async function registerWorkflow(formData: FormData): Promise<ActionRespon
     return { success: true, data: { userId: newUser.id } };
   } catch (error_) {
     if (error_ instanceof z.ZodError) {
-      return error(error_.issues?.[0]?.message || "Validation error");
+      return error(error_.issues?.[0]?.message ?? "Validation error");
     }
     console.error("Registration error:", error_);
     return error("Failed to register user");
@@ -134,12 +134,12 @@ export async function forgotPasswordWorkflow(formData: FormData): Promise<Action
     });
 
     // Send reset email
-    await sendPasswordResetEmail(data.email, existingUser.name || "User", token);
+    await sendPasswordResetEmail(data.email, existingUser.name ?? "User", token);
 
     return { success: true };
   } catch (error_) {
     if (error_ instanceof z.ZodError) {
-      return error(error_.issues?.[0]?.message || "Validation error");
+      return error(error_.issues?.[0]?.message ?? "Validation error");
     }
     console.error("Forgot password error:", error_);
     return error("Failed to process request");
@@ -173,7 +173,7 @@ export async function resetPasswordWorkflow(formData: FormData): Promise<ActionR
     return { success: true };
   } catch (error_) {
     if (error_ instanceof z.ZodError) {
-      return error(error_.issues?.[0]?.message || "Validation error");
+      return error(error_.issues?.[0]?.message ?? "Validation error");
     }
     console.error("Reset password error:", error_);
     return error("Failed to reset password");
@@ -210,12 +210,12 @@ export async function verifyEmailWorkflow(formData: FormData): Promise<ActionRes
     await database.delete(verificationToken).where(eq(verificationToken.token, data.token));
 
     // Send welcome email
-    await sendWelcomeEmail(existingUser.email, existingUser.name || "User");
+    await sendWelcomeEmail(existingUser.email, existingUser.name ?? "User");
 
     return { success: true };
   } catch (error_) {
     if (error_ instanceof z.ZodError) {
-      return error(error_.issues?.[0]?.message || "Validation error");
+      return error(error_.issues?.[0]?.message ?? "Validation error");
     }
     console.error("Verify email error:", error_);
     return error("Failed to verify email");
@@ -264,7 +264,7 @@ export async function resendVerificationEmail(email: string): Promise<ActionResp
       expires,
     });
 
-    await sendVerificationEmail(email, existingUser.name || "User", token);
+    await sendVerificationEmail(email, existingUser.name ?? "User", token);
 
     return { success: true };
   } catch (error_) {

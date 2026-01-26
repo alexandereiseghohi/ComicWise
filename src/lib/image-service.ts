@@ -126,7 +126,7 @@ async function processImage(
     width,
     height,
     format,
-    quality = IMAGE_CONFIG.quality[format || "webp"],
+    quality = IMAGE_CONFIG.quality[format ?? "webp"],
     fit = "cover",
   } = options;
 
@@ -244,8 +244,8 @@ export async function uploadImage(
   const result: ImageUploadResult = {
     originalUrl: `/uploads/${folder}/${originalFilename}`,
     metadata: {
-      width: metadata.width || 0,
-      height: metadata.height || 0,
+      width: metadata.width ?? 0,
+      height: metadata.height ?? 0,
       format: metadata.format,
       size: buffer.length,
       hash,

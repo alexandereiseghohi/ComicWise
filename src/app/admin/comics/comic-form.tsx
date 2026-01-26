@@ -42,7 +42,7 @@ async function handleCreate(formData: FormData) {
   }
 
   // On failure throw so framework surfaces error (could be improved)
-  throw new Error(result.error || "Failed to create comic");
+  throw new Error(result.error ?? "Failed to create comic");
 }
 
 export default function ComicForm() {

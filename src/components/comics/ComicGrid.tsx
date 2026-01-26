@@ -8,6 +8,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { normalizeImagePath } from "@/lib/image-path";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -66,8 +67,8 @@ export function ComicGrid({ comics, isLoading }: ComicGridProps) {
               {comic.image && (
                 <div className="relative aspect-3/4 overflow-hidden bg-muted">
                   <Image
-                    src={comic.image}
-                    alt={comic.title || "Comic"}
+                    src={normalizeImagePath(comic.image) ?? comic.image}
+                    alt={comic.title ?? "Comic"}
                     fill
                     className="object-cover transition-transform group-hover:scale-105"
                   />

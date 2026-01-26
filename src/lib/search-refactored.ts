@@ -220,7 +220,7 @@ function addTextSearchCondition(
 ): void {
   if (!searchText) return;
 
-  const tsquery = buildSearchQuery(searchText, searchMode || "websearch");
+  const tsquery = buildSearchQuery(searchText, searchMode ?? "websearch");
   conditions.textSearch.push(
     or(
       sql`${comic.searchVector}  to_tsquery('english', ${tsquery})`,
@@ -413,17 +413,17 @@ function applySorting(
 function enrichSearchResult(result: unknown, genresMap: Record<number, string[]>): SearchResult {
   const r = result as any;
   return {
-    id: Number(r.id) || 0,
-    title: (r.title as string) || "",
-    description: (r.description as string) || "",
-    coverImage: (r.coverImage as string) || "",
-    status: (r.status as string) || "",
-    rating: (r.rating as string) || "",
-    views: typeof r.views === "number" ? r.views : Number(r.views) || 0,
+    id: isNaN(Number(r.id)) ? 0 : Number(r.id),
+    title: r.title ?? "",
+    description: r.description ?? "",
+    coverImage: r.coverImage ?? "",
+    status: r.status ?? "",
+    rating: r.rating ?? "",
+    views: typeof r.views === "number" ? r.views : isNaN(Number(r.views)) ? 0 : Number(r.views),
     authorName: (r.authorName as string | null) || null,
     artistName: (r.artistName as string | null) || null,
     typeName: (r.typeName as string | null) || null,
-    genres: genresMap[Number(r.id)] || [],
+    genres: genresMap[isNaN(Number(r.id)) ? 0 : Number(r.id)] || [],
     relevanceScore: (r.relevanceScore as number) || undefined,
     publicationDate: parseDate(r.publicationDate),
     createdAt: parseDate(r.createdAt),
@@ -474,7 +474,7 @@ async function getSearchTotalCount(conditions: unknown[]): Promise<number> {
   }
 
   const result = await countQuery;
-  return result[0]?.count || 0;
+  return result[0]?.count ?? 0;
 }
 
 async function getComicGenres(comicIds: number[]): Promise<Record<number, string[]>> {

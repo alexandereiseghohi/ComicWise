@@ -6,6 +6,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useImageUpload } from "@/hooks/use-image-upload";
+import { normalizeImagePath } from "@/lib/image-path";
 import { Loader2, Upload, X } from "lucide-react";
 import Image from "next/image";
 import { cn } from "utils";
@@ -61,7 +62,7 @@ export function ImageUpload({
           `}
         >
           <Image
-            src={value}
+            src={normalizeImagePath(value) ?? value}
             alt="Uploaded image"
             fill
             className="object-cover"

@@ -39,7 +39,7 @@ export async function createArtist(formData: FormData): Promise<ActionResult<{ i
     return { success: true, data: { id: artist.id } };
   } catch (error_) {
     if (error_ instanceof z.ZodError) {
-      return error(error_.issues[0]?.message || "Validation error");
+      return error(error_.issues[0]?.message ?? "Validation error");
     }
     console.error("Create artist error:", error_);
     return error("Failed to create artist");
@@ -64,7 +64,7 @@ export async function updateArtist(
     return { success: true };
   } catch (error_) {
     if (error_ instanceof z.ZodError) {
-      return error(error_.issues[0]?.message || "Validation error");
+      return error(error_.issues[0]?.message ?? "Validation error");
     }
     console.error("Update artist error:", error_);
     return error("Failed to update artist");

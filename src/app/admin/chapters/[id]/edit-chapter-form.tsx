@@ -43,7 +43,7 @@ export default async function EditChapterForm({ params }: { params: { id: string
       redirect("/admin/chapters");
     }
 
-    throw new Error(result.error || "Failed to update chapter");
+    throw new Error(result.error ?? "Failed to update chapter");
   }
 
   async function handleDelete() {
@@ -52,7 +52,7 @@ export default async function EditChapterForm({ params }: { params: { id: string
       revalidatePath("/admin/chapters");
       redirect("/admin/chapters");
     }
-    throw new Error(result.error || "Failed to delete chapter");
+    throw new Error(result.error ?? "Failed to delete chapter");
   }
 
   return (

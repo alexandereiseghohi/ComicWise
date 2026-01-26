@@ -143,7 +143,7 @@ export const chapterSeedSchema = z
   .passthrough()
   .transform((data) => {
     // Extract chapter number from name if not explicitly set
-    let chapterNumber = data.chapterNumber || 0;
+    let chapterNumber = data.chapterNumber ?? 0;
 
     if (!chapterNumber && data.name) {
       const match = data.name.match(/chapter\s+(\d+\.?\d*)/i);
@@ -153,7 +153,7 @@ export const chapterSeedSchema = z
     return {
       ...data,
       chapterNumber,
-      title: data.title || data.name || "Unknown Chapter",
+      title: (data.title || data.name) ?? "Unknown Chapter",
       images: data.images || [],
       comic: data.comic, // Make it optional
     };

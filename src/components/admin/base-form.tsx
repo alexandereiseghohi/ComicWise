@@ -191,7 +191,7 @@ export function BaseForm<T extends z.ZodType<any, any, any>>({
                     disabled={field.disabled}
                     {...formField}
                     value={formField.value as number}
-                    onChange={(e) => formField.onChange(Number.parseFloat(e.target.value) || 0)}
+                    onChange={(e) => formField.onChange(Number.parseFloat(e.target.value) ?? 0)}
                   />
                 </FormControl>
                 {field.description && <FormDescription>{field.description}</FormDescription>}

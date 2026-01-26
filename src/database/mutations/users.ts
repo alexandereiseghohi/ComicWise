@@ -16,7 +16,7 @@ export async function createUser(data: {
       name: data.name,
       password: data.password,
       image: data.image,
-      role: data.role || "user",
+      role: data.role ?? "user",
       createdAt: new Date(),
       updatedAt: new Date(),
     })

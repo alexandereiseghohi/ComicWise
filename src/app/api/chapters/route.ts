@@ -27,8 +27,8 @@ export async function GET(request: NextRequest) {
       search: searchParams.get("search") || undefined,
       page: searchParams.get("page") ? Number.parseInt(searchParams.get("page")!) : 1,
       limit: searchParams.get("limit") ? Number.parseInt(searchParams.get("limit")!) : 12,
-      sortBy: searchParams.get("sortBy") || "chapterNumber",
-      sortOrder: (searchParams.get("sortOrder") as "asc" | "desc") || "asc",
+      sortBy: searchParams.get("sortBy") ?? "chapterNumber",
+      sortOrder: (searchParams.get("sortOrder") as "asc" | "desc") ?? "asc",
     };
 
     const validation = chapterFilterSchema.safeParse(filters);
@@ -109,8 +109,8 @@ export async function POST(request: NextRequest) {
           bookmarkedUsers.map((user) =>
             sendNewChapterNotification({
               to: user.email,
-              userName: user.name || "Reader",
-              comicTitle: body.comicTitle || "Comic",
+              userName: user.name ?? "Reader",
+              comicTitle: body.comicTitle ?? "Comic",
               chapterTitle: newChapter.title,
               chapterNumber: newChapter.chapterNumber,
               chapterUrl: `${env.NEXT_PUBLIC_APP_URL}/comics/${validation.data.comicId}/chapters/${newChapter.id}`,

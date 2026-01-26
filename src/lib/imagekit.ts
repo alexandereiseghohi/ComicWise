@@ -73,7 +73,7 @@ export async function uploadImage(options: UploadOptions): Promise<UploadResult>
     const uploadResponse = await ik.upload({
       file: options.file,
       fileName: options.fileName,
-      folder: options.folder || "/comicwise",
+      folder: options.folder ?? "/comicwise",
       tags: options.tags || [],
       useUniqueFileName: options.useUniqueFileName ?? true,
       // isPrivateFile: options.isPrivateFile ?? false,
@@ -433,7 +433,7 @@ export async function fileToBuffer(file: File): Promise<Buffer> {
 export function generateUniqueFileName(originalName: string, prefix?: string): string {
   const timestamp = Date.now();
   const randomString = Math.random().toString(36).slice(2, 10);
-  const extension = originalName.split(".").pop()?.toLowerCase() || "jpg";
+  const extension = originalName.split(".").pop()?.toLowerCase() ?? "jpg";
   const baseName = originalName
     .split(".")
     .slice(0, -1)
@@ -507,7 +507,7 @@ export async function uploadOptimizedImage(
     const uploadResponse = await ik.upload({
       file,
       fileName,
-      folder: folder || "/comicwise",
+      folder: folder ?? "/comicwise",
       useUniqueFileName: true,
       // transformation: {
       //   pre: transformations.join(","),

@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { normalizeImagePath } from "@/lib/image-path";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from "lucide-react";
 import Image from "next/image";
@@ -129,7 +130,11 @@ export function ImageGallery({
             </div>
           )}
           <Image
-            src={currentImage?.imageUrl || "/placeholder-page.png"}
+            src={
+              normalizeImagePath(currentImage?.imageUrl) ??
+              currentImage?.imageUrl ??
+              "/placeholder-page.png"
+            }
             alt={`Page ${currentPage + 1}`}
             width={1200}
             height={1800}
@@ -219,7 +224,7 @@ export function ImageGallery({
                 )}
               >
                 <Image
-                  src={image.imageUrl}
+                  src={normalizeImagePath(image.imageUrl) ?? image.imageUrl}
                   alt={`Page ${index + 1}`}
                   fill
                   className="object-cover"

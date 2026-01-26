@@ -33,7 +33,7 @@ export function ComicsListContent({ initialComics, hasNextPage, nextCursor }: Co
 
   const [comics, setComics] = useState(initialComics);
   const [isLoading, setIsLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("q") ?? "");
   const [currentPage, setCurrentPage] = useState(1);
   const [canGoNext] = useState(hasNextPage);
   const [canGoPrevious, setCanGoPrevious] = useState(false);
@@ -52,7 +52,7 @@ export function ComicsListContent({ initialComics, hasNextPage, nextCursor }: Co
         } else {
           toast({
             title: "Error",
-            description: result.error || "Failed to delete comic",
+            description: result.error ?? "Failed to delete comic",
             variant: "destructive",
           });
         }
@@ -83,7 +83,7 @@ export function ComicsListContent({ initialComics, hasNextPage, nextCursor }: Co
         } else {
           toast({
             title: "Error",
-            description: result.error || "Failed to delete comics",
+            description: result.error ?? "Failed to delete comics",
             variant: "destructive",
           });
         }

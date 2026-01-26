@@ -35,8 +35,8 @@ export async function GET(request: NextRequest) {
       genreIds: searchParams.get("genreIds")?.split(",").map(Number) || undefined,
       page: searchParams.get("page") ? Number.parseInt(searchParams.get("page")!) : 1,
       limit: searchParams.get("limit") ? Number.parseInt(searchParams.get("limit")!) : 12,
-      sortBy: searchParams.get("sortBy") || "latest",
-      sortOrder: (searchParams.get("sortOrder") as "asc" | "desc") || "desc",
+      sortBy: searchParams.get("sortBy") ?? "latest",
+      sortOrder: (searchParams.get("sortOrder") as "asc" | "desc") ?? "desc",
     };
 
     // Validate filters

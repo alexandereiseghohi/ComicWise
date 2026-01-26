@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { normalizeImagePath } from "@/lib/image-path";
 import { useBookmarkStore, useReaderStore } from "@/stores";
 import { ChevronLeft, ChevronRight, Home, List, Maximize, Minimize } from "lucide-react";
 import Image from "next/image";
@@ -194,7 +195,7 @@ export function ChapterReader({ chapter, comic, images, prevChapter, nextChapter
             {isLoading && <Skeleton className="absolute inset-0 bg-gray-800" />}
             {currentImage && (
               <Image
-                src={currentImage.imageUrl}
+                src={normalizeImagePath(currentImage.imageUrl) ?? currentImage.imageUrl}
                 alt={`Page ${currentPage}`}
                 width={1200}
                 height={1800}
@@ -258,7 +259,7 @@ export function ChapterReader({ chapter, comic, images, prevChapter, nextChapter
                 `}
               >
                 <Image
-                  src={image.imageUrl}
+                  src={normalizeImagePath(image.imageUrl) ?? image.imageUrl}
                   alt={`Page ${index + 1}`}
                   fill
                   className="object-cover"

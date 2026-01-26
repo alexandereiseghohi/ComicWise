@@ -36,7 +36,7 @@ export default async function EditUserForm({ params }: { params: { id: string } 
       revalidatePath(`/admin/users/${id}`);
       redirect("/admin/users");
     }
-    throw new Error(result.error || "Failed to update user");
+    throw new Error(result.error ?? "Failed to update user");
   }
 
   async function handleDelete() {
@@ -45,7 +45,7 @@ export default async function EditUserForm({ params }: { params: { id: string } 
       revalidatePath("/admin/users");
       redirect("/admin/users");
     }
-    throw new Error(result.error || "Failed to delete user");
+    throw new Error(result.error ?? "Failed to delete user");
   }
 
   return (

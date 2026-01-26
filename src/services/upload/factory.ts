@@ -51,7 +51,7 @@ export async function getUploadProvider(): Promise<UploadProvider> {
  */
 export async function getConfiguredProvider(): Promise<UploadProviderType> {
   const { env } = await import("appConfig");
-  return (env.UPLOAD_PROVIDER || "local") as UploadProviderType;
+  return (env.UPLOAD_PROVIDER ?? "local") as UploadProviderType;
 }
 
 /**

@@ -72,7 +72,7 @@ export const columns: ColumnDef<User>[] = [
         if (result.success) {
           toast.success("User deleted successfully");
         } else {
-          toast.error(result.error || "Failed to delete user");
+          toast.error(result.error ?? "Failed to delete user");
         }
       };
 

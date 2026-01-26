@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { normalizeImagePath } from "@/lib/image-path";
 import { BookOpen, Calendar, Eye, Palette, Star, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -61,7 +62,7 @@ export function ComicDetails({
           <Card className="overflow-hidden">
             <div className="relative aspect-2/3">
               <Image
-                src={comic.coverImage}
+                src={normalizeImagePath(comic.coverImage) ?? comic.coverImage}
                 alt={comic.title}
                 fill
                 className="object-cover"
@@ -92,7 +93,7 @@ export function ComicDetails({
             <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Star className="size-4 fill-yellow-400 text-yellow-400" />
-                <span>{comic.rating || "N/A"}</span>
+                <span>{comic.rating ?? "N/A"}</span>
               </div>
               <div className="flex items-center gap-1">
                 <Eye className="size-4" />

@@ -181,9 +181,9 @@ export class ReadingProgressService {
             id: item.id,
             chapterId: item.chapterId,
             comicId: item.comicId,
-            comicTitle: item.comicTitle || "Unknown",
-            chapterTitle: item.chapterTitle || "Unknown",
-            chapterNumber: item.chapterNumber || 0,
+            comicTitle: item.comicTitle ?? "Unknown",
+            chapterTitle: item.chapterTitle ?? "Unknown",
+            chapterNumber: item.chapterNumber ?? 0,
             pageNumber: item.pageNumber,
             progressPercent: item.progressPercent,
             lastReadAt: item.lastReadAt,
@@ -325,11 +325,11 @@ export class ReadingProgressService {
         .where(eq(readingProgress.userId, userId));
 
       return {
-        totalComics: stats[0]?.totalComics || 0,
-        totalChapters: stats[0]?.totalChapters || 0,
-        completedChapters: stats[0]?.completedChapters || 0,
-        totalPages: stats[0]?.totalPages || 0,
-        pagesRead: stats[0]?.pagesRead || 0,
+        totalComics: stats[0]?.totalComics ?? 0,
+        totalChapters: stats[0]?.totalChapters ?? 0,
+        completedChapters: stats[0]?.completedChapters ?? 0,
+        totalPages: stats[0]?.totalPages ?? 0,
+        pagesRead: stats[0]?.pagesRead ?? 0,
       };
     } catch (error) {
       console.error("Failed to get reading stats:", error);

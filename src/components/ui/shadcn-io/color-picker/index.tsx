@@ -69,15 +69,15 @@ export const ColorPicker = ({
   const selectedColor = Color(value);
   const defaultColor = Color(defaultValue);
 
-  const [hue, setHue] = useState(selectedColor.hue() || defaultColor.hue() || 0);
+  const [hue, setHue] = useState((selectedColor.hue() || defaultColor.hue()) ?? 0);
   const [saturation, setSaturation] = useState(
-    selectedColor.saturationl() || defaultColor.saturationl() || 100
+    (selectedColor.saturationl() || defaultColor.saturationl()) ?? 100
   );
   const [lightness, setLightness] = useState(
-    selectedColor.lightness() || defaultColor.lightness() || 50
+    (selectedColor.lightness() || defaultColor.lightness()) ?? 50
   );
 
-  const [alpha, setAlpha] = useState((selectedColor.alpha() || defaultColor.alpha() || 1) * 100);
+  const [alpha, setAlpha] = useState(((selectedColor.alpha() || defaultColor.alpha()) ?? 1) * 100);
   const [mode, setMode] = useState("hex");
 
   // Update color when controlled value changes

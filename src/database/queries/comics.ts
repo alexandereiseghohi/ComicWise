@@ -137,7 +137,7 @@ export async function getAllComics(
   }
 
   const totalResult = await totalQuery;
-  const total = Number(totalResult[0]?.count || 0);
+  const total = Number(totalResult[0]?.count ?? 0);
 
   return {
     data: results as unknown as ComicWithDetails[],

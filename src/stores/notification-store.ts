@@ -75,7 +75,7 @@ export const useNotificationStore = create<NotificationState>()(
           id: `toast-${Date.now()}-${Math.random()}`,
           timestamp: new Date(),
           read: true,
-          duration: toast.duration || 3000,
+          duration: toast.duration ?? 3000,
         };
 
         set((state) => ({

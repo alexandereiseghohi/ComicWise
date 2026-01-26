@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useImageUpload } from "@/hooks/use-image-upload";
+import { normalizeImagePath } from "@/lib/image-path";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -70,7 +71,7 @@ export default function NewArtistPage() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to create artist");
+        throw new Error(error.error ?? "Failed to create artist");
       }
 
       toast.success("Artist created successfully");
@@ -170,7 +171,7 @@ export default function NewArtistPage() {
                             `}
                           >
                             <Image
-                              src={profileImage}
+                              src={normalizeImagePath(profileImage) ?? profileImage}
                               alt="Profile preview"
                               fill
                               className="object-cover"

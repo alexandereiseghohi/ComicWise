@@ -130,7 +130,7 @@ export function extractFilenameFromUrl(imageUrl: string): string {
   try {
     const url = new URL(imageUrl);
     const pathname = url.pathname;
-    return path.basename(pathname) || "image.webp";
+    return path.basename(pathname) ?? "image.webp";
   } catch {
     return "image.webp";
   }

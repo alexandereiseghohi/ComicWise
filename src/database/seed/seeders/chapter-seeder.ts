@@ -104,7 +104,7 @@ function transformChapterData(
     }
 
     // Extract chapter number from name (e.g., "Chapter 273" -> 273)
-    const chapterName = rawChapter.name || rawChapter.chaptername || "";
+    const chapterName = (rawChapter.name || rawChapter.chaptername) ?? "";
     const chapterMatch = chapterName.match(/\d+/);
     const chapterNumber = chapterMatch ? Number.parseInt(chapterMatch[0]) : Number.NaN;
 
@@ -114,12 +114,11 @@ function transformChapterData(
 
     // Extract title
     const title =
-      rawChapter.title || rawChapter.chaptertitle || chapterName || `Chapter ${chapterNumber}`;
+      (rawChapter.title || rawChapter.chaptertitle || chapterName) ?? `Chapter ${chapterNumber}`;
 
     // Generate slug if not provided
     const slug =
-      rawChapter.slug ||
-      rawChapter.chapterslug ||
+      (rawChapter.slug || rawChapter.chapterslug) ??
       `${comicSlug}-chapter-${chapterNumber}`.toLowerCase().replaceAll(/\s+/g, "-");
 
     return {
@@ -128,8 +127,8 @@ function transformChapterData(
       title,
       slug,
       content: rawChapter.content,
-      views: rawChapter.views || 0,
-      status: rawChapter.status || "Published",
+      views: rawChapter.views ?? 0,
+      status: rawChapter.status ?? "Published",
       createdAt: rawChapter.createdAt,
       publishedAt: rawChapter.publishedAt,
       releaseDate: rawChapter.releaseDate,

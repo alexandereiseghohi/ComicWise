@@ -36,7 +36,7 @@ export function Filters({ types, genres }: FiltersProps) {
   const [selectedStatus, setSelectedStatus] = useState<string | null>(
     searchParams.get("status") || null
   );
-  const [sortBy, setSortBy] = useState<string>(searchParams.get("sort") || "latest");
+  const [sortBy, setSortBy] = useState<string>(searchParams.get("sort") ?? "latest");
   const [isOpen, setIsOpen] = useState(false);
 
   const statuses = ["Ongoing", "Completed", "Hiatus", "Dropped", "Coming Soon"];

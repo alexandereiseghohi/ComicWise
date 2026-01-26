@@ -8,8 +8,8 @@ import { env } from "@/appConfig";
 import { Redis } from "@upstash/redis";
 
 const redis = new Redis({
-  url: env.UPSTASH_REDIS_REST_URL || "",
-  token: env.UPSTASH_REDIS_REST_TOKEN || "",
+  url: env.UPSTASH_REDIS_REST_URL ?? "",
+  token: env.UPSTASH_REDIS_REST_TOKEN ?? "",
 });
 
 export interface RateLimitConfig {
@@ -45,7 +45,7 @@ export class RateLimiter {
       const timestampKey = `${key}:timestamp`;
 
       // Get current count and first timestamp
-      const currentCount = (await redis.get<number>(countKey)) || 0;
+      const currentCount = (await redis.get<number>(countKey)) ?? 0;
       const firstTimestamp = (await redis.get<number>(timestampKey)) || now;
 
       // Check if window has expired
@@ -180,7 +180,7 @@ export function getRateLimitIdentifier(request: Request, userId?: string): strin
 
   // Get IP from headers
   const ip =
-    request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "unknown";
+    (request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip")) ?? "unknown";
 
   return `ip:${ip}`;
 }

@@ -32,19 +32,19 @@ export default function ProfileEditPage() {
   } = useForm<ProfileUpdate>({
     resolver: zodResolver(ProfileUpdateSchema),
     defaultValues: {
-      name: session.user?.name || "",
-      email: session.user?.email || "",
+      name: session.user?.name ?? "",
+      email: session.user?.email ?? "",
     },
   });
 
   const onSubmit = async (data: ProfileUpdate) => {
     setLoading(true);
     try {
-      const result = await updateProfileAction(session.user?.id || "", data);
+      const result = await updateProfileAction(session.user?.id ?? "", data);
       if (result.success) {
         setMessage({ type: "success", text: "Profile updated successfully" });
       } else {
-        setMessage({ type: "error", text: result.error || "Update failed" });
+        setMessage({ type: "error", text: result.error ?? "Update failed" });
       }
     } catch {
       setMessage({ type: "error", text: "An error occurred" });

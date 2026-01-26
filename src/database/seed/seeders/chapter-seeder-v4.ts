@@ -250,13 +250,13 @@ async function seedChapter(chapterData: ChapterSeedData): Promise<{
     }
 
     // Use the slug for directory structure (fallback to generated slug if needed)
-    const dirSlug = comicSlug || `comic-${comicId}`;
+    const dirSlug = comicSlug ?? `comic-${comicId}`;
 
     // Generate chapter slug
     const chapterSlug =
       chapterData.slug ||
       chapterData.chapterslug ||
-      generateChapterSlug(chapterData.name || "untitled", dirSlug);
+      generateChapterSlug(chapterData.name ?? "untitled", dirSlug);
 
     // Download images
     const imageResults = await downloadChapterImages(chapterData, dirSlug, chapterSlug);
@@ -278,7 +278,7 @@ async function seedChapter(chapterData: ChapterSeedData): Promise<{
     const chapterRecord = {
       comicId,
       name: chapterData.name,
-      title: chapterData.title || "",
+      title: chapterData.title ?? "",
       slug: chapterSlug,
       chapterNumber,
       releaseDate,
@@ -301,7 +301,7 @@ async function seedChapter(chapterData: ChapterSeedData): Promise<{
           .values(chapterRecord)
           .returning({ id: chapter.id });
 
-        chapterId = created?.id || 0;
+        chapterId = created?.id ?? 0;
         if (chapterId === 0) {
           throw new Error(`No record returned from insert`);
         }

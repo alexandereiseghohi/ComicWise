@@ -11,6 +11,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { db } from "@/database";
 import { author, comic, comicToGenre, genre, type } from "@/database/schema";
+import { normalizeImagePath } from "@/lib/image-path";
 import { and, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
 import { Search } from "lucide-react";
 import Image from "next/image";
@@ -129,7 +130,7 @@ function ComicCard({ comic }: { comic: any }) {
         <div className="relative h-32 w-24 shrink-0 overflow-hidden">
           {comic.coverImage ? (
             <Image
-              src={comic.coverImage}
+              src={normalizeImagePath(comic.coverImage) ?? comic.coverImage}
               alt={comic.title}
               fill
               className="object-cover transition-transform group-hover:scale-105"
@@ -157,8 +158,8 @@ function ComicCard({ comic }: { comic: any }) {
             {comic.description}
           </p>
           <div className="flex gap-3 text-xs text-muted-foreground">
-            <span>⭐ {comic.rating || "N/A"}</span>
-            <span>👁 {comic.views?.toLocaleString() || 0}</span>
+            <span>⭐ {comic.rating ?? "N/A"}</span>
+            <span>👁 {comic.views?.toLocaleString() ?? 0}</span>
           </div>
         </div>
       </Card>
@@ -219,7 +220,7 @@ export default async function SearchPage({
 
         {/* Filters */}
         <div className="grid gap-4 md:grid-cols-3">
-          <Select name="genre" defaultValue={params.genre || "all"}>
+          <Select name="genre" defaultValue={params.genre ?? "all"}>
             <SelectTrigger>
               <SelectValue placeholder="All Genres" />
             </SelectTrigger>
@@ -233,7 +234,7 @@ export default async function SearchPage({
             </SelectContent>
           </Select>
 
-          <Select name="type" defaultValue={params.type || "all"}>
+          <Select name="type" defaultValue={params.type ?? "all"}>
             <SelectTrigger>
               <SelectValue placeholder="All Types" />
             </SelectTrigger>
@@ -247,7 +248,7 @@ export default async function SearchPage({
             </SelectContent>
           </Select>
 
-          <Select name="status" defaultValue={params.status || "all"}>
+          <Select name="status" defaultValue={params.status ?? "all"}>
             <SelectTrigger>
               <SelectValue placeholder="All Statuses" />
             </SelectTrigger>

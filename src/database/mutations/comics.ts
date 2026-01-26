@@ -33,7 +33,7 @@ export async function createComic(data: CreateComicData): Promise<typeof comic.$
     .values({
       ...comicData,
       slug,
-      status: comicData.status || "Ongoing",
+      status: comicData.status ?? "Ongoing",
       rating: "0",
       views: 0,
     })

@@ -31,7 +31,7 @@ const ProfileDropdown = ({ trigger, defaultOpen, align = "end" }: Props) => {
   return (
     <DropdownMenu defaultOpen={defaultOpen}>
       <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
-      <DropdownMenuContent className="w-80" align={align || "end"}>
+      <DropdownMenuContent className="w-80" align={align ?? "end"}>
         <DropdownMenuLabel className={`flex items-center gap-4 px-4 py-2.5 font-normal`}>
           <div className="relative">
             <Avatar className="size-10">

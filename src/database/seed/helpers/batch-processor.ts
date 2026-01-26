@@ -20,8 +20,8 @@ export class BatchProcessor<T, R = T> {
   private onError?: (error: Error, item: T) => void | Promise<void>;
 
   constructor(options: BatchProcessorOptions<T, R> = {}) {
-    this.batchSize = options.batchSize || 10;
-    this.concurrency = options.concurrency || 5;
+    this.batchSize = options.batchSize ?? 10;
+    this.concurrency = options.concurrency ?? 5;
     this.onBatchComplete = options.onBatchComplete;
     this.onError = options.onError;
   }

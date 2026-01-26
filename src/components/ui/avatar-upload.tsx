@@ -6,6 +6,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { normalizeImagePath } from "@/lib/image-path";
 import { cn } from "@/lib/utils";
 import { Upload, User, X } from "lucide-react";
 import Image from "next/image";
@@ -131,7 +132,7 @@ export function AvatarUpload({
         >
           {displayImage ? (
             <Image
-              src={displayImage}
+              src={normalizeImagePath(displayImage) ?? displayImage}
               alt="Profile avatar"
               fill
               className="object-cover"

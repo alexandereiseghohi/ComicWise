@@ -130,14 +130,14 @@ export function getPublicIdFromUrl(url: string): string {
   // For local uploads: /uploads/folder/filename.ext
   if (url.includes("/uploads/")) {
     const parts = url.split("/uploads/");
-    return parts[1] || "";
+    return parts[1] ?? "";
   }
 
   // For CDN URLs, extract the last path segment
   try {
     const urlObject = new URL(url);
     const pathSegments = urlObject.pathname.split("/").filter((s) => s);
-    return pathSegments[pathSegments.length - 1] || "";
+    return pathSegments[pathSegments.length - 1] ?? "";
   } catch {
     // If not a valid URL, return the last segment
     return url.split("/").pop() || url;

@@ -32,7 +32,7 @@ export default function ProfilePage() {
             <div className="space-y-4">
               <div>
                 <label className="text-sm font-medium">Name</label>
-                <p className="text-lg">{user?.name || "Not set"}</p>
+                <p className="text-lg">{user?.name ?? "Not set"}</p>
               </div>
               <div>
                 <label className="text-sm font-medium">Email</label>

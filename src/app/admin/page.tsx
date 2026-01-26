@@ -71,23 +71,23 @@ async function StatsGrid() {
     db
       .select({ count: sql<number>`count(*)::int` })
       .from(user)
-      .then((r) => r[0]?.count || 0),
+      .then((r) => r[0]?.count ?? 0),
     db
       .select({ count: sql<number>`count(*)::int` })
       .from(comic)
-      .then((r) => r[0]?.count || 0),
+      .then((r) => r[0]?.count ?? 0),
     db
       .select({ count: sql<number>`count(*)::int` })
       .from(chapter)
-      .then((r) => r[0]?.count || 0),
+      .then((r) => r[0]?.count ?? 0),
     db
       .select({ count: sql<number>`count(*)::int` })
       .from(bookmark)
-      .then((r) => r[0]?.count || 0),
+      .then((r) => r[0]?.count ?? 0),
     db
       .select({ total: sql<number>`sum(views)::int` })
       .from(comic)
-      .then((r) => r[0]?.total || 0),
+      .then((r) => r[0]?.total ?? 0),
   ]);
 
   const stats = [
@@ -341,7 +341,7 @@ async function RecentComments() {
               `}
             >
               <div className="flex-1">
-                <div className="text-sm font-medium">{cm.userName || "Anonymous"}</div>
+                <div className="text-sm font-medium">{cm.userName ?? "Anonymous"}</div>
                 <p className="line-clamp-2 text-xs text-muted-foreground">{cm.content}</p>
               </div>
               <div className="text-xs text-muted-foreground">

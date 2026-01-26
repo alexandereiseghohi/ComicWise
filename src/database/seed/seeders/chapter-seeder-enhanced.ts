@@ -150,7 +150,7 @@ async function upsertChapter(
           chapterNumber: data.chapterNumber,
           comicId: comicRecord.id,
           releaseDate,
-          views: data.views || 0,
+          views: data.views ?? 0,
         })
         .returning();
 

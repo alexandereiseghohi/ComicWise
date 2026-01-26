@@ -8,6 +8,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { normalizeImagePath } from "@/lib/image-path";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -77,8 +78,8 @@ export function BookmarkList({ bookmarks, isLoading }: BookmarkListProps) {
                   <div className="shrink-0">
                     <div className="relative aspect-3/4 w-20 overflow-hidden rounded-sm">
                       <Image
-                        src={bookmark.comic.image}
-                        alt={bookmark.comic.title || "Comic"}
+                        src={normalizeImagePath(bookmark.comic.image) ?? bookmark.comic.image}
+                        alt={bookmark.comic.title ?? "Comic"}
                         fill
                         className="object-cover"
                       />
@@ -93,7 +94,7 @@ export function BookmarkList({ bookmarks, isLoading }: BookmarkListProps) {
                     {bookmark.comic?.description}
                   </p>
                   <div className="flex items-center gap-2">
-                    <Badge className={statusStyles[bookmark.status || "reading"]}>
+                    <Badge className={statusStyles[bookmark.status ?? "reading"]}>
                       {bookmark.status?.replaceAll("_", " ").toUpperCase()}
                     </Badge>
                     {bookmark.comic?.rating && (

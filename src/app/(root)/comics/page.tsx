@@ -37,6 +37,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { normalizeImagePath } from "@/lib/image-path";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, Star } from "lucide-react";
 import Image from "next/image";
@@ -102,15 +103,15 @@ async function fetchComics(
  */
 function ComicsGallery() {
   const searchParams = useSearchParams();
-  const page = Number(searchParams.get("page")) || 1;
-  const sort = searchParams.get("sort") || "newest";
+  const page = Number(searchParams.get("page")) ?? 1;
+  const sort = searchParams.get("sort") ?? "newest";
   const genre = searchParams.get("genre");
   const status = searchParams.get("status");
   const search = searchParams.get("search");
 
-  const [selectedGenre, setSelectedGenre] = useState(genre || "");
-  const [selectedStatus, setSelectedStatus] = useState(status || "");
-  const [searchQuery, setSearchQuery] = useState(search || "");
+  const [selectedGenre, setSelectedGenre] = useState(genre ?? "");
+  const [selectedStatus, setSelectedStatus] = useState(status ?? "");
+  const [searchQuery, setSearchQuery] = useState(search ?? "");
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["comics", page, sort, selectedGenre, selectedStatus, searchQuery],
@@ -234,7 +235,7 @@ function ComicsGallery() {
                   <div className="relative h-48 w-full bg-gray-200">
                     {comic.coverImage ? (
                       <Image
-                        src={comic.coverImage}
+                        src={normalizeImagePath(comic.coverImage) ?? comic.coverImage}
                         alt={comic.title}
                         fill
                         className="object-cover"

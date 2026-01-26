@@ -186,7 +186,7 @@ const SalesMetricsCard = ({ className }: { className?: string }) => {
                             >
                               <tspan
                                 x={viewBox.cx}
-                                y={(viewBox.cy || 0) - 12}
+                                y={(viewBox.cy ?? 0) - 12}
                                 className={`
                                   fill-card-foreground text-lg font-medium
                                 `}
@@ -195,7 +195,7 @@ const SalesMetricsCard = ({ className }: { className?: string }) => {
                               </tspan>
                               <tspan
                                 x={viewBox.cx}
-                                y={(viewBox.cy || 0) + 19}
+                                y={(viewBox.cy ?? 0) + 19}
                                 className="fill-muted-foreground text-sm"
                               >
                                 Total Profit

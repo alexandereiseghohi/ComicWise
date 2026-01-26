@@ -74,7 +74,7 @@ export async function createAuthor(input: unknown): Promise<ActionResult<{ id: n
     };
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const message = error.issues[0]?.message || "Validation failed";
+      const message = error.issues[0]?.message ?? "Validation failed";
       return {
         success: false,
         error: message,
@@ -143,7 +143,7 @@ export async function updateAuthor(
     };
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const message = error.issues[0]?.message || "Validation failed";
+      const message = error.issues[0]?.message ?? "Validation failed";
       return {
         success: false,
         error: message,

@@ -49,7 +49,7 @@ interface SeedStats {
 
 export async function runSeed(options: SeedOptions = {}): Promise<SeedStats> {
   const startTime = Date.now();
-  logger.setVerbose(options.verbose || false);
+  logger.setVerbose(options.verbose ?? false);
 
   const stats: SeedStats = {
     users: { created: 0, updated: 0, skipped: 0, errors: 0 },

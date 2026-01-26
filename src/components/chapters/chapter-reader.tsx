@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useBookmarks, useReader } from "@/hooks/use-stores";
+import { normalizeImagePath } from "@/lib/image-path";
 import { ChevronLeft, ChevronRight, Home, List, Maximize2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -123,7 +124,7 @@ export function ChapterReader({
   }, []);
 
   const lightboxSlides = images.map((image) => ({
-    src: image.imageUrl,
+    src: normalizeImagePath(image.imageUrl) ?? image.imageUrl,
     alt: `Page ${image.pageNumber}`,
     width: 1200,
     height: 1800,
@@ -198,7 +199,7 @@ export function ChapterReader({
                 onClick={() => handleOpenLightbox(index)}
               >
                 <Image
-                  src={image.imageUrl}
+                  src={normalizeImagePath(image.imageUrl) ?? image.imageUrl}
                   alt={`Page ${image.pageNumber}`}
                   width={1200}
                   height={1800}

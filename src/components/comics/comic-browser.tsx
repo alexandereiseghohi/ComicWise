@@ -67,12 +67,12 @@ export function ComicBrowser({ initialComics, types, genres, totalCount }: Comic
   const [isPending, startTransition] = useTransition();
 
   // State management
-  const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
-  const [selectedType, setSelectedType] = useState(searchParams.get("type") || "");
-  const [selectedGenre, setSelectedGenre] = useState(searchParams.get("genre") || "");
-  const [selectedStatus, setSelectedStatus] = useState(searchParams.get("status") || "");
-  const [sortBy, setSortBy] = useState(searchParams.get("sort") || "latest");
-  const [currentPage, setCurrentPage] = useState(Number.parseInt(searchParams.get("page") || "1"));
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("search") ?? "");
+  const [selectedType, setSelectedType] = useState(searchParams.get("type") ?? "");
+  const [selectedGenre, setSelectedGenre] = useState(searchParams.get("genre") ?? "");
+  const [selectedStatus, setSelectedStatus] = useState(searchParams.get("status") ?? "");
+  const [sortBy, setSortBy] = useState(searchParams.get("sort") ?? "latest");
+  const [currentPage, setCurrentPage] = useState(Number.parseInt(searchParams.get("page") ?? "1"));
 
   // Calculate pagination
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);

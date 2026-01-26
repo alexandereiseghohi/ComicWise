@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { normalizeImagePath } from "@/lib/image-path";
 import type { Comic } from "@/types";
 import { Eye, Star } from "lucide-react";
 import Image from "next/image";
@@ -27,7 +28,10 @@ export function ComicCard({ comic, authorName, typeName }: ComicCardProps) {
       >
         <div className="relative aspect-2/3 overflow-hidden">
           <Image
-            src={comic.coverImage || "/placeholder-comic.jpg"}
+            src={
+              normalizeImagePath(comic.coverImage ?? "/placeholder-comic.jpg") ??
+              "/placeholder-comic.jpg"
+            }
             alt={comic.title}
             fill
             className={`

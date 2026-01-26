@@ -134,7 +134,7 @@ export const ImageCrop = ({
 
   useEffect(() => {
     const reader = new FileReader();
-    reader.addEventListener("load", () => setImgSource(reader.result?.toString() || ""));
+    reader.addEventListener("load", () => setImgSource(reader.result?.toString() ?? ""));
     reader.readAsDataURL(file);
   }, [file]);
 

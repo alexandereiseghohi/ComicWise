@@ -167,7 +167,7 @@ async function sendWelcomeEmail(payload: WorkflowPayload) {
   const { recipientEmail, recipientName } = payload;
 
   const result = await emailService.sendWelcomeEmail({
-    name: recipientName || "Comic Reader",
+    name: recipientName ?? "Comic Reader",
     email: recipientEmail,
   });
 
@@ -178,7 +178,7 @@ async function sendVerificationEmail(payload: WorkflowPayload) {
   const { recipientEmail, recipientName, data } = payload;
 
   const result = await emailService.sendVerificationEmail({
-    name: recipientName || "Comic Reader",
+    name: recipientName ?? "Comic Reader",
     email: recipientEmail,
     verificationToken: data["token"] as string,
   });
@@ -190,7 +190,7 @@ async function sendPasswordResetEmail(payload: WorkflowPayload) {
   const { recipientEmail, recipientName, data } = payload;
 
   const result = await emailService.sendPasswordResetEmail({
-    name: recipientName || "Comic Reader",
+    name: recipientName ?? "Comic Reader",
     email: recipientEmail,
     resetToken: data["token"] as string,
     ipAddress: data["ipAddress"] as string | undefined,
@@ -208,7 +208,7 @@ export async function sendNewComicNotification(payload: WorkflowPayload) {
     subject: `New Comic: ${data["comicTitle"]}`,
     html: `
       <h1>New Comic Available!</h1>
-      <p>Hi ${recipientName || "there"},</p>
+      <p>Hi ${recipientName ?? "there"},</p>
       <p>A new comic has been added to ComicWise:</p>
       <h2>${data["comicTitle"]}</h2>
       <p>${data["comicDescription"]}</p>
@@ -225,11 +225,11 @@ async function sendNewChapterNotification(payload: WorkflowPayload) {
   const { recipientEmail, recipientName, data } = payload;
 
   const result = await emailService.sendNewChapterEmail({
-    userName: recipientName || "Comic Reader",
+    userName: recipientName ?? "Comic Reader",
     userEmail: recipientEmail,
     comicTitle: data["comicTitle"] as string,
     comicCoverUrl:
-      (data["comicCoverUrl"] as string) || "https://comicwise.app/placeholder-cover.jpg",
+      (data["comicCoverUrl"] as string) ?? "https://comicwise.app/placeholder-cover.jpg",
     chapterNumber: data["chapterNumber"] as number,
     chapterTitle: data["chapterTitle"] as string,
     chapterSlug: data["chapterSlug"] as string,
@@ -248,7 +248,7 @@ async function sendBookmarkReminder(payload: WorkflowPayload) {
     subject: "Continue Reading Your Bookmarked Comics",
     html: `
       <h1>Reading Reminder</h1>
-      <p>Hi ${recipientName || "there"},</p>
+      <p>Hi ${recipientName ?? "there"},</p>
       <p>You have ${data["bookmarkCount"]} bookmarked comics waiting for you!</p>
       <p>Don't forget to continue your reading journey.</p>
       <a href="${bookmarksUrl}" style="display: inline-block; padding: 12px 24px; background-color: 667eea; color: white; text-decoration: none; border-radius: 4px; margin-top: 16px;">
@@ -264,7 +264,7 @@ async function sendCommentNotification(payload: WorkflowPayload) {
   const { recipientEmail, recipientName, data } = payload;
 
   const result = await emailService.sendCommentNotificationEmail({
-    userName: recipientName || "Comic Reader",
+    userName: recipientName ?? "Comic Reader",
     userEmail: recipientEmail,
     commenterName: data["commenterName"] as string,
     commenterAvatar: data["commenterAvatar"] as string | undefined,
@@ -272,7 +272,7 @@ async function sendCommentNotification(payload: WorkflowPayload) {
     comicTitle: data["comicTitle"] as string,
     chapterNumber: data["chapterNumber"] as number | undefined,
     commentId: data["commentId"] as string,
-    commentType: (data["commentType"] as "reply" | "mention" | "new") || "new",
+    commentType: (data["commentType"] as "reply" | "mention" | "new") ?? "new",
   });
 
   return { success: result.success };
@@ -296,9 +296,9 @@ async function sendAccountUpdatedEmail(payload: WorkflowPayload) {
   const { recipientEmail, recipientName, data } = payload;
 
   const result = await emailService.sendAccountUpdatedEmail({
-    name: recipientName || "Comic Reader",
+    name: recipientName ?? "Comic Reader",
     email: recipientEmail,
-    changeType: (data["changeType"] as "password" | "email" | "profile") || "profile",
+    changeType: (data["changeType"] as "password" | "email" | "profile") ?? "profile",
     changeDetails: data["changes"] as string | undefined,
     ipAddress: data["ipAddress"] as string | undefined,
   });
@@ -329,7 +329,7 @@ async function sendAccountDeletedEmail(payload: WorkflowPayload) {
             <h1 style="color: white; margin: 0; font-size: 28px;">Account Deleted</h1>
           </div>
           <div style="background-color: ffffff; padding: 40px; border: 1px solid e5e7eb; border-top: none; border-radius: 0 0 10px 10px;">
-            <p style="font-size: 16px; margin-bottom: 20px;">Hi ${recipientName || "there"},</p>
+            <p style="font-size: 16px; margin-bottom: 20px;">Hi ${recipientName ?? "there"},</p>
 
             <p style="font-size: 16px; margin-bottom: 20px;">
               This email confirms that your ${appConfig.name} account has been permanently deleted on ${deletionDate}.
@@ -387,7 +387,7 @@ async function sendAccountDeletedEmail(payload: WorkflowPayload) {
 async function sendComicCreatedNotification(payload: WorkflowPayload) {
   const { recipientEmail, recipientName, data } = payload;
   const comicUrl = `${appConfig.url}/comics/${data["comicSlug"] || data["comicId"]}`;
-  const coverUrl = (data["comicCoverUrl"] as string) || `${appConfig.url}/placeholder-cover.jpg`;
+  const coverUrl = (data["comicCoverUrl"] as string) ?? `${appConfig.url}/placeholder-cover.jpg`;
 
   const result = await sendEmail({
     to: recipientEmail,
@@ -404,7 +404,7 @@ async function sendComicCreatedNotification(payload: WorkflowPayload) {
             <h1 style="color: white; margin: 0; font-size: 28px;">📚 New Comic Available!</h1>
           </div>
           <div style="background-color: ffffff; padding: 40px; border: 1px solid e5e7eb; border-top: none; border-radius: 0 0 10px 10px;">
-            <p style="font-size: 16px; margin-bottom: 20px;">Hi ${recipientName || "there"},</p>
+            <p style="font-size: 16px; margin-bottom: 20px;">Hi ${recipientName ?? "there"},</p>
 
             <p style="font-size: 16px; margin-bottom: 25px;">
               Great news! A new comic has been added to ${appConfig.name} that you might enjoy:
@@ -497,7 +497,7 @@ async function sendComicUpdatedNotification(payload: WorkflowPayload) {
             <h1 style="color: white; margin: 0; font-size: 28px;">📝 Comic Updated</h1>
           </div>
           <div style="background-color: ffffff; padding: 40px; border: 1px solid e5e7eb; border-top: none; border-radius: 0 0 10px 10px;">
-            <p style="font-size: 16px; margin-bottom: 20px;">Hi ${recipientName || "there"},</p>
+            <p style="font-size: 16px; margin-bottom: 20px;">Hi ${recipientName ?? "there"},</p>
 
             <p style="font-size: 16px; margin-bottom: 25px;">
               The comic <strong>${data["comicTitle"]}</strong> has been updated with new information.
@@ -552,7 +552,7 @@ async function sendComicDeletedNotification(payload: WorkflowPayload) {
             <h1 style="color: white; margin: 0; font-size: 28px;">🗑️ Comic Removed</h1>
           </div>
           <div style="background-color: ffffff; padding: 40px; border: 1px solid e5e7eb; border-top: none; border-radius: 0 0 10px 10px;">
-            <p style="font-size: 16px; margin-bottom: 20px;">Hi ${recipientName || "there"},</p>
+            <p style="font-size: 16px; margin-bottom: 20px;">Hi ${recipientName ?? "there"},</p>
 
             <p style="font-size: 16px; margin-bottom: 25px;">
               We're writing to inform you that the comic <strong>${data["comicTitle"]}</strong> has been removed from ${appConfig.name}.
@@ -618,7 +618,7 @@ async function sendChapterUpdatedNotification(payload: WorkflowPayload) {
             <h1 style="color: white; margin: 0; font-size: 28px;">📖 Chapter Updated</h1>
           </div>
           <div style="background-color: ffffff; padding: 40px; border: 1px solid e5e7eb; border-top: none; border-radius: 0 0 10px 10px;">
-            <p style="font-size: 16px; margin-bottom: 20px;">Hi ${recipientName || "there"},</p>
+            <p style="font-size: 16px; margin-bottom: 20px;">Hi ${recipientName ?? "there"},</p>
 
             <p style="font-size: 16px; margin-bottom: 25px;">
               A chapter you're following has been updated with improvements:
@@ -676,7 +676,7 @@ async function sendChapterDeletedNotification(payload: WorkflowPayload) {
             <h1 style="color: white; margin: 0; font-size: 28px;">⚠️ Chapter Removed</h1>
           </div>
           <div style="background-color: ffffff; padding: 40px; border: 1px solid e5e7eb; border-top: none; border-radius: 0 0 10px 10px;">
-            <p style="font-size: 16px; margin-bottom: 20px;">Hi ${recipientName || "there"},</p>
+            <p style="font-size: 16px; margin-bottom: 20px;">Hi ${recipientName ?? "there"},</p>
 
             <p style="font-size: 16px; margin-bottom: 25px;">
               We're writing to inform you that Chapter ${data["chapterNumber"]} of <strong>${data["comicTitle"]}</strong> has been removed.
@@ -739,7 +739,7 @@ async function sendBookmarkCreatedNotification(payload: WorkflowPayload) {
             <h1 style="color: white; margin: 0; font-size: 28px;">🔖 Bookmark Added</h1>
           </div>
           <div style="background-color: ffffff; padding: 40px; border: 1px solid e5e7eb; border-top: none; border-radius: 0 0 10px 10px;">
-            <p style="font-size: 16px; margin-bottom: 20px;">Hi ${recipientName || "there"},</p>
+            <p style="font-size: 16px; margin-bottom: 20px;">Hi ${recipientName ?? "there"},</p>
 
             <p style="font-size: 16px; margin-bottom: 25px;">
               You've successfully bookmarked <strong>${data["comicTitle"]}</strong>!
@@ -781,7 +781,7 @@ async function sendCommentReplyNotification(payload: WorkflowPayload) {
 async function sendAdminNotification(payload: WorkflowPayload) {
   const { recipientEmail, recipientName, data } = payload;
   const adminUrl = `${appConfig.url}/admin`;
-  const priority = (data["priority"] as string) || "normal";
+  const priority = (data["priority"] as string) ?? "normal";
   const priorityColors = {
     low: { bg: "f0fdf4", border: "10b981", text: "065f46" },
     normal: { bg: "eff6ff", border: "3b82f6", text: "1e40af" },
@@ -792,7 +792,7 @@ async function sendAdminNotification(payload: WorkflowPayload) {
 
   const result = await sendEmail({
     to: recipientEmail,
-    subject: `[${priority.toUpperCase()}] ${data["title"] || "Admin Notification"}`,
+    subject: `[${priority.toUpperCase()}] ${data["title"] ?? "Admin Notification"}`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -805,14 +805,14 @@ async function sendAdminNotification(payload: WorkflowPayload) {
             <h1 style="color: white; margin: 0; font-size: 28px;">🔔 Admin Notification</h1>
           </div>
           <div style="background-color: ffffff; padding: 40px; border: 1px solid e5e7eb; border-top: none; border-radius: 0 0 10px 10px;">
-            <p style="font-size: 16px; margin-bottom: 20px;">Hi ${recipientName || "Admin"},</p>
+            <p style="font-size: 16px; margin-bottom: 20px;">Hi ${recipientName ?? "Admin"},</p>
 
             <div style="background-color: ${colors.bg}; border-left: 4px solid ${colors.border}; padding: 15px; margin: 25px 0; border-radius: 4px;">
               <p style="margin: 0 0 10px 0; color: ${colors.text}; font-weight: 600; text-transform: uppercase;">
                 ${priority === "critical" ? "🚨" : priority === "high" ? "⚠️" : "ℹ️"} ${priority} Priority
               </p>
               <h2 style="margin: 0 0 15px 0; color: ${colors.text}; font-size: 20px;">
-                ${data["title"] || "System Notification"}
+                ${data["title"] ?? "System Notification"}
               </h2>
               ${
                 data["message"]
@@ -850,7 +850,7 @@ async function sendAdminNotification(payload: WorkflowPayload) {
 
             <div style="text-align: center; margin: 30px 0;">
               <a href="${data["actionUrl"] || adminUrl}" style="display: inline-block; padding: 14px 32px; background-color: 1f2937; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
-                ${data["actionLabel"] || "Go to Admin Dashboard"}
+                ${data["actionLabel"] ?? "Go to Admin Dashboard"}
               </a>
             </div>
 

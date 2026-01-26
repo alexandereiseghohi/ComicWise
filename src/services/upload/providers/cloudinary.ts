@@ -71,7 +71,7 @@ export class CloudinaryProvider implements UploadProvider {
 
       // Upload to Cloudinary
       const result = await cloudinary.uploader.upload(dataURI, {
-        folder: options.folder || "comicwise",
+        folder: options.folder ?? "comicwise",
         public_id: options.filename,
         tags: options.tags || [],
         resource_type: "auto",

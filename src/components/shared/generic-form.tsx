@@ -44,7 +44,7 @@ export function GenericForm<T extends FieldValues>({
         toast.success("Success!");
         form.reset();
       } else {
-        toast.error(result.error || "An error occurred");
+        toast.error(result.error ?? "An error occurred");
       }
     });
   };

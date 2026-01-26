@@ -168,7 +168,7 @@ export function useImageUpload(options: UseImageUploadOptions = {}): UseImageUpl
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: "Upload failed" }));
-        throw new Error(errorData.error || `Upload failed with status ${response.status}`);
+        throw new Error(errorData.error ?? `Upload failed with status ${response.status}`);
       }
 
       const data = await response.json();

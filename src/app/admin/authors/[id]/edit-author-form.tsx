@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { deleteAuthor, updateAuthor } from "@/dto/authors-dto";
+import { normalizeImagePath } from "@/lib/image-path";
 import { revalidatePath } from "next/cache";
 import Image from "next/image";
 import { redirect } from "next/navigation";
@@ -33,7 +34,7 @@ export default async function EditAuthorForm({ params }: { params: { id: string 
       revalidatePath(`/admin/authors/${id}`);
       redirect("/admin/authors");
     }
-    throw new Error(result.error || "Failed to update author");
+    throw new Error(result.error ?? "Failed to update author");
   }
 
   async function handleDelete() {
@@ -42,7 +43,7 @@ export default async function EditAuthorForm({ params }: { params: { id: string 
       revalidatePath("/admin/authors");
       redirect("/admin/authors");
     }
-    throw new Error(result.error || "Failed to delete author");
+    throw new Error(result.error ?? "Failed to delete author");
   }
 
   return (
@@ -107,7 +108,7 @@ export default async function EditAuthorForm({ params }: { params: { id: string 
                   `}
                 >
                   <Image
-                    src={author.profileImage}
+                    src={normalizeImagePath(author.profileImage) ?? author.profileImage}
                     alt="Profile preview"
                     fill
                     className="object-cover"

@@ -259,7 +259,7 @@ export async function verifyEmailActionOptimized(
       try {
         await sendWelcomeEmail({
           email: verifiedUser.email,
-          name: verifiedUser.name || "User",
+          name: verifiedUser.name ?? "User",
         });
       } catch (emailError) {
         console.error("Failed to send welcome email:", emailError);
@@ -332,7 +332,7 @@ export async function resendVerificationEmailActionOptimized(
     await sendVerificationEmail({
       email,
       verificationToken: token,
-      name: existingUser.name || "User",
+      name: existingUser.name ?? "User",
     });
 
     return {
@@ -397,7 +397,7 @@ export async function forgotPasswordActionOptimized(
     await sendPasswordResetEmail({
       email,
       resetToken,
-      name: existingUser.name || "User",
+      name: existingUser.name ?? "User",
     });
 
     return {
@@ -460,7 +460,7 @@ export async function resetPasswordActionOptimized(
       try {
         await sendAccountUpdatedEmail({
           email: updatedUser.email,
-          name: updatedUser.name || "User",
+          name: updatedUser.name ?? "User",
           changeType: "password",
           changeDetails: "Password Reset",
         });
@@ -510,7 +510,7 @@ export async function updateProfileActionOptimized(
     try {
       await sendAccountUpdatedEmail({
         email: updatedUser.email,
-        name: updatedUser.name || "User",
+        name: updatedUser.name ?? "User",
         changeType: "profile",
         changeDetails: "Profile Updated",
       });
@@ -568,7 +568,7 @@ export async function updatePasswordActionOptimized(
     try {
       await sendAccountUpdatedEmail({
         email: existingUser.email,
-        name: existingUser.name || "User",
+        name: existingUser.name ?? "User",
         changeType: "password",
         changeDetails: "Password Changed",
       });

@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { deleteArtist, updateArtist } from "@/dto/artists-dto";
+import { normalizeImagePath } from "@/lib/image-path";
 import { revalidatePath } from "next/cache";
 import Image from "next/image";
 import { redirect } from "next/navigation";
@@ -29,7 +30,7 @@ export default async function EditArtistForm({ params }: { params: { id: string 
       revalidatePath(`/admin/artists/${id}`);
       redirect("/admin/artists");
     }
-    throw new Error(result.error || "Failed to update artist");
+    throw new Error(result.error ?? "Failed to update artist");
   }
 
   async function handleDelete() {
@@ -38,7 +39,7 @@ export default async function EditArtistForm({ params }: { params: { id: string 
       revalidatePath("/admin/artists");
       redirect("/admin/artists");
     }
-    throw new Error(result.error || "Failed to delete artist");
+    throw new Error(result.error ?? "Failed to delete artist");
   }
 
   return (
@@ -103,7 +104,7 @@ export default async function EditArtistForm({ params }: { params: { id: string 
                   `}
                 >
                   <Image
-                    src={artist.profileImage}
+                    src={normalizeImagePath(artist.profileImage) ?? artist.profileImage}
                     alt="Profile preview"
                     fill
                     className="object-cover"

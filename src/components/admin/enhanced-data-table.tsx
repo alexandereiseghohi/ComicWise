@@ -142,12 +142,12 @@ export function EnhancedDataTable<TData, TValue>({
             placeholder={searchPlaceholder}
             value={
               (table
-                .getColumn((columns[1] as { id?: string })?.id || "search")
+                .getColumn((columns[1] as { id?: string })?.id ?? "search")
                 ?.getFilterValue() as string) ?? ""
             }
             onChange={(event) =>
               table
-                .getColumn((columns[1] as { id?: string })?.id || "search")
+                .getColumn((columns[1] as { id?: string })?.id ?? "search")
                 ?.setFilterValue(event.target.value)
             }
             className="h-9 max-w-sm"

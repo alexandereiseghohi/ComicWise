@@ -58,7 +58,7 @@ export function parseCLIArgs(args: string[]): SeedConfig {
     if (argument === "--reset") config.mode = "reset";
     if (argument.startsWith("--batch-size=")) {
       config.options.batchSize =
-        Number.parseInt(argument.split("=")[1] || "", 10) || DEFAULT_BATCH_SIZE;
+        Number.parseInt(argument.split("=")[1] ?? "", 10) || DEFAULT_BATCH_SIZE;
     }
   });
 

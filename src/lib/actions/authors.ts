@@ -39,7 +39,7 @@ export async function createAuthor(formData: FormData): Promise<ActionResult<{ i
     return { success: true, data: { id: author.id } };
   } catch (error_) {
     if (error_ instanceof z.ZodError) {
-      return error(error_.issues[0]?.message || "Validation error");
+      return error(error_.issues[0]?.message ?? "Validation error");
     }
     console.error("Create author error:", error_);
     return error("Failed to create author");
@@ -64,7 +64,7 @@ export async function updateAuthor(
     return { success: true };
   } catch (error_) {
     if (error_ instanceof z.ZodError) {
-      return error(error_.issues[0]?.message || "Validation error");
+      return error(error_.issues[0]?.message ?? "Validation error");
     }
     console.error("Update author error:", error_);
     return error("Failed to update author");

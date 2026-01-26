@@ -51,8 +51,8 @@ export async function fullTextSearch(
   options: SearchOptions = {}
 ): Promise<SearchResult> {
   try {
-    const page = options.page || 1;
-    const limit = options.limit || 20;
+    const page = options.page ?? 1;
+    const limit = options.limit ?? 20;
     const offset = (page - 1) * limit;
 
     // Convert search query to tsquery format
@@ -178,7 +178,7 @@ export async function fullTextSearch(
       .from(comic)
       .where(whereClause);
 
-    const total = countResult[0]?.count || 0;
+    const total = countResult[0]?.count ?? 0;
     const totalPages = Math.ceil(total / limit);
 
     return {
@@ -209,8 +209,8 @@ export async function simpleSearch(
   options: SearchOptions = {}
 ): Promise<SearchResult> {
   try {
-    const page = options.page || 1;
-    const limit = options.limit || 20;
+    const page = options.page ?? 1;
+    const limit = options.limit ?? 20;
     const offset = (page - 1) * limit;
 
     // Build WHERE conditions
@@ -304,7 +304,7 @@ export async function simpleSearch(
       .from(comic)
       .where(whereClause);
 
-    const total = countResult[0]?.count || 0;
+    const total = countResult[0]?.count ?? 0;
     const totalPages = Math.ceil(total / limit);
 
     return {
@@ -389,8 +389,8 @@ export async function searchByAuthor(
   options: Omit<SearchOptions, "filters"> = {}
 ): Promise<SearchResult> {
   try {
-    const page = options.page || 1;
-    const limit = options.limit || 20;
+    const page = options.page ?? 1;
+    const limit = options.limit ?? 20;
     const offset = (page - 1) * limit;
 
     const searchPattern = `%${authorName.trim()}%`;
@@ -421,7 +421,7 @@ export async function searchByAuthor(
       .innerJoin(author, eq(comic.authorId, author.id))
       .where(ilike(author.name, searchPattern));
 
-    const total = countResult[0]?.count || 0;
+    const total = countResult[0]?.count ?? 0;
     const totalPages = Math.ceil(total / limit);
 
     return {
@@ -452,8 +452,8 @@ export async function searchByGenre(
   options: Omit<SearchOptions, "filters"> = {}
 ): Promise<SearchResult> {
   try {
-    const page = options.page || 1;
-    const limit = options.limit || 20;
+    const page = options.page ?? 1;
+    const limit = options.limit ?? 20;
     const offset = (page - 1) * limit;
 
     const results = await db
@@ -478,7 +478,7 @@ export async function searchByGenre(
       .innerJoin(comicToGenre, eq(comic.id, comicToGenre.comicId))
       .where(eq(comicToGenre.genreId, genreId));
 
-    const total = countResult[0]?.count || 0;
+    const total = countResult[0]?.count ?? 0;
     const totalPages = Math.ceil(total / limit);
 
     return {
@@ -504,5 +504,5 @@ export async function searchByGenre(
  * @param options
  */
 export async function advancedSearch(options: SearchOptions): Promise<SearchResult> {
-  return fullTextSearch(options.query || "", options);
+  return fullTextSearch(options.query ?? "", options);
 }

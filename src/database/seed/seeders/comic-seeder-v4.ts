@@ -70,7 +70,7 @@ async function loadComicsFromFile(filePath: string): Promise<ComicSeedData[]> {
         validComics.push(validated);
       } catch (error) {
         errors.push(`Row ${i + 1}: ${error}`);
-        logger.warn(`❌ Invalid comic data at row ${i + 1}: ${dataArray[i]?.title || "unknown"}`);
+        logger.warn(`❌ Invalid comic data at row ${i + 1}: ${dataArray[i]?.title ?? "unknown"}`);
       }
     }
 
@@ -250,7 +250,7 @@ async function seedComic(comicData: ComicSeedData): Promise<{
         ? comicData.type
         : typeof comicData.type === "object" && comicData.type?.name
           ? comicData.type.name
-          : comicData.category || "Manga";
+          : (comicData.category ?? "Manga");
 
     // Extract author name
     const authorName =
@@ -286,7 +286,7 @@ async function seedComic(comicData: ComicSeedData): Promise<{
     const comicRecord = {
       title: comicData.title,
       slug: comicData.slug,
-      description: comicData.description || "",
+      description: comicData.description ?? "",
       coverImage: imageResults.paths[0] || FALLBACK_COMIC_IMAGE,
       publicationDate: new Date(),
       typeId,

@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
 
     const validation = uploadSchema.safeParse({
       file,
-      type: type || "general",
+      type: type ?? "general",
       entityId: entityId || undefined,
       sequence: sequenceString ? Number.parseInt(sequenceString, 10) : undefined,
     });
@@ -207,7 +207,7 @@ export async function PUT(request: NextRequest) {
       }
 
       // Validate each file
-      const validation = uploadSchema.safeParse({ file, type: type || "other" });
+      const validation = uploadSchema.safeParse({ file, type: type ?? "other" });
 
       if (!validation.success) {
         errors.push({ index: i, filename: file.name, error: "Invalid file" });

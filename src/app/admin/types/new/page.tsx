@@ -52,7 +52,7 @@ export default function NewTypePage() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to create type");
+        throw new Error(error.error ?? "Failed to create type");
       }
 
       toast.success("Type created successfully");

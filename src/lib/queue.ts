@@ -10,8 +10,8 @@ import IORedis from "ioredis";
 // ═══════════════════════════════════════════════════
 
 const connection = new IORedis({
-  host: env.REDIS_HOST || "localhost",
-  port: Number(env.REDIS_PORT) || 6379,
+  host: env.REDIS_HOST ?? "localhost",
+  port: Number(env.REDIS_PORT ?? "6379"),
   password: env.REDIS_PASSWORD || undefined,
   maxRetriesPerRequest: null, // Required for BullMQ
 });
@@ -52,7 +52,7 @@ const emailWorker = new Worker(
       const result = await sendEmail({ to, subject, html, text });
 
       if (!result.success) {
-        throw new Error(result.error || "Failed to send email");
+        throw new Error(result.error ?? "Failed to send email");
       }
 
       console.log(`[EmailWorker] Successfully sent email ${job.id} to ${to}`);

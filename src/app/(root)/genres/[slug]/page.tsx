@@ -11,6 +11,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { db } from "@/database";
 import { author, comic, comicToGenre, genre, type } from "@/database/schema";
+import { normalizeImagePath } from "@/lib/image-path";
 import { desc, eq, inArray, sql } from "drizzle-orm";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
@@ -107,7 +108,7 @@ async function getGenreComics(genreId: number, sort: string = "newest", page: nu
     .from(comic)
     .where(inArray(comic.id, comicIdList));
 
-  const count = countResult[0]?.count || 0;
+  const count = countResult[0]?.count ?? 0;
   const totalPages = Math.ceil(count / ITEMS_PER_PAGE);
 
   // Apply pagination
@@ -124,7 +125,7 @@ function ComicCard({ comic }: { comic: any }) {
           <div className="relative aspect-2/3 overflow-hidden">
             {comic.coverImage ? (
               <Image
-                src={comic.coverImage}
+                src={normalizeImagePath(comic.coverImage) ?? comic.coverImage}
                 alt={comic.title}
                 fill
                 className="object-cover transition-transform group-hover:scale-105"
@@ -154,8 +155,8 @@ function ComicCard({ comic }: { comic: any }) {
           <p className="line-clamp-2 text-sm text-muted-foreground">{comic.description}</p>
         </CardContent>
         <CardFooter className="flex gap-3 p-3 pt-0 text-xs text-muted-foreground">
-          <span>⭐ {comic.rating || "N/A"}</span>
-          <span>👁 {comic.views?.toLocaleString() || 0}</span>
+          <span>⭐ {comic.rating ?? "N/A"}</span>
+          <span>👁 {comic.views?.toLocaleString() ?? 0}</span>
         </CardFooter>
       </Card>
     </Link>

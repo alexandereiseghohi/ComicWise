@@ -140,7 +140,7 @@ export class OptimizedImageHandler {
         return result.localPath;
       }
 
-      throw new Error(result.error || "Unknown error");
+      throw new Error(result.error ?? "Unknown error");
     } catch (error) {
       this.downloadStats.failed++;
       logger.warn(`Failed to download image: ${imageUrl}`, {

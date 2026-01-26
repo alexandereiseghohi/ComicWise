@@ -49,12 +49,12 @@ export async function registerUser(formData: FormData): Promise<ActionResult<{ i
     }
 
     // Send welcome email
-    await sendWelcomeEmail(user.email, user.name || "User");
+    await sendWelcomeEmail(user.email, user.name ?? "User");
 
     return { success: true, data: { id: user.id } };
   } catch (error_) {
     if (error_ instanceof z.ZodError) {
-      return error(error_.issues[0]?.message || "Validation error");
+      return error(error_.issues[0]?.message ?? "Validation error");
     }
     console.error("Register user error:", error_);
     return error("Failed to register user");
@@ -80,7 +80,7 @@ export async function updateUser(
     return { success: true };
   } catch (error_) {
     if (error_ instanceof z.ZodError) {
-      return error(error_.issues[0]?.message || "Validation error");
+      return error(error_.issues[0]?.message ?? "Validation error");
     }
     console.error("Update user error:", error_);
     return error("Failed to update user");
@@ -121,7 +121,7 @@ export async function requestPasswordReset(email: string): Promise<ActionResult<
     });
 
     // Send reset email
-    await sendPasswordResetEmail(email, user.name || "User", token);
+    await sendPasswordResetEmail(email, user.name ?? "User", token);
 
     return { success: true };
   } catch (error_) {

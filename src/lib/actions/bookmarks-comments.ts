@@ -145,7 +145,7 @@ export async function getUserBookmarks(userId: string, input?: PaginationInput) 
       .from(bookmark)
       .where(eq(bookmark.userId, userId));
 
-    const total = countResult?.count || 0;
+    const total = countResult?.count ?? 0;
 
     const results = await database.query.bookmark.findMany({
       where: eq(bookmark.userId, userId),
@@ -381,7 +381,7 @@ export async function getCommentsByChapter(chapterId: number, input?: Pagination
       .from(comment)
       .where(eq(comment.chapterId, chapterId));
 
-    const total = countResult?.count || 0;
+    const total = countResult?.count ?? 0;
 
     const results = await database.query.comment.findMany({
       where: eq(comment.chapterId, chapterId),
@@ -433,7 +433,7 @@ export async function getUserComments(userId: string, input?: PaginationInput) {
       .from(comment)
       .where(eq(comment.userId, userId));
 
-    const total = countResult?.count || 0;
+    const total = countResult?.count ?? 0;
 
     const results = await database.query.comment.findMany({
       where: eq(comment.userId, userId),
@@ -512,7 +512,7 @@ export async function listAllComments(input?: PaginationInput) {
 
     const [countResult] = await database.select({ count: sql<number>`count(*)` }).from(comment);
 
-    const total = countResult?.count || 0;
+    const total = countResult?.count ?? 0;
 
     const results = await database.query.comment.findMany({
       with: {

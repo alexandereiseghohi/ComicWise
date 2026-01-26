@@ -236,7 +236,7 @@ export async function listComics(input?: ComicFilterInput) {
       .from(comic)
       .where(whereClause);
 
-    const total = countResult?.count || 0;
+    const total = countResult?.count ?? 0;
 
     // Get comics with relations
     const results = await database.query.comic.findMany({

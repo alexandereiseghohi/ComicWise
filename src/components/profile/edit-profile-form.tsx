@@ -49,7 +49,7 @@ export function EditProfileForm({ user }: EditProfileFormProps) {
       name: user.name,
       email: user.email,
       bio: "",
-      image: user.image || "",
+      image: user.image ?? "",
     },
   });
 
@@ -66,7 +66,7 @@ export function EditProfileForm({ user }: EditProfileFormProps) {
         if (result.success) {
           toast.success("Profile updated successfully!");
         } else {
-          toast.error(result.error || "Failed to update profile");
+          toast.error(result.error ?? "Failed to update profile");
         }
       } catch (error) {
         toast.error("An error occurred while updating profile");

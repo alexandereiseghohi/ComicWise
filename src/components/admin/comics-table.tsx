@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog";
+import { normalizeImagePath } from "@/lib/image-path";
 import { ChevronLeft, ChevronRight, Edit2, Eye, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -170,7 +171,7 @@ export function ComicsTable({
                           `}
                         >
                           <Image
-                            src={comic.coverImage}
+                            src={normalizeImagePath(comic.coverImage) ?? comic.coverImage}
                             alt={comic.title}
                             fill
                             className="object-cover"
