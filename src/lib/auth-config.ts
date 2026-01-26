@@ -145,10 +145,10 @@ export const authOptions: NextAuthConfig = {
       session?: unknown;
     }) {
       if (user) {
-        token.id = user.id ?? "";
-        token.email = user.email ?? "";
-        token.name = user.name ?? "";
-        token.picture = user.image ?? null;
+        (token as any)["id"] = (user as any).id ?? "";
+        (token as any)["email"] = (user as any).email ?? "";
+        (token as any)["name"] = (user as any).name ?? "";
+        (token as any)["picture"] = (user as any).image ?? null;
       }
 
       if (trigger === "update" && session) {
@@ -160,11 +160,11 @@ export const authOptions: NextAuthConfig = {
     },
 
     async session({ session, token }: { session: Session; token: JWT }) {
-      if (session.user && token.id) {
-        session.user.id = String(token.id);
-        session.user.email = String(token.email ?? "");
-        session.user.name = String(token.name ?? "");
-        session.user.image = (token.picture as string) ?? null;
+      if (session.user && (token as any)["id"]) {
+        (session.user as any)["id"] = String((token as any)["id"]);
+        (session.user as any)["email"] = String((token as any)["email"] ?? "");
+        (session.user as any)["name"] = String((token as any)["name"] ?? "");
+        (session.user as any)["image"] = ((token as any)["picture"] as string) ?? null;
       }
 
       return session;

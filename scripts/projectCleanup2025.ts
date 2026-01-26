@@ -125,11 +125,14 @@ function cleanupBackupFiles(logger: Logger, dryRun: boolean, stats: CleanupStats
   const backupFiles: string[] = [];
 
   for (const pattern of patterns) {
-    const files = fs.globSync(pattern, {
-      ignore: ["node_modules/**", ".next/**", ".git/**"],
-      cwd: process.cwd(),
-    });
-    backupFiles.push(...files);
+    // fs.globSync typings in this environment may not accept `ignore` in the options
+    // so perform a simple post-filter to exclude common ignored folders.
+    const files = fs.globSync(pattern, { cwd: process.cwd() });
+    backupFiles.push(
+      ...files.filter(
+        (f: string) => !f.includes("node_modules") && !f.includes(".next") && !f.includes(".git")
+      )
+    );
   }
 
   for (const file of backupFiles) {

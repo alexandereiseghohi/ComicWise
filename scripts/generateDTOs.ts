@@ -126,8 +126,12 @@ function extractServerActions(files: string[]): ServerAction[] {
         const lastLine = lines[lines.length - 1];
         const nextFuncMatch = lastLine?.match(/function\s+(\w+)/);
 
+        // guard against undefined capture groups to satisfy strict TS checks
         if (nextFuncMatch) {
-          jsDocMap.set(nextFuncMatch[1], jsDoc);
+          const fnName = nextFuncMatch[1];
+          if (fnName && typeof fnName === "string") {
+            jsDocMap.set(fnName, jsDoc);
+          }
         }
       }
 

@@ -34,7 +34,7 @@ export async function addBookmark(comicId: number, status: BookmarkStatus = "Rea
     return { success: true };
   } catch (error) {
     console.error("Add bookmark error:", error);
-    throw error;
+    return { success: false, error: String(error) } as const;
   }
 }
 
@@ -53,7 +53,7 @@ export async function removeBookmark(comicId: number) {
     return { success: true };
   } catch (error) {
     console.error("Remove bookmark error:", error);
-    throw error;
+    return { success: false, error: String(error) } as const;
   }
 }
 
@@ -73,7 +73,7 @@ export async function updateBookmarkStatus(comicId: number, status: BookmarkStat
     return { success: true };
   } catch (error) {
     console.error("Update bookmark status error:", error);
-    throw error;
+    return { success: false, error: String(error) } as const;
   }
 }
 
@@ -91,7 +91,7 @@ export async function updateProgress(comicId: number, chapterId: number) {
     return { success: true };
   } catch (error) {
     console.error("Update progress error:", error);
-    throw error;
+    return { success: false, error: String(error) } as const;
   }
 }
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env tsx
-import { readdir, rm, stat } from "fs/promises";
+import { readdir, rm } from "fs/promises";
 import { join } from "path";
 
 async function removeEmptyDirs(dir: string) {

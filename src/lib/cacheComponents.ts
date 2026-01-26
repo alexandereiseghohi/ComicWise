@@ -1,4 +1,4 @@
-import cache from "@/lib/cache";
+import * as cache from "@/lib/cache";
 import crypto from "node:crypto";
 
 /**
@@ -12,9 +12,9 @@ export interface CacheComponentOptions {
 
 function hashProps(props: unknown): string {
   try {
-    const s = JSON.stringify(props || {});
+    const s = JSON.stringify(props ?? {});
     return crypto.createHash("sha256").update(s).digest("hex");
-  } catch (err) {
+  } catch {
     return String(Date.now());
   }
 }
@@ -22,9 +22,9 @@ function hashProps(props: unknown): string {
 export async function getCachedComponent(name: string, props: unknown): Promise<string | null> {
   const key = `component:${name}:${hashProps(props)}`;
   try {
-    const cached = await cache.get<string>(key);
-    return cached ?? null;
-  } catch (err) {
+    const cached = await (cache as any).get(key);
+    return (cached as string) ?? null;
+  } catch {
     return null;
   }
 }
@@ -37,20 +37,21 @@ export async function setCachedComponent(
 ): Promise<boolean> {
   const key = `component:${name}:${hashProps(props)}`;
   try {
-    await cache.set<string>(key, html, options.ttl ?? cache.CACHE_TTL.MEDIUM);
+    // Use CACHE_TTL if available on the cache module, otherwise fallback to 300s
+    const ttl = options.ttl ?? (cache as any).CACHE_TTL?.MEDIUM ?? 300;
+    await (cache as any).set(key, html, ttl);
     return true;
-  } catch (err) {
+  } catch {
     return false;
   }
 }
 
 export async function invalidateComponent(name: string): Promise<number> {
-  // Remove any keys that start with component:name:
   const pattern = `component:${name}:*`;
   try {
-    const deleted = await cache.deletePattern(pattern);
+    const deleted = await (cache as any).deletePattern(pattern);
     return deleted ?? 0;
-  } catch (err) {
+  } catch {
     return 0;
   }
 }

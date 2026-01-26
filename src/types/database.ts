@@ -1,100 +1,11 @@
-// Central database types for ComicWise
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  image?: string | null;
-  role?: "user" | "admin" | "moderator";
-  emailVerified?: Date | null;
-}
-
-export interface Author {
-  id: number;
-  name: string;
-  bio?: string | null;
-  image?: string | null;
-}
-
-export interface Artist {
-  id: number;
-  name: string;
-  bio?: string | null;
-  image?: string | null;
-}
-
-export interface Genre {
-  id: number;
-  name: string;
-  description?: string | null;
-}
-
-export interface Type {
-  id: number;
-  name: string;
-  description?: string | null;
-}
-
-export interface Comic {
-  id: number;
-  title: string;
-  description: string;
-  coverImage: string;
-  status: "Ongoing" | "Hiatus" | "Completed" | "Dropped" | "Coming Soon";
-  publicationDate?: Date | null;
-  rating?: number | null;
-  views: number;
-  authorId?: number | null;
-  artistId?: number | null;
-  typeId?: number | null;
-  genres?: string[];
-}
-
-export interface Chapter {
-  id: number;
-  title: string;
-  chapterNumber: number;
-  releaseDate?: Date | null;
-  comicId: number | string;
-  views?: number;
-  content?: string | null;
-}
-
-export interface Bookmark {
-  userId: string;
-  comicId: number;
-  lastReadChapterId?: number | string | "current";
-  currentChapterId?: number | string | "current";
-  notes?: string;
-}
-
-export interface Comment {
-  id: number;
-  content: string;
-  userId?: string;
-  chapterId?: number | string;
-  comicId?: string;
-}
-
-export interface ComicWithDetails extends Comic {
-  author?: Author;
-  artist?: Artist;
-  genresList?: Genre[];
-}
-
-export interface PaginatedResponse<T> {
-  items: T[];
-  total: number;
-  page: number;
-  limit: number;
-}
-
-export type DatabaseId = number | string;
-
-export type DB = unknown;
 // ═══════════════════════════════════════════════════
 // DATABASE TYPES - Single Source of Truth
+// Consolidated drizzle-derived types are the canonical source of truth for
+// database models in this workspace. The manual/legacy interface definitions
+// that previously existed here were moved to `src/types/backup/` to avoid
+// duplicate identifier collisions. Keep this file focused on the generated
+// InferSelectModel/InferInsertModel types below.
 // ═══════════════════════════════════════════════════
-// All database types, relations, and filters in one place
 
 import type * as schema from "@/database/schema";
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
@@ -244,7 +155,7 @@ export interface ComicFilters {
 export type CreateComicInput = Omit<
   InsertComic,
   "id" | "createdAt" | "updatedAt" | "views" | "rating"
->;
+> & { genres?: string[] };
 export type UpdateComicInput = Partial<CreateComicInput> & { id: number };
 
 export type CreateChapterInput = Omit<InsertChapter, "id" | "createdAt" | "views">;
@@ -280,3 +191,14 @@ export type CreateReadingProgressInput = Omit<
 export type UpdateReadingProgressInput = Partial<
   Omit<CreateReadingProgressInput, "userId" | "comicId">
 > & { id: number };
+
+// Generic paginated response used across APIs
+export interface PaginatedResponse<T> {
+  items: T[];
+  // Backwards-compatible aliases used in some API handlers/tests
+  data?: T[];
+  total: number;
+  page: number;
+  limit: number;
+  pagination?: { total: number; page: number; limit: number };
+}

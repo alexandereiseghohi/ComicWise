@@ -78,7 +78,12 @@ export async function executeWorkflow(payload: WorkflowPayload) {
     // Rate limiting for email workflows
     const rateLimitKey = `workflow:${validatedPayload.recipientEmail}`;
     const rateLimitResult = await checkRateLimit(rateLimitKey, {
-      limit: appConfig.rateLimit.email,
+      // appConfig.rateLimit.email is an object { requests, window }
+      // but checkRateLimit expects a numeric limit, so pass the requests value.
+      limit:
+        typeof appConfig.rateLimit.email === "object" && appConfig.rateLimit.email !== null
+          ? ((appConfig.rateLimit.email as { requests?: number }).requests ?? 30)
+          : 30,
       window: "1m", // 1 minute window
     });
 

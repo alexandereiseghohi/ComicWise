@@ -95,9 +95,11 @@ export function GenreDistributionChart({ data }: GenreDistributionChartProps) {
               cx="50%"
               cy="50%"
               labelLine={false}
-              label={(entry: { name: string; percent: number }) =>
-                `${entry.name} ${(entry.percent * 100).toFixed(0)}%`
-              }
+              label={(props: any) => {
+                const name = String(props?.name ?? "");
+                const percent = typeof props?.percent === "number" ? props.percent : 0;
+                return `${name} ${(percent * 100).toFixed(0)}%`;
+              }}
               outerRadius={80}
               fill="8884d8"
               dataKey="value"

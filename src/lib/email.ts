@@ -25,18 +25,26 @@ const _emailCfg = appConfig?.email ?? ({} as any);
 let transporter: any;
 
 if (_emailCfg && _emailCfg.host && _emailCfg.port != null) {
-  transporter = nodemailer.createTransport({
+  // Normalize email configuration shape from appConfig
+  const portNumber = Number(_emailCfg.port) || 587;
+  const secure =
+    typeof (_emailCfg as any).secure === "boolean" ? (_emailCfg as any).secure : portNumber === 465;
+  const authUser = (_emailCfg.user as string) ?? ((_emailCfg as any).auth?.user as string) ?? "";
+  const authPass =
+    (_emailCfg.password as string) ?? ((_emailCfg as any).auth?.pass as string) ?? "";
+
+  // Build transport options guarded to match nodemailer expectations
+  const transportOptions: any = {
     host: _emailCfg.host,
-    port: _emailCfg.port,
-    secure: _emailCfg.secure,
-    auth:
-      (_emailCfg.auth?.user ?? "") && (_emailCfg.auth?.pass ?? "")
-        ? {
-            user: _emailCfg.auth?.user ?? "",
-            pass: _emailCfg.auth?.pass ?? "",
-          }
-        : undefined,
-  });
+    port: portNumber,
+    secure,
+  };
+
+  if (authUser && authPass) {
+    transportOptions.auth = { user: authUser, pass: authPass };
+  }
+
+  transporter = nodemailer.createTransport(transportOptions as any);
 
   // Verify transporter configuration in development only
   if ((_emailCfg.enabled ?? false) && isDevelopment && typeof transporter.verify === "function") {

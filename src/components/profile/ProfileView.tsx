@@ -77,9 +77,9 @@ export function ProfileView({
               <h3 className="text-lg font-semibold">{user.name ?? "User"}</h3>
               <p className="text-sm text-muted-foreground">{user.email}</p>
             </div>
-            {user.role && (
-              <Badge variant={user.role === "admin" ? "default" : "secondary"}>
-                {user.role.toUpperCase()}
+            {"role" in user && (user as any).role && (
+              <Badge variant={(user as any).role === "admin" ? "default" : "secondary"}>
+                {(user as any).role.toUpperCase()}
               </Badge>
             )}
           </div>

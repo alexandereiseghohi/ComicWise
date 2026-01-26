@@ -20,7 +20,7 @@ type ParsedUpdateComic = UpdateComicInput & { slug?: string };
 // ═══════════════════════════════════════════════════
 
 export async function createComic(
-  input: CreateComicInput
+  input: unknown
 ): Promise<ActionResult<typeof comic.$inferSelect>> {
   try {
     const validated = createComicSchema.parse(input) as ParsedCreateComic;

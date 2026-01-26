@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
     const newChapter = await createChapter({
       title: validation.data.title,
       chapterNumber: validation.data.chapterNumber,
-      releaseDate: validation.data.releaseDate,
+      releaseDate: validation.data.releaseDate ?? new Date(),
       comicId: comicIdNum,
     });
 
@@ -118,7 +118,7 @@ export async function POST(request: NextRequest) {
               comicTitle: body.comicTitle ?? "Comic",
               chapterTitle: newChapter.title,
               chapterNumber: newChapter.chapterNumber,
-              chapterUrl: `${env.NEXT_PUBLIC_APP_URL}/comics/${validation.data.comicId}/chapters/${newChapter.id}`,
+              chapterUrl: `${env.NEXT_PUBLIC_APP_URL}/comics/${comicIdNum}/chapters/${newChapter.id}`,
             })
           )
         ).catch((error) => console.error("Failed to send notifications:", error));

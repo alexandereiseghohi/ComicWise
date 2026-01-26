@@ -140,15 +140,12 @@ export async function getAllComics(
   const total = Number(totalResult[0]?.count ?? 0);
 
   return {
+    items: results as unknown as ComicWithDetails[],
     data: results as unknown as ComicWithDetails[],
-    pagination: {
-      page,
-      pageSize: limit,
-      total: total,
-      totalPages: Math.ceil(total / limit),
-      hasNext: page < Math.ceil(total / limit),
-      hasPrev: page > 1,
-    },
+    total,
+    page,
+    limit,
+    pagination: { total, page, limit },
   };
 }
 

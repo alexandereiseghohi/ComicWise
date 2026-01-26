@@ -79,7 +79,7 @@
     "strictPropertyInitialization": true,
     "target": "ES2022",
     "tsBuildInfoFile": ".next/cache/tsbuildinfo.json",
-    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "typeRoots": ["./node_modules/@types"],
     "verbatimModuleSyntax": true
   },
   "exclude": [
@@ -88,8 +88,10 @@
     "out",
     "build",
     "dist",
-    "coverage"
-    // "src/types/backup"
+    "coverage",
+    // "src/lib/cacheComponents.ts",
+    // "src/types/index.ts"
+    "src/types/backup"
   ],
   "include": [
     "next-env.d.ts",

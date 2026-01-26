@@ -29,17 +29,17 @@ export class ImageKitProvider implements UploadProvider {
    * @param options
    */
   async upload(
-    file: File | Buffer,
+    file: Buffer | ArrayBuffer | { arrayBuffer(): Promise<ArrayBuffer> },
     options: UploadOptions & { transformation?: Record<string, unknown> } = {}
   ): Promise<UploadResult> {
     try {
       let buffer: Buffer;
-      // Convert File to Buffer if needed
-      if (typeof File !== "undefined" && file instanceof File) {
-        const arrayBuffer = await file.arrayBuffer();
+      // Convert blobs/objects with arrayBuffer() to Buffer if needed
+      if (file && typeof (file as any).arrayBuffer === "function") {
+        const arrayBuffer = await (file as any).arrayBuffer();
         buffer = Buffer.from(arrayBuffer);
       } else if (Buffer.isBuffer(file)) {
-        buffer = file;
+        buffer = file as Buffer;
       } else {
         return {
           url: "",
@@ -129,7 +129,8 @@ export class ImageKitProvider implements UploadProvider {
    */
   async delete(publicId: string): Promise<boolean> {
     try {
-      await imagekit.deleteFile({ fileId: publicId });
+      // ImageKit SDK accepts a file id string for deletion; pass the id directly
+      await imagekit.deleteFile(publicId as any);
       return true;
     } catch (error) {
       console.error("ImageKit delete error:", error);

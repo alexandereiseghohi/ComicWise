@@ -1,7 +1,7 @@
 import appConfig, { env } from "@/appConfig";
 import nodemailer from "nodemailer";
 
-import type { MailOptions, Transporter } from "nodemailer";
+import type { Transporter } from "nodemailer";
 
 // ═══════════════════════════════════════════════════
 // TRANSPORTER CONFIGURATION
@@ -11,18 +11,19 @@ let transporter: Transporter | null = null;
 
 function createTransporter(): Transporter {
   if (!transporter) {
+    // Cast to any to avoid strict typing mismatches with nodemailer transport options
     transporter = nodemailer.createTransport({
-      host: appConfig.email.host,
-      port: appConfig.email.port,
-      secure: appConfig.email.secure,
+      host: (appConfig.email as any).host,
+      port: (appConfig.email as any).port,
+      secure: (appConfig.email as any).secure,
       auth:
-        (appConfig.email.auth?.user ?? "") && (appConfig.email.auth?.pass ?? "")
+        ((appConfig.email as any).auth?.user ?? "") && ((appConfig.email as any).auth?.pass ?? "")
           ? {
-              user: appConfig.email.auth?.user ?? "",
-              pass: appConfig.email.auth?.pass ?? "",
+              user: (appConfig.email as any).auth?.user ?? "",
+              pass: (appConfig.email as any).auth?.pass ?? "",
             }
           : undefined,
-    });
+    } as any);
   }
   return transporter;
 }
@@ -53,13 +54,13 @@ export async function sendEmail(options: EmailOptions): Promise<EmailResult> {
   try {
     const transporter = createTransporter();
 
-    const mailOptions: MailOptions = {
-      from: options.from || appConfig.email.from,
+    const mailOptions = {
+      from: options.from || (appConfig.email as any).from,
       to: options.to,
       subject: options.subject,
       html: options.html,
       text: options.text,
-    };
+    } as any;
 
     const info = await transporter.sendMail(mailOptions);
     console.log("✉️ Email sent:", info.messageId);

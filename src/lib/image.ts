@@ -64,7 +64,10 @@ export function transformImage(
 
   // If it's a local URL, we can't transform it client-side
   // Return as-is, transformations would need to be done server-side
-  if (url.startsWith(env.NEXT_PUBLIC_APP_URL) || url.startsWith("/uploads")) {
+  if (
+    (env.NEXT_PUBLIC_APP_URL && url.startsWith(env.NEXT_PUBLIC_APP_URL)) ||
+    url.startsWith("/uploads")
+  ) {
     return getImageUrl(url);
   }
 

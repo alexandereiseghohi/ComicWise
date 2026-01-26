@@ -175,7 +175,8 @@ const SalesMetricsCard = ({ className }: { className?: string }) => {
                     paddingAngle={2}
                   >
                     <Label
-                      content={({ viewBox }: { viewBox: any }) => {
+                      content={(props: any) => {
+                        const viewBox = props?.viewBox;
                         if (viewBox && "cx" in viewBox && "cy" in viewBox) {
                           return (
                             <text

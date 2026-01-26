@@ -27,6 +27,8 @@ async function handleCreate(formData: FormData) {
       : new Date(),
     rating: formData.get("rating") ? Number(formData.get("rating")) : undefined,
     views: 0,
+    // ensure genres present to match validation/type shape (defaults to [])
+    genres: [],
     authorId: formData.get("authorId") ? Number(formData.get("authorId")) : undefined,
     artistId: formData.get("artistId") ? Number(formData.get("artistId")) : undefined,
     typeId: formData.get("typeId") ? Number(formData.get("typeId")) : undefined,

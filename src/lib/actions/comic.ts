@@ -6,11 +6,10 @@ import {
   updateComic as updateComicMutation,
 } from "@/database/mutations";
 import { getAllComics, getComic as getComicQuery } from "@/database/queries";
-import type { createComicSchema, updateComicSchema } from "@/lib/validations";
+import { createComicSchema, updateComicSchema } from "@/lib/validations";
 import type { ComicFilters } from "@/types";
 import { auth } from "auth";
 import { revalidatePath } from "next/cache";
-import type z from "zod";
 
 export async function getComics(filters?: ComicFilters) {
   return await getAllComics(filters);
@@ -21,7 +20,7 @@ export async function getComicById(id: number) {
   return await getComicQuery(id as any);
 }
 
-export async function createComic(data: z.infer<typeof createComicSchema>) {
+export async function createComic(data: unknown) {
   const session = await auth();
 
   if (!session?.user?.id) {
@@ -32,7 +31,8 @@ export async function createComic(data: z.infer<typeof createComicSchema>) {
     throw new Error("Unauthorized - Admin only");
   }
 
-  const dataToCreate = { ...data, publicationDate: data.publicationDate ?? new Date() } as any;
+  const parsed = createComicSchema.parse(data);
+  const dataToCreate = { ...parsed, publicationDate: parsed.publicationDate ?? new Date() } as any;
   const comic = await createComicMutation(dataToCreate);
   revalidatePath("/comics");
   revalidatePath("/admin/comics");
@@ -40,7 +40,7 @@ export async function createComic(data: z.infer<typeof createComicSchema>) {
   return comic;
 }
 
-export async function updateComic(id: number, data: z.infer<typeof updateComicSchema>) {
+export async function updateComic(id: number, data: unknown) {
   const session = await auth();
 
   if (!session?.user?.id) {
@@ -51,7 +51,8 @@ export async function updateComic(id: number, data: z.infer<typeof updateComicSc
     throw new Error("Unauthorized - Admin only");
   }
 
-  const comic = await updateComicMutation(id, data);
+  const parsed = updateComicSchema.parse(data);
+  const comic = await updateComicMutation(id, parsed as any);
   revalidatePath("/comics");
   revalidatePath(`/comics/${id}`);
   revalidatePath("/admin/comics");

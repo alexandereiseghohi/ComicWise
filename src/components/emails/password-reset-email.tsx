@@ -17,6 +17,7 @@ interface PasswordResetEmailProps {
 }
 
 export default function PasswordResetEmail({ userEmail, resetLink }: PasswordResetEmailProps) {
+  const name = userEmail && userEmail.includes("@") ? userEmail.split("@")[0] : userEmail;
   return (
     <Html>
       <Head />

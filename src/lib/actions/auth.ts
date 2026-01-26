@@ -55,8 +55,13 @@ async function getClientIP(): Promise<string> {
 
 async function checkAuthRateLimit(identifier: string): Promise<boolean> {
   const rateLimit = await checkRateLimit(identifier, {
-    // be defensive in tests where appConfig may be mocked/undefined
-    limit: (appConfig as any)?.rateLimit?.auth ?? 10,
+    // appConfig.rateLimit.auth may be an object { requests, window }
+    // checkRateLimit expects a numeric limit, so extract requests.
+    limit:
+      typeof (appConfig as any)?.rateLimit?.auth === "object" &&
+      (appConfig as any).rateLimit.auth !== null
+        ? (((appConfig as any).rateLimit.auth as { requests?: number }).requests ?? 10)
+        : 10,
   });
   return rateLimit.allowed;
 }
