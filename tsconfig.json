@@ -82,7 +82,15 @@
     "typeRoots": ["./node_modules/@types", "./src/types"],
     "verbatimModuleSyntax": true
   },
-  "exclude": ["node_modules", ".next", "out", "build", "dist", "coverage"],
+  "exclude": [
+    "node_modules",
+    ".next",
+    "out",
+    "build",
+    "dist",
+    "coverage"
+    // "src/types/backup"
+  ],
   "include": [
     "next-env.d.ts",
     "**/*.ts",
