@@ -25,7 +25,7 @@ interface SearchParams {
   status?: string;
 }
 
-async function searchComics(params: SearchParams) {
+async function searchComics(params: SearchParams): Promise<{ comics: any[]; query?: string }> {
   const { q, genre: genreParam, type: typeParam, status } = params;
 
   if (!q || q.trim().length < 2) {
@@ -70,17 +70,17 @@ async function searchComics(params: SearchParams) {
   const filterConditions = [];
 
   if (genreParam) {
-    const genreIds = await db
+    const genreIds = (await db
       .select({ comicId: comicToGenre.comicId })
       .from(comicToGenre)
       .leftJoin(genre, eq(comicToGenre.genreId, genre.id))
-      .where(eq(genre.name, genreParam));
+      .where(eq(genre.name, genreParam))) as Array<{ comicId: number }>;
 
     if (genreIds.length > 0) {
       filterConditions.push(
         inArray(
           comic.id,
-          genreIds.map((g) => g.comicId)
+          genreIds.map((g: { comicId: number }) => g.comicId)
         )
       );
     }
@@ -115,10 +115,10 @@ async function searchComics(params: SearchParams) {
 }
 
 async function getFilterOptions() {
-  const [genres, types] = await Promise.all([
+  const [genres, types] = (await Promise.all([
     db.select().from(genre).orderBy(genre.name),
     db.select().from(type).orderBy(type.name),
-  ]);
+  ])) as [Array<{ id: number; name: string }>, Array<{ id: number; name: string }>];
 
   return { genres, types };
 }
@@ -226,7 +226,7 @@ export default async function SearchPage({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Genres</SelectItem>
-              {genres.map((g) => (
+              {genres.map((g: { id: number; name: string }) => (
                 <SelectItem key={g.id} value={g.name}>
                   {g.name}
                 </SelectItem>
@@ -240,7 +240,7 @@ export default async function SearchPage({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Types</SelectItem>
-              {types.map((t) => (
+              {types.map((t: { id: number; name: string }) => (
                 <SelectItem key={t.id} value={t.name}>
                   {t.name}
                 </SelectItem>
@@ -286,7 +286,7 @@ export default async function SearchPage({
               Found {comics.length} result{comics.length !== 1 ? "s" : ""} for &quot;{query}&quot;
             </p>
             <div className="space-y-3">
-              {comics.map((comic) => (
+              {comics.map((comic: any) => (
                 <ComicCard key={comic.id} comic={comic} />
               ))}
             </div>

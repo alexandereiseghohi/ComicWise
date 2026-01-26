@@ -248,7 +248,7 @@ export async function listComics(input?: ComicFilterInput) {
       },
       limit,
       offset,
-      orderBy: (comics, { desc: descOrder, asc }) => {
+      orderBy: (comics: any, { desc: descOrder, asc }: any) => {
         const order = sortOrder === "desc" ? descOrder : asc;
         switch (sortBy) {
           case "title":

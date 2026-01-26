@@ -1,10 +1,14 @@
 # Developer setup & handoff — ComicWise
 
-TL;DR — Follow the quick commands to bootstrap, then configure your IDE (VS Code recommended). After IDE and env are ready, run validation and start the dev server. Implementation tasks are prioritized below for handoff.
+TL;DR — Follow the quick commands to bootstrap, then configure your IDE (VS Code
+recommended). After IDE and env are ready, run validation and start the dev
+server. Implementation tasks are prioritized below for handoff.
 
 ## Quick bootstrap (copy/paste)
+
 1. Install Node 20.x and pnpm (pnpm >= 10).
 2. From repo root:
+
 ```bash
 pnpm install
 pnpm type-check
@@ -16,15 +20,18 @@ pnpm dev
 ```
 
 ## Prerequisites
+
 - Node 20.x (LTS)
 - pnpm (repo uses pnpm)
 - Git
-- Postgres (local Docker container or cloud); Redis (local or Upstash) if using caching
+- Postgres (local Docker container or cloud); Redis (local or Upstash) if using
+  caching
 - Optional: Playwright browsers: `npx playwright install --with-deps`
 
 ---
 
 ## VS Code setup (recommended)
+
 Do these steps in VS Code workspace mode.
 
 1. Install recommended extensions (or use `.vscode/extensions.json` if present):
@@ -51,13 +58,15 @@ Do these steps in VS Code workspace mode.
      - Node attach (port 9229 for debug)
      - Vitest runs/debug
      - Playwright runs
-   - Ensure `.vscode/tasks.json` has tasks for Dev, Build, Type Check, Lint, Unit tests, E2E tests, DB push/seed
+   - Ensure `.vscode/tasks.json` has tasks for Dev, Build, Type Check, Lint,
+     Unit tests, E2E tests, DB push/seed
 
 4. Env handling
    - Copy `.env.example` → `.env.local` and fill values (do not commit secrets).
    - Confirm `.env.local` is in `.gitignore`.
 
 5. Validation
+
 ```bash
 pnpm validate   # if available
 pnpm test:unit
@@ -67,17 +76,22 @@ pnpm test       # Playwright E2E (if configured)
 ---
 
 ## WebStorm setup (short)
+
 1. Configure Node interpreter to Node 20 and set pnpm as package manager.
 2. TypeScript: use `node_modules/typescript`.
-3. Create Run/Debug configurations for `dev`, `dev:debug`, `build`, `type-check`, `lint`, `test:unit`, `test`.
-4. Enable ESLint & Prettier integrations, and "Run eslint --fix" on save or format on save.
+3. Create Run/Debug configurations for `dev`, `dev:debug`, `build`,
+   `type-check`, `lint`, `test:unit`, `test`.
+4. Enable ESLint & Prettier integrations, and "Run eslint --fix" on save or
+   format on save.
 5. Add Database connection in Database tool using `DATABASE_URL`.
 6. Optional: configure Playwright plugin or run config.
 
 ---
 
 ## .env.example (template)
-Create `.env.example` in repo root with these placeholders (do not commit real secrets):
+
+Create `.env.example` in repo root with these placeholders (do not commit real
+secrets):
 
 ```
 # Database
@@ -113,6 +127,7 @@ SENTRY_DSN=
 ---
 
 ## How to run locally
+
 - Dev server: `pnpm dev`
 - Type check: `pnpm type-check`
 - Lint: `pnpm lint`
@@ -123,24 +138,30 @@ SENTRY_DSN=
 ---
 
 ## Prioritized implementation task list (handoff-ready)
+
 High priority (Sprint 1)
 
-1) User Profile pages & server actions
+1. User Profile pages & server actions
+
 - Files:
-  - `src/app/profile/page.tsx`  (exists)
+  - `src/app/profile/page.tsx` (exists)
   - `src/app/profile/edit/page.tsx` (exists)
   - `src/app/profile/change-password/page.tsx` (exists)
   - `src/lib/schemas/userSchema.ts` (MISSING)
   - `src/actions/user.server.ts` (MISSING)
 - Commands:
+
 ```
 pnpm type-check
 pnpm dev
 pnpm test:unit
 ```
-- Acceptance: pages reachable and server-side validation with Zod; DB updates work.
 
-2) Comics listing, details, chapter reader & DAL
+- Acceptance: pages reachable and server-side validation with Zod; DB updates
+  work.
+
+2. Comics listing, details, chapter reader & DAL
+
 - Files:
   - `src/app/comics/page.tsx` (exists)
   - `src/app/comics/[slug]/page.tsx` (exists)
@@ -148,6 +169,7 @@ pnpm test:unit
   - `src/dal/comic-dal.ts` (exists)
   - `src/lib/utils/comic-utils.ts` (MISSING)
 - Commands:
+
 ```
 pnpm db:push
 pnpm db:seed
@@ -155,9 +177,11 @@ pnpm type-check
 pnpm test:unit
 pnpm dev
 ```
+
 - Acceptance: listing and detail pages render seeded data, chapter reader works.
 
-3) Search
+3. Search
+
 - Files:
   - `src/app/search/page.tsx` (exists)
   - search queries exist under `src/database/queries/comics.ts`
@@ -165,28 +189,34 @@ pnpm dev
 
 Medium priority (Sprint 2)
 
-4) Admin CRUD & polishing
+4. Admin CRUD & polishing
+
 - Many admin pages exist under `src/app/admin/*` — verify and add tests.
 
-5) Caching & image performance
+5. Caching & image performance
+
 - Add `src/lib/cache/redis.ts` (MISSING)
 - Migrate images to `next/image` (components under `src/components/*`)
 
-6) Tests & QA
+6. Tests & QA
+
 - Tests exist under `src/tests/*`. Expand coverage for DAL and actions.
 
 Lower priority (Sprint 3)
 
-7) Docs & deployment
+7. Docs & deployment
+
 - Add `DEVELOPER_SETUP.md` to repo root (content available)
 - Update README and docs/
 
-8) Monitoring & Sentry
+8. Monitoring & Sentry
+
 - Verify sentry config files and `.env.production.template` entries
 
 ---
 
 ## Acceptance checklist for handoff
+
 - [ ] `pnpm install` runs cleanly
 - [ ] `.env.local` example exists and documented
 - [ ] Dev server starts with no TS errors
@@ -199,6 +229,7 @@ Lower priority (Sprint 3)
 ---
 
 ## Blockers & required inputs
+
 - `DATABASE_URL` (local Postgres or cloud)
 - `AUTH_SECRET` / NextAuth keys
 - Redis/Upstash credentials (for caching)
@@ -208,6 +239,7 @@ Lower priority (Sprint 3)
 ---
 
 ## Recommended sprint plan & timebox
+
 - Initial dev setup and IDE config: 1 day
 - Sprint 1 (Profiles + Comics core pages + DAL + basic tests): 1–2 weeks
 - Sprint 2 (Admin, caching, image perf, expanded tests): 1–2 weeks
@@ -216,6 +248,8 @@ Lower priority (Sprint 3)
 ---
 
 ## Next actions
+
 - Create `DEVELOPER_SETUP.md` in repo (this file)
-- Create `.env.local` from `.env.example` and fill secrets locally (do not commit real secrets)
+- Create `.env.local` from `.env.example` and fill secrets locally (do not
+  commit real secrets)
 - Run `pnpm install` and `pnpm dev` to verify

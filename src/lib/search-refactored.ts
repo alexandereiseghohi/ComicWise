@@ -160,7 +160,7 @@ export async function searchComics(filters: AdvancedSearchFilters = {}): Promise
   const comicIds = results.map((r: { id: number }) => r.id);
   const genresMap = await getComicGenres(comicIds);
 
-  const enrichedResults = results.map((result: unknown) => enrichSearchResult(result, genresMap));
+  const enrichedResults = results.map((result: any) => enrichSearchResult(result, genresMap));
 
   return {
     results: enrichedResults,
@@ -307,7 +307,7 @@ async function addGenreCondition(
   conditions.filters.push(
     inArray(
       comic.id,
-      genreComics.map((c) => c.comicId)
+      genreComics.map((c: any) => c.comicId)
     )
   );
   return true;
@@ -326,7 +326,7 @@ async function resolveGenreIds(genreIds?: number[], genreNames?: string[]): Prom
       .from(genre)
       .where(or(...genreNames.map((name) => sql`LOWER(${genre.name}) = LOWER(${name})`)));
 
-    ids.push(...genresResult.map((g) => g.id));
+    ids.push(...(genresResult as any[]).map((g) => g.id));
   }
 
   return [...new Set(ids)]; // Deduplicate
@@ -612,8 +612,8 @@ export async function getTrendingComics(
     .orderBy(desc(comic.views))
     .limit(limit);
 
-  const comicIds = results.map((r) => r.id);
+  const comicIds = results.map((r: any) => r.id);
   const genresMap = await getComicGenres(comicIds);
 
-  return results.map((result) => enrichSearchResult(result, genresMap));
+  return results.map((result: any) => enrichSearchResult(result, genresMap));
 }

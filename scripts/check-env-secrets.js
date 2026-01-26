@@ -22,7 +22,7 @@ const targets = [
 function readFileSafe(fp) {
   try {
     return fs.readFileSync(fp, "utf8");
-  } catch (e) {
+  } catch {
     return null;
   }
 }
@@ -43,20 +43,20 @@ function isPlaceholder(val) {
 function looksLikeSecret(val) {
   if (!val) return false;
   // Trim quotes
-  const v = val.replace(/^\s*['\"]?|['\"]?\s*$/g, "");
+  const v = val.replaceAll(/^\s*["']?|["']?\s*$/g, "");
   if (isPlaceholder(v)) return false;
   // Long base64-like strings
-  if (/^[A-Za-z0-9+\/=]{32,}$/.test(v)) return true;
+  if (/^[\d+/=A-Za-z]{32,}$/.test(v)) return true;
   // JWT-like (three base64 segments separated by .)
-  if (/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(v)) return true;
+  if (/^(?:[\w-]+\.){2}[\w-]+$/.test(v)) return true;
   // URLs containing credentials (protocol://user:pass@host)
-  if (/:\/\/[^:\s]+:[^@\s]+@/.test(v)) return true;
+  if (/:\/\/[^\s:]+:[^\s@]+@/.test(v)) return true;
   // Redis URL with auth
   if (/redis:\/\/.+:.+@/.test(v)) return true;
   // Contains long sequences of special chars or pipes (escape the slash)
-  if (/[|`~!@#$%^&*()_+=\[\]{};:'"\\|<>\/\?]{6,}/.test(v)) return true;
+  if (/[!"#$%&'()*+/:;<=>?@[\\\]^_`{|}~]{6,}/.test(v)) return true;
   // Common key names with non-placeholder short tokens
-  if (/^(?:[A-Za-z0-9_\-]{8,})$/.test(v) && v.length >= 20) return true;
+  if (/^[\w\-]{8,}$/.test(v) && v.length >= 20) return true;
   return false;
 }
 
@@ -83,7 +83,7 @@ function scanFile(fp) {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
     if (!line || line.startsWith("#")) continue;
-    const m = line.match(/^([A-Za-z0-9_\-\.]+)\s*=\s*(.*)$/);
+    const m = line.match(/^([\w.\-]+)\s*=\s*(.*)$/);
     if (!m) continue;
     const key = m[1];
     let val = m[2] || "";

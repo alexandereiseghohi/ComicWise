@@ -70,11 +70,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const bookmark = await addBookmark(
-      session.user.id,
-      validation.data.comicId,
-      validation.data.lastReadChapterId
-    );
+    const comicId =
+      typeof validation.data.comicId === "string"
+        ? Number.parseInt(validation.data.comicId, 10)
+        : validation.data.comicId;
+
+    const lastReadChapterId =
+      validation.data.lastReadChapterId === undefined || validation.data.lastReadChapterId === null
+        ? undefined
+        : typeof validation.data.lastReadChapterId === "string"
+          ? Number.parseInt(validation.data.lastReadChapterId, 10)
+          : validation.data.lastReadChapterId;
+
+    const bookmark = await addBookmark(session.user.id, comicId, lastReadChapterId);
 
     return NextResponse.json(
       {
@@ -130,13 +138,24 @@ export async function PATCH(request: NextRequest) {
     let updatedBookmark;
 
     if (validation.data.lastReadChapterId !== undefined) {
+      // normalize comicId to number before calling mutation
+      const comicIdNum = typeof comicId === "string" ? Number.parseInt(comicId, 10) : comicId;
+      const lastReadChapterIdNum =
+        typeof validation.data.lastReadChapterId === "string"
+          ? Number.parseInt(validation.data.lastReadChapterId, 10)
+          : validation.data.lastReadChapterId;
       updatedBookmark = await updateReadingProgress(
         session.user.id,
-        comicId,
-        validation.data.lastReadChapterId
+        comicIdNum,
+        lastReadChapterIdNum
       );
     } else if (validation.data.notes !== undefined) {
-      updatedBookmark = await updateBookmarkNotes(session.user.id, comicId, validation.data.notes);
+      const comicIdNum = typeof comicId === "string" ? Number.parseInt(comicId, 10) : comicId;
+      updatedBookmark = await updateBookmarkNotes(
+        session.user.id,
+        comicIdNum,
+        validation.data.notes
+      );
     }
 
     return NextResponse.json({

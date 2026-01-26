@@ -177,7 +177,7 @@ export class ReadingProgressService {
             .orderBy(desc(readingProgress.lastReadAt))
             .limit(limit);
 
-          return history.map((item) => ({
+          return history.map((item: any) => ({
             id: item.id,
             chapterId: item.chapterId,
             comicId: item.comicId,

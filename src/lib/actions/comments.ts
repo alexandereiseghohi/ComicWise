@@ -25,9 +25,15 @@ export async function createComment(
   formData: FormData
 ): Promise<ActionResponse<{ id: number }>> {
   try {
-    // Rate limiting
+    // Rate limiting - be defensive in case tests mock `appConfig` without
+    // providing a default export. Use safe defaults so unit tests can mock
+    // the `checkRateLimit` named export independently.
+    const defaultLimit = (appConfig && (appConfig.rateLimit as any)?.default) ?? {
+      requests: 10,
+      window: 10,
+    };
     const rateLimit = await checkRateLimit(`comment:${userId}`, {
-      limit: appConfig.rateLimit.default ?? 10,
+      limit: defaultLimit,
     });
     if (!rateLimit.allowed) {
       return error("Too many comments. Please try again later.");

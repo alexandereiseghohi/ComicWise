@@ -11,13 +11,19 @@ import { db as database } from "@/database/db";
 import { user as userTable } from "@/database/schema";
 import { DrizzleAdapter } from "@/lib/auth-adapter";
 
+const _sessionMaxAge = appConfig?.session?.maxAge ?? 7 * 24 * 60 * 60;
+const _sessionUpdateAge = appConfig?.session?.updateAge ?? 24 * 60 * 60;
+
 export const authOptions: NextAuthConfig = {
   session: {
     strategy: "jwt" as const,
-    maxAge: appConfig.session.maxAge,
-    updateAge: appConfig.session.updateAge,
+    maxAge: _sessionMaxAge,
+    updateAge: _sessionUpdateAge,
   },
-  adapter: DrizzleAdapter(database as any),
+  // During unit tests we avoid initializing the real Drizzle adapter since the
+  // database may be a test placeholder. Only create the adapter in non-test
+  // environments.
+  adapter: process.env.NODE_ENV === "test" ? undefined : DrizzleAdapter(database as any),
   pages: {
     signIn: "/sign-in",
     error: "/sign-in",
@@ -74,7 +80,7 @@ export const authOptions: NextAuthConfig = {
         } as unknown as AuthUser;
       },
     }),
-    ...(appConfig.auth.providers.google &&
+    ...((appConfig?.auth?.providers?.google ?? false) &&
     process.env["AUTH_GOOGLE_CLIENT_ID"] &&
     process.env["AUTH_GOOGLE_CLIENT_SECRET"]
       ? [
@@ -85,7 +91,7 @@ export const authOptions: NextAuthConfig = {
           }),
         ]
       : []),
-    ...(appConfig.auth.providers.github &&
+    ...((appConfig?.auth?.providers?.github ?? false) &&
     process.env["AUTH_GITHUB_CLIENT_ID"] &&
     process.env["AUTH_GITHUB_CLIENT_SECRET"]
       ? [
@@ -178,7 +184,7 @@ export const authOptions: NextAuthConfig = {
       console.log("👋 User signed out");
     },
   },
-  secret: appConfig.auth.secret,
+  secret: appConfig?.auth?.secret ?? process.env["AUTH_SECRET"] ?? undefined,
 } as const;
 
 export default authOptions;

@@ -68,7 +68,7 @@ export function BookmarkActions({
           // Revert on failure
           setBookmarked(previousBookmarked);
           setStatus(previousStatus);
-          toast.error(result.error ?? "Failed to add bookmark");
+          toast.error((result as any).error ?? "Failed to add bookmark");
         }
       } catch (error) {
         // Revert on error
@@ -104,7 +104,7 @@ export function BookmarkActions({
           // Revert on failure
           setBookmarked(previousBookmarked);
           setStatus(previousStatus);
-          toast.error(result.error ?? "Failed to remove bookmark");
+          toast.error((result as any).error ?? "Failed to remove bookmark");
         }
       } catch (error) {
         // Revert on error
@@ -134,7 +134,7 @@ export function BookmarkActions({
           router.refresh();
         } else {
           setStatus(previousStatus);
-          toast.error(result.error ?? "Failed to update status");
+          toast.error((result as any).error ?? "Failed to update status");
         }
       } catch (error) {
         setStatus(previousStatus);

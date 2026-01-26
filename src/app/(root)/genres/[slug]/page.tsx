@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { db } from "@/database";
 import { author, comic, comicToGenre, genre, type } from "@/database/schema";
 import { normalizeImagePath } from "@/lib/image-path";
+import type { ComicWithRelations } from "@/types/database";
 import { desc, eq, inArray, sql } from "drizzle-orm";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
@@ -29,7 +30,7 @@ interface PageProps {
 
 // Generate static params for all genres
 export async function generateStaticParams() {
-  const genres = await db.select({ slug: genre.slug }).from(genre);
+  const genres = (await db.select({ slug: genre.slug }).from(genre)) as Array<{ slug: string }>;
   return genres.map((g) => ({ slug: g.slug }));
 }
 
@@ -39,12 +40,16 @@ async function getGenre(slug: string) {
   return genreData;
 }
 
-async function getGenreComics(genreId: number, sort: string = "newest", page: number = 1) {
+async function getGenreComics(
+  genreId: number,
+  sort: string = "newest",
+  page: number = 1
+): Promise<{ comics: ComicWithRelations[]; totalPages: number; currentPage: number }> {
   const ITEMS_PER_PAGE = 24;
   const offset = (page - 1) * ITEMS_PER_PAGE;
 
   // Get comic IDs for this genre
-  const comicIds = await db
+  const comicIds: Array<{ comicId: number }> = await db
     .select({ comicId: comicToGenre.comicId })
     .from(comicToGenre)
     .where(eq(comicToGenre.genreId, genreId));
@@ -117,7 +122,7 @@ async function getGenreComics(genreId: number, sort: string = "newest", page: nu
   return { comics, totalPages, currentPage: page };
 }
 
-function ComicCard({ comic }: { comic: any }) {
+function ComicCard({ comic }: { comic: ComicWithRelations }) {
   return (
     <Link href={`/comics/${comic.slug}`}>
       <Card className="group h-full overflow-hidden transition-all hover:shadow-lg">

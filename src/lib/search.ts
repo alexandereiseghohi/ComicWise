@@ -211,7 +211,7 @@ async function addGenreFilters(
       .from(genre)
       .where(inArray(genre.name, genreNames));
 
-    ids.push(...resolved.map((g) => g.id));
+    ids.push(...(resolved as any[]).map((g: any) => g.id));
   }
 
   if (ids.length === 0) {
@@ -231,7 +231,7 @@ async function addGenreFilters(
   conditions.filters.push(
     inArray(
       comic.id,
-      comicIds.map((c) => c.comicId)
+      comicIds.map((c: any) => c.comicId)
     )
   );
   return true;
@@ -311,7 +311,7 @@ async function enrichSearchResults(results: SearchResult[]): Promise<SearchResul
     return [];
   }
 
-  const comicIds = results.map((r) => r.id);
+  const comicIds = results.map((r: any) => r.id);
   const genres = await db
     .select({
       comicId: comicToGenre.comicId,
@@ -329,7 +329,7 @@ async function enrichSearchResults(results: SearchResult[]): Promise<SearchResul
     genreMap.get(comicId)?.push(genreName);
   }
 
-  return results.map((result) => ({
+  return results.map((result: any) => ({
     ...result,
     genres: genreMap.get(result.id) ?? [],
   }));

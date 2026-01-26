@@ -38,8 +38,8 @@ export class FileUtils {
       // Escape regex special chars, then convert wildcards '*' and '?' to regex equivalents
       const escapeForRegex = (s: string) => s.replaceAll(/[$()+.[\\\]^{|}]/g, "\\$&");
       const wildcardToRegex = escapeForRegex(basePattern)
-        .replaceAll('\\*', ".*")
-        .replaceAll('\\?', ".");
+        .replaceAll("\\*", ".*")
+        .replaceAll("\\?", ".");
       const regex = new RegExp("^" + wildcardToRegex + "$");
 
       const files = await fs.readdir(dir);

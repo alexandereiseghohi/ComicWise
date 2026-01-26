@@ -22,8 +22,16 @@ export async function createChapter(data: z.infer<typeof createChapterSchema>) {
     throw new Error("Unauthorized - Admin only");
   }
 
-  const chapter = await createChapterMutation(data);
-  revalidatePath(`/comics/${data.comicId}`);
+  const comicIdNum =
+    typeof data.comicId === "string" ? Number.parseInt(data.comicId, 10) : data.comicId;
+  const createData = {
+    ...data,
+    comicId: comicIdNum,
+    releaseDate: data.releaseDate ?? new Date(),
+  } as any;
+
+  const chapter = await createChapterMutation(createData);
+  revalidatePath(`/comics/${createData.comicId}`);
   revalidatePath("/admin/chapters");
 
   return chapter;

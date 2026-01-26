@@ -25,7 +25,7 @@ async function LatestComics() {
       `}
     >
       {comics.map((comic) => (
-        <ComicCard key={comic.slug} comic={comic} authorName={null} typeName={null} />
+        <ComicCard key={comic.slug} comic={comic as any} authorName={null} typeName={null} />
       ))}
     </div>
   );
@@ -43,7 +43,7 @@ async function PopularComics() {
       `}
     >
       {comics.map((comic) => (
-        <ComicCard key={comic.slug} comic={comic} authorName={null} typeName={null} />
+        <ComicCard key={comic.slug} comic={comic as any} authorName={null} typeName={null} />
       ))}
     </div>
   );

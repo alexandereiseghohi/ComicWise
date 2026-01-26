@@ -162,7 +162,7 @@ export async function getReadingHistory(
       .orderBy(desc(readingProgress.lastReadAt))
       .limit(limit);
 
-    const formattedHistory: ReadingHistory[] = history.map((item) => ({
+    const formattedHistory: ReadingHistory[] = history.map((item: any) => ({
       id: item.id,
       comicId: item.comicId,
       comicTitle: item.comicTitle ?? "Unknown",

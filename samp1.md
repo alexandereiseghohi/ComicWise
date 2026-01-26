@@ -180,3 +180,13 @@ next-app@latest at .github/prompts newSetup.prompt.md
 
 Modify seeding system and image services to ensure if using relative image it
 must start with a leading slash "/" or be an absolute URL (http:// or https://)
+
+@workspace /explain and implement all your suggestions, recommendations for the project seeding system, setup page,routes,components,test to consume and run  the project seeding system then  Run  the tests  and fix all errors then rerun tests then delete all failed tests and recreate then without errors then rerun test until all green.
+implement cacheComponents and fix all incompatible with dynamic route segments.
+Convert all any type occurrences to specific types from usage or Convert functionality to be Generic. Fix all typescript, linting errors and warnings in the project. 
+Create or Modify,Validate and run #file:scripts/_.ts to Delete all duplicate or unused zod schemas, all duplicate or unused components,functions, types, interfaces, classes, empty folders, blank files, all files that contains .backup. 
+Create or Modify, Validate and run #file:scripts/_.ts to Uninstall all unused packages with pnpm. 
+fix all type-check,lint and build warnings and errors.
+
+Delete src/types/* and create an optimized src/types/*  for all @workspace 
+interfaces,types,modules,classes,zod schemas used by @workspace use drf practices

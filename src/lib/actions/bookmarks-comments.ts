@@ -34,7 +34,10 @@ export async function createBookmark(
 
     // Check if bookmark already exists
     const existing = await database.query.bookmark.findFirst({
-      where: and(eq(bookmark.userId, validated.userId), eq(bookmark.comicId, validated.comicId)),
+      where: and(
+        eq(bookmark.userId, validated.userId as string),
+        eq(bookmark.comicId, validated.comicId as number)
+      ),
     });
 
     if (existing) {
@@ -225,7 +228,7 @@ export async function createComment(
     // Get chapter and comic info for notifications
     const { sendCommentNotificationEmail } = await import("@/lib/nodemailer");
     const chapterData = await database.query.chapter.findFirst({
-      where: (chapter, { eq }) => eq(chapter.id, validated.chapterId),
+      where: (chapter: any, { eq }: any) => eq(chapter.id, validated.chapterId),
       with: {
         comic: {
           with: {

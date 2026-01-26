@@ -88,11 +88,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const comicIdNum =
+      typeof validation.data.comicId === "string"
+        ? Number.parseInt(validation.data.comicId, 10)
+        : validation.data.comicId;
+
     const newChapter = await createChapter({
       title: validation.data.title,
       chapterNumber: validation.data.chapterNumber,
       releaseDate: validation.data.releaseDate,
-      comicId: validation.data.comicId,
+      comicId: comicIdNum,
     });
 
     if (!newChapter) {
@@ -102,11 +107,11 @@ export async function POST(request: NextRequest) {
     // Send email notifications to users who bookmarked this comic
     if (body.sendNotifications !== false) {
       try {
-        const bookmarkedUsers = await getUsersBookmarkedComic(validation.data.comicId);
+        const bookmarkedUsers = await getUsersBookmarkedComic(comicIdNum);
 
         // Send notifications asynchronously
         Promise.all(
-          bookmarkedUsers.map((user) =>
+          bookmarkedUsers.map((user: any) =>
             sendNewChapterNotification({
               to: user.email,
               userName: user.name ?? "Reader",

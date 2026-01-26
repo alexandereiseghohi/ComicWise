@@ -167,7 +167,8 @@ _Last updated: 2026-01-20T04:24:35.792Z_
 
 ## 🔐 Environment hygiene & secret scanning
 
-We enforce a lightweight secret-scanning step to prevent committing sensitive values (API keys, tokens, DB credentials) to the repository.
+We enforce a lightweight secret-scanning step to prevent committing sensitive
+values (API keys, tokens, DB credentials) to the repository.
 
 Local usage
 
@@ -183,11 +184,28 @@ pnpm run check-env-secrets
 
 CI
 
-A GitHub Actions workflow is included at `.github/workflows/check-env-secrets.yml` which runs `pnpm run check-env-secrets` on pull requests and pushes to `main`. The job will fail the run if any potential secrets are detected — fix or redact before merging.
+A GitHub Actions workflow is included at
+`.github/workflows/check-env-secrets.yml` which runs
+`pnpm run check-env-secrets` on pull requests and pushes to `main`. The job will
+fail the run if any potential secrets are detected — fix or redact before
+merging.
 
 Guidance
 
-- Never commit real `.env` files. Use `.env.example` or templates with placeholders.
-- Keep local secrets in `.env.local` (ignored by git) and back them up locally if needed (for example, `.env.local.bak`).
-- Rotate exposed tokens immediately and replace them with placeholders in the repo.
+- Never commit real `.env` files. Use `.env.example` or templates with
+  placeholders.
+- Keep local secrets in `.env.local` (ignored by git) and back them up locally
+  if needed (for example, `.env.local.bak`).
+- Rotate exposed tokens immediately and replace them with placeholders in the
+  repo.
 
+Cache adapter (test/CI)
+
+- The project uses a compatibility cache adapter layer (`src/lib/cache/index.ts`). For local development the Redis-backed client is used by default. In tests and CI we recommend using the in-memory adapter to avoid external Redis dependencies. To force the in-memory adapter in tests set:
+
+```bash
+export CACHE_ADAPTER=in-memory
+export SKIP_ENV_VALIDATION=true
+```
+
+The test harness already sets these variables when running unit tests via Vitest.

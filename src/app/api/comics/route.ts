@@ -92,12 +92,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const publicationDate = validation.data.publicationDate ?? new Date();
+
     const newComic = await createComic({
       title: validation.data.title,
       description: validation.data.description,
       coverImage: validation.data.coverImage,
       status: validation.data.status,
-      publicationDate: validation.data.publicationDate,
+      publicationDate,
       authorId: validation.data.authorId,
       artistId: validation.data.artistId,
       typeId: validation.data.typeId,

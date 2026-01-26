@@ -186,7 +186,7 @@ export async function getComic(comicSlug: string): Promise<ComicWithDetails | nu
     .leftJoin(genre, eq(comicToGenre.genreId, genre.id))
     .where(eq(comicToGenre.comicId, result[0].comic.id));
 
-  const genres = genresResult.map((g) => g.genre as Genre).filter(Boolean);
+  const genres = (genresResult as any[]).map((g: any) => g.genre as Genre).filter(Boolean);
 
   // Fetch bookmarks for this comic
   const bookmarks = await database
@@ -297,7 +297,16 @@ export async function getComicsByType(typeId: number, limit: number = 12) {
  * param limit
  * @param limit
  */
-export async function getLatestComics(limit: number = 12) {
+export async function getLatestComics(limit: number = 12): Promise<
+  Array<{
+    slug: string;
+    title: string;
+    coverImage: string | null;
+    rating: number | null;
+    status: string;
+    createdAt: Date | null;
+  }>
+> {
   return await database
     .select({
       slug: comic.slug,
@@ -317,7 +326,15 @@ export async function getLatestComics(limit: number = 12) {
  * param limit
  * @param limit
  */
-export async function getPopularComics(limit: number = 12) {
+export async function getPopularComics(limit: number = 12): Promise<
+  Array<{
+    slug: string;
+    title: string;
+    coverImage: string | null;
+    rating: number | null;
+    views: number | null;
+  }>
+> {
   return await database
     .select({
       slug: comic.slug,

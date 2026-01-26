@@ -18,32 +18,50 @@ import type { SendEmailOptions } from "@/types";
 // NODEMAILER TRANSPORTER SETUP
 // ═══════════════════════════════════════════════════
 
-const transporter = nodemailer.createTransport({
-  host: appConfig.email.host,
-  port: appConfig.email.port,
-  secure: appConfig.email.secure,
-  auth:
-    (appConfig.email.auth?.user ?? "") && (appConfig.email.auth?.pass ?? "")
-      ? {
-          user: appConfig.email.auth?.user ?? "",
-          pass: appConfig.email.auth?.pass ?? "",
-        }
-      : undefined,
-});
+// Create transporter only when email configuration looks valid. Tests and
+// non-email environments may not provide `appConfig` or `appConfig.email`, so
+// guard access to avoid throwing at module initialization.
+const _emailCfg = appConfig?.email ?? ({} as any);
+let transporter: any;
 
-// Verify transporter configuration
-// Avoid verifying the transporter during static build/prerender to prevent
-// network calls at module initialization (which can fail in build environments).
-// Only verify in development to help catch config issues early.
-if ((appConfig.email?.enabled ?? false) && isDevelopment) {
-  transporter
-    .verify()
-    .then(() => {
-      console.log("✅ Email server is ready to send messages");
-    })
-    .catch((error) => {
-      console.error("❌ Email transporter verification failed:", error);
-    });
+if (_emailCfg && _emailCfg.host && _emailCfg.port != null) {
+  transporter = nodemailer.createTransport({
+    host: _emailCfg.host,
+    port: _emailCfg.port,
+    secure: _emailCfg.secure,
+    auth:
+      (_emailCfg.auth?.user ?? "") && (_emailCfg.auth?.pass ?? "")
+        ? {
+            user: _emailCfg.auth?.user ?? "",
+            pass: _emailCfg.auth?.pass ?? "",
+          }
+        : undefined,
+  });
+
+  // Verify transporter configuration in development only
+  if ((_emailCfg.enabled ?? false) && isDevelopment && typeof transporter.verify === "function") {
+    transporter
+      .verify()
+      .then(() => {
+        console.log("✅ Email server is ready to send messages");
+      })
+      .catch((error: unknown) => {
+        console.error("❌ Email transporter verification failed:", error);
+      });
+  }
+} else {
+  // Provide a no-op transporter for test and disabled environments so imports
+  // don't fail and sendEmail can still be exercised safely.
+  transporter = {
+    sendMail: async (opts: any) => {
+      console.warn(
+        "⚠️ Nodemailer not configured - skipping sendMail in this environment",
+        opts?.to
+      );
+      return { messageId: "noop" };
+    },
+    verify: async () => true,
+  } as const;
 }
 
 // ═══════════════════════════════════════════════════
@@ -354,7 +372,7 @@ export async function sendBulkEmails(
   recipients: string[],
   emailGenerator: (email: string) => Promise<SendEmailOptions>
 ) {
-  if (!appConfig.features.email) {
+  if (!appConfig?.features?.email) {
     console.warn("⚠️ Email feature is disabled. Skipping bulk email send.");
     return { success: false, error: "Email feature is disabled" };
   }

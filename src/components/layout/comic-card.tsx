@@ -10,8 +10,11 @@ interface ComicCardProps {
   comic: Partial<Comic> & {
     slug: string;
     title: string;
-    coverImage: string;
-    rating?: string | null;
+    // coverImage may be null coming from some queries, accept optional/null
+    coverImage?: string | null;
+    rating?: number | string | null;
+    views?: number | null;
+    status?: string | null;
   };
   authorName?: string | null;
   typeName?: string | null;

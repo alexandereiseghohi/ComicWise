@@ -71,10 +71,10 @@ async function initializeMetadataCache(): Promise<MetadataCache> {
   ]);
 
   const cache: MetadataCache = {
-    types: new Map(types.map((t) => [t.name, t.id])),
-    authors: new Map(authors.map((a) => [a.name, a.id])),
-    artists: new Map(artists.map((a) => [a.name, a.id])),
-    genres: new Map(genres.map((g) => [g.name, g.id])),
+    types: new Map((types as any[]).map((t: any) => [t.name, t.id])),
+    authors: new Map((authors as any[]).map((a: any) => [a.name, a.id])),
+    artists: new Map((artists as any[]).map((a: any) => [a.name, a.id])),
+    genres: new Map((genres as any[]).map((g: any) => [g.name, g.id])),
   };
 
   const duration = timer();

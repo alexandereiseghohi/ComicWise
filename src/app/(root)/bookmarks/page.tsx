@@ -2,6 +2,7 @@ import { ComicCard } from "@/components/layout/comic-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getUserBookmarks } from "@/database/queries";
+import type { Bookmark, Chapter, Comic } from "@/types/database";
 import { auth } from "auth";
 import { BookmarkX } from "lucide-react";
 import type { Metadata } from "next";
@@ -20,7 +21,11 @@ export default async function BookmarksPage() {
     redirect("/sign-in?callbackUrl=/bookmarks");
   }
 
-  const bookmarks = await getUserBookmarks(session.user.id);
+  const bookmarks = (await getUserBookmarks(session.user.id)) as Array<{
+    bookmark: Bookmark;
+    comic: Comic | null;
+    chapter: Chapter | null;
+  }>;
 
   if (bookmarks.length === 0) {
     return (
@@ -62,30 +67,40 @@ export default async function BookmarksPage() {
           lg:grid-cols-4
         `}
       >
-        {bookmarks.map(({ bookmark, comic, chapter }) => {
-          if (!comic) return null;
+        {bookmarks.map(
+          ({
+            bookmark,
+            comic,
+            chapter,
+          }: {
+            bookmark: Bookmark;
+            comic: Comic | null;
+            chapter: Chapter | null;
+          }) => {
+            if (!comic) return null;
 
-          return (
-            <div key={bookmark.comicId} className="group relative">
-              <ComicCard comic={comic} authorName={null} typeName={null} />
-              {chapter && (
-                <div className="absolute top-2 left-2 z-10">
-                  <Link href={`/comics/${comic.id}/read/${chapter.id}`}>
-                    <Badge
-                      className={`
+            return (
+              <div key={bookmark.comicId} className="group relative">
+                <ComicCard comic={comic} authorName={null} typeName={null} />
+                {chapter && (
+                  <div className="absolute top-2 left-2 z-10">
+                    <Link href={`/comics/${comic.id}/read/${chapter.id}`}>
+                      <Badge
+                        className={`
                         cursor-pointer
                         hover:bg-primary/90
                       `}
-                      variant="default"
-                    >
-                      Continue: Ch. {chapter.chapterNumber}
-                    </Badge>
-                  </Link>
-                </div>
-              )}
-            </div>
-          );
-        })}
+                        variant="default"
+                      >
+                        Continue: Ch. {chapter.chapterNumber}
+                      </Badge>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            );
+          }
+        )}
       </div>
     </div>
   );

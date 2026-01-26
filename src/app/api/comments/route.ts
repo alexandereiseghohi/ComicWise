@@ -80,10 +80,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const chapterIdNum = Number(validation.data.chapterId);
+    if (Number.isNaN(chapterIdNum)) {
+      return NextResponse.json({ error: "Invalid chapterId" }, { status: 400 });
+    }
+
     const newComment = await createComment({
       content: validation.data.content,
       userId: session.user.id,
-      chapterId: validation.data.chapterId,
+      chapterId: chapterIdNum as number,
     });
 
     if (!newComment) {

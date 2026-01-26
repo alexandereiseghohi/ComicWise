@@ -24,11 +24,16 @@ export async function getComicById(id: number) {
 export async function createComic(data: z.infer<typeof createComicSchema>) {
   const session = await auth();
 
-  if (!session?.user?.id || session.user.role !== "admin") {
+  if (!session?.user?.id) {
+    throw new Error("Unauthorized");
+  }
+
+  if (session.user.role !== "admin") {
     throw new Error("Unauthorized - Admin only");
   }
 
-  const comic = await createComicMutation(data);
+  const dataToCreate = { ...data, publicationDate: data.publicationDate ?? new Date() } as any;
+  const comic = await createComicMutation(dataToCreate);
   revalidatePath("/comics");
   revalidatePath("/admin/comics");
 
@@ -38,7 +43,11 @@ export async function createComic(data: z.infer<typeof createComicSchema>) {
 export async function updateComic(id: number, data: z.infer<typeof updateComicSchema>) {
   const session = await auth();
 
-  if (!session?.user?.id || session.user.role !== "admin") {
+  if (!session?.user?.id) {
+    throw new Error("Unauthorized");
+  }
+
+  if (session.user.role !== "admin") {
     throw new Error("Unauthorized - Admin only");
   }
 
@@ -53,7 +62,11 @@ export async function updateComic(id: number, data: z.infer<typeof updateComicSc
 export async function deleteComic(id: number) {
   const session = await auth();
 
-  if (!session?.user?.id || session.user.role !== "admin") {
+  if (!session?.user?.id) {
+    throw new Error("Unauthorized");
+  }
+
+  if (session.user.role !== "admin") {
     throw new Error("Unauthorized - Admin only");
   }
 

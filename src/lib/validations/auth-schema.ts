@@ -4,6 +4,16 @@
 // Canonical centralized validation schemas
 import { z } from "zod";
 
+// Helper: accept either a valid email OR a non-empty username string
+function isEmailOrUsername(value: string) {
+  const v = value.trim();
+  if (v.includes("@")) {
+    // simple email regex
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  }
+  return v.length > 0;
+}
+
 // ═══════════════════════════════════════════════════
 // AUTHENTICATION SCHEMAS
 // ═══════════════════════════════════════════════════
@@ -12,9 +22,9 @@ export const signInSchema = z
   .object({
     email: z
       .string({ error: "Email is required" })
-      .email("Invalid email address")
       .trim()
-      .toLowerCase(),
+      .transform((s) => s.toLowerCase())
+      .refine((s) => isEmailOrUsername(s), "Invalid email or username"),
     password: z
       .string({ error: "Password is required" })
       .min(8, "Password must be at least 8 characters")
@@ -31,9 +41,9 @@ export const signUpSchema = z
       .trim(),
     email: z
       .string({ error: "Email is required" })
-      .email("Invalid email address")
       .trim()
-      .toLowerCase(),
+      .transform((s) => s.toLowerCase())
+      .refine((s) => isEmailOrUsername(s), "Invalid email or username"),
     password: z
       .string({ error: "Password is required" })
       .min(8, "Password must be at least 8 characters")
@@ -54,9 +64,9 @@ export const forgotPasswordSchema = z
   .object({
     email: z
       .string({ error: "Email is required" })
-      .email("Invalid email address")
       .trim()
-      .toLowerCase(),
+      .transform((s) => s.toLowerCase())
+      .refine((s) => isEmailOrUsername(s), "Invalid email or username"),
   })
   .strict();
 
@@ -89,9 +99,9 @@ export const resendVerificationEmailSchema = z
   .object({
     email: z
       .string({ error: "Email is required" })
-      .email("Invalid email address")
       .trim()
-      .toLowerCase(),
+      .transform((s) => s.toLowerCase())
+      .refine((s) => isEmailOrUsername(s), "Invalid email or username"),
   })
   .strict();
 

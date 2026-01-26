@@ -45,7 +45,9 @@ interface Comic {
   } | null;
 }
 
-async function getComics(params: SearchParams) {
+async function getComics(
+  params: SearchParams
+): Promise<{ comics: Comic[]; totalPages: number; currentPage: number }> {
   const { genre: genreParam, type: typeParam, status, sort = "newest", page = "1" } = params;
   const limit = 24;
   const offset = (Number.parseInt(page) - 1) * limit;
@@ -79,7 +81,7 @@ async function getComics(params: SearchParams) {
   const conditions = [];
 
   if (genreParam) {
-    const genreIds = await db
+    const genreIds: Array<{ comicId: number | null }> = await db
       .select({ comicId: comicToGenre.comicId })
       .from(comicToGenre)
       .leftJoin(genre, eq(comicToGenre.genreId, genre.id))
@@ -141,11 +143,14 @@ async function getComics(params: SearchParams) {
   };
 }
 
-async function getFilterOptions() {
-  const [genres, types] = await Promise.all([
+async function getFilterOptions(): Promise<{
+  genres: Array<{ id: number; name: string }>;
+  types: Array<{ id: number; name: string }>;
+}> {
+  const [genres, types] = (await Promise.all([
     db.select().from(genre).orderBy(asc(genre.name)),
     db.select().from(type).orderBy(asc(type.name)),
-  ]);
+  ])) as [Array<{ id: number; name: string }>, Array<{ id: number; name: string }>];
 
   return { genres, types };
 }

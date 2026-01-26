@@ -212,7 +212,7 @@ export class SeederDal {
     title: string
   ): Promise<{ id: number; exists: boolean } | null> {
     const existing = await db.query.comic.findFirst({
-      where: (table, { eq, or }) => or(eq(table.slug, slug), eq(table.title, title)),
+      where: (table: any, { eq, or }: any) => or(eq(table.slug, slug), eq(table.title, title)),
     });
 
     return existing ? { id: existing.id, exists: true } : null;

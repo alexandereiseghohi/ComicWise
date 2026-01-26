@@ -24,8 +24,9 @@ export async function createChapter(
     const validated = createChapterSchema.parse(input) as ParsedCreateChapter;
 
     // Check if comic exists
+    const comicIdNum = Number(validated.comicId);
     const comicRecord = await database.query.comic.findFirst({
-      where: eq(comic.id, validated.comicId),
+      where: eq(comic.id, comicIdNum),
     });
 
     if (!comicRecord) {
@@ -54,7 +55,7 @@ export async function createChapter(
     }
 
     revalidatePath("/admin/chapters");
-    revalidatePath(`/comics/${validated.comicId}`);
+    revalidatePath(`/comics/${comicIdNum}`);
 
     return {
       success: true,
@@ -222,7 +223,7 @@ export async function listChapters(input?: ChapterFilterInput) {
       },
       limit,
       offset,
-      orderBy: (chapters, { desc: descOrder, asc }) => {
+      orderBy: (chapters: any, { desc: descOrder, asc }: any) => {
         const order = sortOrder === "desc" ? descOrder : asc;
         switch (sortBy) {
           case "releaseDate":

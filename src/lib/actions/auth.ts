@@ -35,15 +35,22 @@ import { headers } from "next/headers";
 // ═══════════════════════════════════════════════════
 
 async function getClientIP(): Promise<string> {
-  const headersList = await headers();
-  const forwarded = headersList.get("x-forwarded-for");
-  const realIp = headersList.get("x-real-ip");
+  try {
+    // `headers()` can be a platform Headers object or a test/mock that
+    // resembles it. Narrow the type so we can call `get` without TS errors.
+    const headersList = headers() as unknown as { get(name: string): string | undefined };
+    const forwarded = headersList.get("x-forwarded-for");
+    const realIp = headersList.get("x-real-ip");
 
-  if (forwarded) {
-    return forwarded.split(",")[0]?.trim() ?? "unknown";
+    if (forwarded) {
+      return forwarded.split(",")[0]?.trim() ?? "unknown";
+    }
+
+    return realIp ?? "unknown";
+  } catch (err) {
+    // headers() may throw when called outside of a request context (e.g., in unit tests)
+    return "unknown";
   }
-
-  return realIp ?? "unknown";
 }
 
 async function checkAuthRateLimit(identifier: string): Promise<boolean> {
@@ -512,7 +519,7 @@ export async function signInAction(email: string, password: string): Promise<Aut
  *
  */
 export async function signOutAction(): Promise<void> {
-  await signOut({ redirectTo: "/" });
+  await signOut({ redirectTo: "/sign-in" });
 }
 
 // ═══════════════════════════════════════════════════
