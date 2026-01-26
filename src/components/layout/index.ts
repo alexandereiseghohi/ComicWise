@@ -4,6 +4,6 @@
  */
 
 export { DataTable } from "./data-table";
-export { Filters } from "./filters";
+export { Filters } from "./Filters";
 export { Pagination } from "./pagination";
 // Add other layout component exports as needed

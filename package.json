@@ -37,6 +37,7 @@
     "build:standalone": "cross-env NEXT_OUTPUT_MODE=standalone next build",
     "cache:clear": "tsx --env-file=.env.local scripts/clearCache.ts",
     "cache:stats": "tsx --env-file=.env.local scripts/cacheStats.ts",
+    "check-env-secrets": "node ./scripts/check-env-secrets.js",
     "check-updates": "pnpm dlx npm-check-updates --deep -i && pnpm dlx update-browserslist-db@latest --auto",
     "ci": "pnpm validate && pnpm test:unit:run",
     "ci:build": "pnpm build",

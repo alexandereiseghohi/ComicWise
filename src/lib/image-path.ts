@@ -1,5 +1,6 @@
 /**
  * Utilities to normalize image paths for Next/Image and seed data.
+ * @param input
  */
 export function normalizeImagePath(input?: string | null): string | undefined {
   if (!input) return input as undefined;
@@ -12,7 +13,7 @@ export function normalizeImagePath(input?: string | null): string | undefined {
   if (/^https?:\/\//i.test(s)) return s;
 
   // Normalize backslashes to forward slashes
-  let normalized = s.replace(/\\+/g, "/");
+  let normalized = s.replaceAll(/\\+/g, "/");
 
   // If path includes a leading "public/", strip it so it becomes "/..."
   if (normalized.startsWith("public/")) {
