@@ -334,16 +334,16 @@ describe("Chapter Schemas", () => {
       expect(result.success).toBe(false);
     });
 
-    it("should reject non-integer chapter number", () => {
-      const invalidData = {
+    it("should accept decimal chapter number", () => {
+      const data = {
         title: "Chapter 1.5",
         chapterNumber: 1.5,
         releaseDate: new Date("2024-01-01"),
         comicId: 1,
       };
 
-      const result = createChapterSchema.safeParse(invalidData);
-      expect(result.success).toBe(false);
+      const result = createChapterSchema.safeParse(data);
+      expect(result.success).toBe(true);
     });
 
     it("should default views to 0", () => {

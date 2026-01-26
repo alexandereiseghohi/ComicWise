@@ -51,7 +51,8 @@ describe("Comic Actions", () => {
   const mockComics = [mockComic];
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    // Reset mocks and implementations between tests to avoid cross-test pollution
+    vi.resetAllMocks();
   });
 
   // ═══════════════════════════════════════════════════

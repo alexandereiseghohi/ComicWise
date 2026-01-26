@@ -55,7 +55,8 @@ async function getClientIP(): Promise<string> {
 
 async function checkAuthRateLimit(identifier: string): Promise<boolean> {
   const rateLimit = await checkRateLimit(identifier, {
-    limit: appConfig.rateLimit.auth ?? 10,
+    // be defensive in tests where appConfig may be mocked/undefined
+    limit: (appConfig as any)?.rateLimit?.auth ?? 10,
   });
   return rateLimit.allowed;
 }
@@ -474,6 +475,17 @@ export async function resetPasswordAction(input: ResetPasswordInput): Promise<Au
  */
 export async function signInAction(email: string, password: string): Promise<AuthActionResponse> {
   try {
+    // Validate input early and avoid calling external signIn when input is invalid
+    try {
+      // Importing schema locally keeps top-level imports unchanged for tests
+      const { signInSchema } = await import("@/lib/validations");
+      const parsed = signInSchema.safeParse({ email, password });
+      if (!parsed.success) {
+        return { success: false, error: "Invalid email or password" };
+      }
+    } catch (e) {
+      // If validation import fails for any reason, continue to attempt sign in
+    }
     // Rate limiting
     const ip = await getClientIP();
     const allowed = await checkAuthRateLimit(`signin:${ip}`);

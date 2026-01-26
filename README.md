@@ -201,11 +201,16 @@ Guidance
 
 Cache adapter (test/CI)
 
-- The project uses a compatibility cache adapter layer (`src/lib/cache/index.ts`). For local development the Redis-backed client is used by default. In tests and CI we recommend using the in-memory adapter to avoid external Redis dependencies. To force the in-memory adapter in tests set:
+- The project uses a compatibility cache adapter layer
+  (`src/lib/cache/index.ts`). For local development the Redis-backed client is
+  used by default. In tests and CI we recommend using the in-memory adapter to
+  avoid external Redis dependencies. To force the in-memory adapter in tests
+  set:
 
 ```bash
 export CACHE_ADAPTER=in-memory
 export SKIP_ENV_VALIDATION=true
 ```
 
-The test harness already sets these variables when running unit tests via Vitest.
+The test harness already sets these variables when running unit tests via
+Vitest.

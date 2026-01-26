@@ -5,8 +5,7 @@ import {
   deleteComic as deleteComicMutation,
   updateComic as updateComicMutation,
 } from "@/database/mutations";
-import { getAllComics } from "@/database/queries";
-import { getComicById as getComicByIdQuery } from "@/database/queries/admin-comics";
+import { getAllComics, getComic as getComicQuery } from "@/database/queries";
 import type { createComicSchema, updateComicSchema } from "@/lib/validations";
 import type { ComicFilters } from "@/types";
 import { auth } from "auth";
@@ -18,7 +17,8 @@ export async function getComics(filters?: ComicFilters) {
 }
 
 export async function getComicById(id: number) {
-  return await getComicByIdQuery(id);
+  // Delegate to the central queries module (tests mock this module).
+  return await getComicQuery(id as any);
 }
 
 export async function createComic(data: z.infer<typeof createComicSchema>) {

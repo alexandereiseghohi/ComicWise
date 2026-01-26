@@ -15,7 +15,7 @@ export async function addBookmark(comicId: number, status: BookmarkStatus = "Rea
   const session = await auth();
 
   if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" };
+    throw new Error("Unauthorized");
   }
 
   try {
@@ -34,7 +34,7 @@ export async function addBookmark(comicId: number, status: BookmarkStatus = "Rea
     return { success: true };
   } catch (error) {
     console.error("Add bookmark error:", error);
-    return { success: false, error: error instanceof Error ? error.message : String(error) };
+    throw error;
   }
 }
 
@@ -42,7 +42,7 @@ export async function removeBookmark(comicId: number) {
   const session = await auth();
 
   if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" };
+    throw new Error("Unauthorized");
   }
 
   try {
@@ -53,7 +53,7 @@ export async function removeBookmark(comicId: number) {
     return { success: true };
   } catch (error) {
     console.error("Remove bookmark error:", error);
-    return { success: false, error: error instanceof Error ? error.message : String(error) };
+    throw error;
   }
 }
 
@@ -61,7 +61,7 @@ export async function updateBookmarkStatus(comicId: number, status: BookmarkStat
   const session = await auth();
 
   if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" };
+    throw new Error("Unauthorized");
   }
 
   try {
@@ -73,7 +73,7 @@ export async function updateBookmarkStatus(comicId: number, status: BookmarkStat
     return { success: true };
   } catch (error) {
     console.error("Update bookmark status error:", error);
-    return { success: false, error: error instanceof Error ? error.message : String(error) };
+    throw error;
   }
 }
 
@@ -81,7 +81,7 @@ export async function updateProgress(comicId: number, chapterId: number) {
   const session = await auth();
 
   if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" };
+    throw new Error("Unauthorized");
   }
 
   try {
@@ -91,14 +91,14 @@ export async function updateProgress(comicId: number, chapterId: number) {
     return { success: true };
   } catch (error) {
     console.error("Update progress error:", error);
-    return { success: false, error: error instanceof Error ? error.message : String(error) };
+    throw error;
   }
 }
 
 export async function getBookmarks() {
   const session = await auth();
   if (!session?.user?.id) {
-    return [];
+    throw new Error("Unauthorized");
   }
 
   return await getUserBookmarks(session.user.id);

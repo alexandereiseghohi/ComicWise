@@ -300,6 +300,7 @@ describe("Comic Validation Schemas", () => {
           description: "A test comic description",
           author: "Test Author",
           status,
+          coverImage: "https://example.com/cover.jpg",
         };
 
         const result = createComicSchema.safeParse(data);

@@ -13,7 +13,7 @@ PostgreSQL, Redis, and AI-powered features. Read And understand /_.ts,
 #file:/.tsx, #file:\*\*/.mjs, #file:/_.json , #file:/.mts, #file:**/.json
 #file:/\*.md, #file:/.txt, #file:**/.yml, #file:/\*.ps1, #file:/.sh,
 #file:\*\*//Dockerfile, #file:src, #file:scripts files to get context on how the
-project is structured and works, After fully understanding the project the
+project is structured and works, After fully understanding @workspace the
 package manager is pnpm and the system is windows, Request all permissions
 needed to complete all Tasks.
 
@@ -52,11 +52,11 @@ properly committed with clear and descriptive messages. If any file or script
 mentioned in the tasks does not exist, create it with all its content optimized
 for performance and best practices, and update all usage of this file across the
 project. If any task involves creating or updating prompts, ensure they are
-comprehensive and tailored to the specific needs of the project. If any task
+comprehensive and tailored to the specific needs of @workspace. If any task
 involves setting up or configuring tools, ensure they are properly installed and
-configured according to the project's requirements. If any task involves
-analyzing the project, ensure that the analysis is thorough and covers all
-relevant aspects of the project. If any task involves generating reports, ensure
+configured according to @workspace's requirements. If any task involves
+analyzing @workspace, ensure that the analysis is thorough and covers all
+relevant aspects of @workspace. If any task involves generating reports, ensure
 that the reports are detailed and provide actionable insights. If any task
 involves creating or updating README or documentation files, ensure they are
 well-structured and provide all necessary information for users and
@@ -119,7 +119,7 @@ or Modify and Validate and configuring any necessary environment variables at
 #file:.env.local, importing it at #file:src/lib/env.ts, Create or Modify and
 Validate #file:appConfig.ts (ensure all environment variables are properly set
 and configured for development and production environments update all usage of
-this file across the project,use #file:src/lib/env.ts for environment
+this file across @workspace,use #file:src/lib/env.ts for environment
 variables). 17 - Read and understand #file:users.json, #file:comics.json,
 #file:comicsdata1.json, #file:comicsdata2.json, #file:chapters.json,
 #file:chaptersdata1.json, #file:chaptersdata2.json then modify seeding system
@@ -159,7 +159,7 @@ management using zustand at src/stores 27 - identify all usage of
 src/database/db.ts for queries and mutations then Create or Modify and Validate
 all functions using src/database/db.ts at src/database/queries and
 src/database/mutations then delete all old functions and files update all usages
-across the project. 28 - modify the exists folder structure and
+across @workspace. 28 - modify the exists folder structure and
 create,update,delete any required file or folders, for all code refactoring use,
 prefer AST-based codemods using `jscodeshift` or `ts-morph`. 29 - modify
 #file:scripts into a complete command-line interface for managing all aspects of
@@ -167,7 +167,7 @@ the ComicWise platform, Provides unified access to development, database,
 testing, deployment, and maintenance operations, create scaffolds for an
 optimized version of all existing files . 30 - Convert all any type occurrences
 to specific types from usage or Convert functionality to be Generic. Fix all
-typescript, linting errors and warnings in the project. 31 - Create or Modify
+typescript, linting errors and warnings in @workspace. 31 - Create or Modify
 and Validate #file:scripts/_.ts to Delete all duplicate or unused zod schemas,
 all duplicate or unused components,functions, types, interfaces, classes, empty
 folders, blank files, all files that contains .backup. 32 - Create or Modify and
@@ -181,12 +181,19 @@ next-app@latest at .github/prompts newSetup.prompt.md
 Modify seeding system and image services to ensure if using relative image it
 must start with a leading slash "/" or be an absolute URL (http:// or https://)
 
-@workspace /explain and implement all your suggestions, recommendations for the project seeding system, setup page,routes,components,test to consume and run  the project seeding system then  Run  the tests  and fix all errors then rerun tests then delete all failed tests and recreate then without errors then rerun test until all green.
-implement cacheComponents and fix all incompatible with dynamic route segments.
-Convert all any type occurrences to specific types from usage or Convert functionality to be Generic. Fix all typescript, linting errors and warnings in the project. 
-Create or Modify,Validate and run #file:scripts/_.ts to Delete all duplicate or unused zod schemas, all duplicate or unused components,functions, types, interfaces, classes, empty folders, blank files, all files that contains .backup. 
-Create or Modify, Validate and run #file:scripts/_.ts to Uninstall all unused packages with pnpm. 
-fix all type-check,lint and build warnings and errors.
 
-Delete src/types/* and create an optimized src/types/*  for all @workspace 
-interfaces,types,modules,classes,zod schemas used by @workspace use drf practices
+Delete src/types/* and create an optimized src/types/* for all @workspace
+interfaces,types,modules,classes,zod schemas used by @workspace use drf
+practices update all usages around @workspace then
+@workspace /explain and implement all your suggestions, recommendations for the
+project seeding system, setup page,routes,components,test to consume and run @workspace seeding system then 
+Run the tests and fix all errors then 
+Rerun tests then  delete all failed tests and recreate then without errors then 
+Rerun test until all tests are green then. 
+Implement cacheComponents and fix all incompatible with dynamic
+route segments then. 
+Convert all any type occurrences to specific types from usage or Convert functionality to be Generic then.
+Create or Modify,Validate and run #file:scripts/cleanup_files.ts to Delete all duplicate or unused zod schemas, all duplicate or unused components,functions, types, interfaces, classes, empty folders, blank files, all files that contains .backup prioritize newly created files then. 
+Create or Modify, Validate and run #file:scripts/cleanup_packages.ts to Uninstall all unused packages with pnpm then. 
+Modify package.json to include all scripts in @workspace
+Fix all type-check,lint and build warnings and errors in @workspace. 
