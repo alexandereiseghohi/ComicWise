@@ -1,4 +1,6 @@
+import fs from "fs/promises";
 import { NextResponse } from "next/server";
+import path from "path";
 /**
  * ═══════════════════════════════════════════════════════════════════════════
  * Enhanced Seed API Route V4 - Database Seeding Operations
@@ -101,11 +103,31 @@ export async function POST(request: Request) {
       },
     };
 
+    // status file to support polling/progress in the admin UI
+    const statusFile = path.resolve(process.cwd(), ".seed-status.json");
+    async function writeStatus(status: unknown) {
+      try {
+        await fs.writeFile(statusFile, JSON.stringify(status, null, 2), "utf-8");
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    await writeStatus({
+      state: "started",
+      options,
+      results: result,
+      updatedAt: new Date().toISOString(),
+    });
+
     if (options.dryRun) {
-      return successResponse({
-        message: "Dry run mode - no changes made",
-        result,
+      await writeStatus({
+        state: "completed",
+        dryRun: true,
+        results: result,
+        updatedAt: new Date().toISOString(),
       });
+      return successResponse({ message: "Dry run mode - no changes made", result });
     }
 
     // Dynamic imports prevent seed utilities from bundling into client (using V4 seeders)
@@ -116,12 +138,32 @@ export async function POST(request: Request) {
     switch (entities) {
       case "all":
         result.users = await seedUsersV4(["users.json"]);
+        await writeStatus({
+          state: "running",
+          current: "users",
+          results: result,
+          updatedAt: new Date().toISOString(),
+        });
+
         result.comics = await seedComicsV4(["comics.json", "comicsdata1.json", "comicsdata2.json"]);
+        await writeStatus({
+          state: "running",
+          current: "comics",
+          results: result,
+          updatedAt: new Date().toISOString(),
+        });
+
         result.chapters = await seedChaptersV4([
           "chapters.json",
           "chaptersdata1.json",
           "chaptersdata2.json",
         ]);
+        await writeStatus({
+          state: "running",
+          current: "chapters",
+          results: result,
+          updatedAt: new Date().toISOString(),
+        });
         break;
 
       case "users":
@@ -144,6 +186,7 @@ export async function POST(request: Request) {
         return errorResponse("Invalid entity specified", 400);
     }
 
+    await writeStatus({ state: "completed", results: result, updatedAt: new Date().toISOString() });
     return successResponse({ message: "Seeding completed successfully", results: result });
   } catch (error) {
     return errorResponse(error instanceof Error ? error.message : "Seeding failed");

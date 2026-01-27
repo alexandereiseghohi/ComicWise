@@ -34,7 +34,7 @@ export async function addBookmark(comicId: number, status: BookmarkStatus = "Rea
     return { success: true };
   } catch (error) {
     console.error("Add bookmark error:", error);
-    return { success: false, error: String(error) } as const;
+    throw error;
   }
 }
 
@@ -53,7 +53,7 @@ export async function removeBookmark(comicId: number) {
     return { success: true };
   } catch (error) {
     console.error("Remove bookmark error:", error);
-    return { success: false, error: String(error) } as const;
+    throw error;
   }
 }
 
@@ -61,19 +61,25 @@ export async function updateBookmarkStatus(comicId: number, status: BookmarkStat
   const session = await auth();
 
   if (!session?.user?.id) {
-    throw new Error("Unauthorized");
+    return { success: false, error: "Unauthorized" } as const;
+  }
+
+  // Basic validation
+  if (!Number.isFinite(comicId) || comicId <= 0) {
+    return { success: false, error: "Invalid comic ID" } as const;
   }
 
   try {
     const { updateBookmarkStatus: updateStatusMutation } = await import("@/database/mutations");
-    await updateStatusMutation(session.user.id, comicId, status);
+    const updated = await updateStatusMutation(session.user.id, comicId, status);
+
     revalidatePath("/bookmarks");
     revalidatePath(`/comics/${comicId}`);
 
-    return { success: true };
-  } catch (error) {
+    return { success: true, data: updated } as const;
+  } catch (error: any) {
     console.error("Update bookmark status error:", error);
-    return { success: false, error: String(error) } as const;
+    return { success: false, error: error?.message ?? String(error) } as const;
   }
 }
 
@@ -91,7 +97,7 @@ export async function updateProgress(comicId: number, chapterId: number) {
     return { success: true };
   } catch (error) {
     console.error("Update progress error:", error);
-    return { success: false, error: String(error) } as const;
+    throw error;
   }
 }
 

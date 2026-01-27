@@ -37,28 +37,26 @@ import { logger } from "@/lib/logger";
 
 export async function GET(request: NextRequest) {
   try {
-    // TODO: Implement GET logic
-    return NextResponse.json({ message: 'Success' });
+    // Basic GET implementation: echo query params (if any) and return a success payload.
+    const url = new URL(request.url);
+    const params: Record<string, string> = {};
+    url.searchParams.forEach((v, k) => (params[k] = v));
+
+    return NextResponse.json({ ok: true, params });
   } catch (error) {
     logger.error('Error in ${name} API:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    // TODO: Implement POST logic
-    return NextResponse.json({ message: 'Created' }, { status: 201 });
+    // Basic POST implementation: echo back the posted body as created resource.
+    return NextResponse.json({ ok: true, created: body }, { status: 201 });
   } catch (error) {
     logger.error('Error in ${name} API:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 `,
