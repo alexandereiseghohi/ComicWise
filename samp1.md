@@ -185,11 +185,11 @@ modify #file:.env to handle all my project environment variables then. modify
 #file:next.config.ts to enable cacheComponents then Implement cacheComponents
 and fix all incompatible with dynamic route segments then. Convert all any type
 occurrences to specific types from usage or Convert functionality to be Generic
-then. Create or Modify,Validate,Faster and run #file:scripts/cleanup_files.ts to
+then. Create or Modify,Validate,Faster and run #file:scripts/cleanup*files.ts to
 Delete all duplicate or unused zod schemas in #file:src, #file:scripts
 prioritize newly created, all duplicate or unused components,functions, types,
 interfaces, classes, empty folders, blank files in #file:src, #file:scripts
-prioritize newly created, all files that contains .backup in _.ts, _.tsx, _.mjs,
+prioritize newly created, all files that contains .backup in *.ts, _.tsx, _.mjs,
 src/\*\*/_.css, src/**/\*.ts, src/**/_.tsx , scripts/\*\*/_, scripts in
 #file:package.json #file:playwright.config.ts #file:vitest.config.ts
 #file:next.config.ts #file:nextSitemap.config.ts #file:proxy.ts
@@ -213,7 +213,7 @@ src/**/_.tsx , scripts/\*\*/_, scripts in #file:package.json
 #file:sentry.client.config.ts #file:sentry.server.config.ts #file:appConfig.ts
 #file:redis.ts #file:sentry.edge.config.ts Fix all type-check,lint and build
 warnings and errors in _.ts, _.tsx, _.mjs, src/\*\*/_.css, src/**/\*.ts,
-src/**/_.tsx , scripts/\*\*/_, scripts in #file:package.json
+src/**/_.tsx , scripts/\*\*/\_, scripts in #file:package.json
 #file:playwright.config.ts #file:vitest.config.ts #file:next.config.ts
 #file:nextSitemap.config.ts #file:proxy.ts #file:eslint.config.ts
 #file:.prettierrc.ts #file:postcss.config.mjs #file:drizzle.config.ts
