@@ -83,7 +83,7 @@ export async function ensureSavedImageForUrl(
     const filename = `${hash}${ext}`;
     const outPath = path.join(destDir, filename);
     const relPath =
-      "/" + path.relative(path.join(process.cwd(), "public"), outPath).replaceAll('\\', "/");
+      "/" + path.relative(path.join(process.cwd(), "public"), outPath).replaceAll("\\", "/");
 
     if (await fs.pathExists(outPath)) return relPath;
 

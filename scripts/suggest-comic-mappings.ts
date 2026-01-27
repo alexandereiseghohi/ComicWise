@@ -30,8 +30,7 @@ for (const f of comicsFiles) {
     if (Array.isArray(rawc)) comics = comics.concat(rawc);
     else if (rawc && typeof rawc === "object") {
       const keys = ["data", "items", "comics", "results"];
-      for (const k of keys)
-        if (Array.isArray((rawc)[k])) comics = comics.concat((rawc)[k]);
+      for (const k of keys) if (Array.isArray(rawc[k])) comics = comics.concat(rawc[k]);
       if (comics.length === 0) {
         let largest: any[] = [];
         for (const v of Object.values(rawc))

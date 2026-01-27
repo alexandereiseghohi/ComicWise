@@ -85,7 +85,7 @@ function loadAndCheck(filePath: string, schema: z.ZodSchema<any>, limit = 10) {
   if (Array.isArray(parsed)) candidates = parsed;
   else if (parsed && typeof parsed === "object") {
     const keys = ["data", "items", "comics", "chapters", "users", "results"];
-    for (const k of keys) if (Array.isArray((parsed)[k])) candidates = (parsed)[k];
+    for (const k of keys) if (Array.isArray(parsed[k])) candidates = parsed[k];
     if (candidates.length === 0) {
       let largest: any[] = [];
       for (const v of Object.values(parsed))
@@ -132,7 +132,7 @@ function collectComicSlugs(files: string[]) {
     if (Array.isArray(parsed)) candidates = parsed;
     else if (parsed && typeof parsed === "object") {
       const keys = ["data", "items", "comics", "chapters", "users", "results"];
-      for (const k of keys) if (Array.isArray((parsed)[k])) candidates = (parsed)[k];
+      for (const k of keys) if (Array.isArray(parsed[k])) candidates = parsed[k];
       if (candidates.length === 0) {
         let largest: any[] = [];
         for (const v of Object.values(parsed))
@@ -158,7 +158,7 @@ function findUnmatchedChapters(chaptersFile: string, comicSlugFiles: string[], l
   if (Array.isArray(parsed)) candidates = parsed;
   else if (parsed && typeof parsed === "object") {
     const keys = ["data", "items", "comics", "chapters", "users", "results"];
-    for (const k of keys) if (Array.isArray((parsed)[k])) candidates = (parsed)[k];
+    for (const k of keys) if (Array.isArray(parsed[k])) candidates = parsed[k];
     if (candidates.length === 0) {
       let largest: any[] = [];
       for (const v of Object.values(parsed))
@@ -170,7 +170,7 @@ function findUnmatchedChapters(chaptersFile: string, comicSlugFiles: string[], l
   const unmatched: any[] = [];
   for (let i = 0; i < candidates.length; i++) {
     const ch = transformItem(candidates[i]);
-    const rawComic = (ch).comicslug || (ch).comic || undefined;
+    const rawComic = ch.comicslug || ch.comic || undefined;
     const comicSlug = typeof rawComic === "object" ? extractStringFromPossible(rawComic) : rawComic;
     if (!comicSlug || !slugs.has(String(comicSlug))) {
       unmatched.push({ index: i, chapter: ch, resolvedComicSlug: comicSlug });

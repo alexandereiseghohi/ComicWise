@@ -62,7 +62,7 @@ export function createInMemoryAdapter() {
     },
 
     async deletePattern(pattern: string): Promise<number> {
-      const keys = [...store.keys()].filter((k) => k.includes(pattern.replaceAll('*', "")));
+      const keys = [...store.keys()].filter((k) => k.includes(pattern.replaceAll("*", "")));
       for (const k of keys) store.delete(k);
       return keys.length;
     },

@@ -80,13 +80,11 @@ async function seedUsers() {
 async function seedComics() {
   try {
     const comicsA = (await loadJsonData("./comics.json", comicSchema)) as any[];
-    const comicsB = (await loadJsonPattern("./comicsdata*.json", comicSchema as any));
+    const comicsB = await loadJsonPattern("./comicsdata*.json", comicSchema as any);
     const comics = comicsA.concat(comicsB);
     const mapped = await Promise.all(
       comics.map(async (c) => {
-        const image = normalizeImagePath(
-          (c.cover || (c.images && c.images[0]) || undefined)
-        );
+        const image = normalizeImagePath(c.cover || (c.images && c.images[0]) || undefined);
         const saved = await ensureSavedImageForUrl(
           image,
           path.join(process.cwd(), "public", "comics", "covers", c.slug),
@@ -98,7 +96,7 @@ async function seedComics() {
           description: c.description || null,
           coverImage: saved,
           url: c.url || null,
-          serialization: (c).serialization || null,
+          serialization: c.serialization || null,
           createdAt: new Date(),
           updatedAt: new Date(),
         };
@@ -116,9 +114,7 @@ async function seedComics() {
     // For dry-run we avoid DB queries (db may be a placeholder). Instead just log intended actions.
     for (const c of comics) {
       try {
-        const images = Array.isArray((c).images)
-          ? (c).images
-          : (c).image_urls || [];
+        const images = Array.isArray(c.images) ? c.images : c.image_urls || [];
         for (let i = 0; i < images.length; i++) {
           const img = normalizeImagePath(images[i]);
           const saved = await ensureSavedImageForUrl(
@@ -185,10 +181,7 @@ async function seedComics() {
 async function seedChapters() {
   try {
     const chaptersA = (await loadJsonData("./chapters.json", chapterSchema)) as any[];
-    const chaptersB = (await loadJsonPattern(
-      "./chaptersdata*.json",
-      chapterSchema as any
-    ));
+    const chaptersB = await loadJsonPattern("./chaptersdata*.json", chapterSchema as any);
     const chapters = chaptersA.concat(chaptersB);
     // Preload comics into maps to support fuzzy matching (slug, title)
     let allComics: any[] = [];
@@ -221,20 +214,8 @@ async function seedChapters() {
           .trim();
         if (tnorm) titleMap.set(tnorm, r);
       }
-      if ((r).name)
-        titleMap.set(
-          String((r).name)
-            .toLowerCase()
-            .trim(),
-          r
-        );
-      if ((r).fullTitle)
-        titleMap.set(
-          String((r).fullTitle)
-            .toLowerCase()
-            .trim(),
-          r
-        );
+      if (r.name) titleMap.set(String(r.name).toLowerCase().trim(), r);
+      if (r.fullTitle) titleMap.set(String(r.fullTitle).toLowerCase().trim(), r);
     }
 
     function normalizeToSlug(s: any) {
@@ -300,7 +281,7 @@ async function seedChapters() {
     // Map chapters to DB structure: need comicId — attempt to find by slug/title/url
     const mapped = [] as any[];
     for (const ch of chapters) {
-      const rawIdentifier = (ch).comicslug || (ch).comic || undefined;
+      const rawIdentifier = ch.comicslug || ch.comic || undefined;
       let comicRow: any = null;
 
       if (rawIdentifier) {
@@ -414,20 +395,17 @@ async function seedChapters() {
             continue;
           }
         } else {
-          console.warn(
-            `Could not find comic for chapter slug/title: ${(rawIdentifier || ch.title)}`
-          );
+          console.warn(`Could not find comic for chapter slug/title: ${rawIdentifier || ch.title}`);
           continue;
         }
       }
 
-      const images = Array.isArray(ch.images) ? ch.images : (ch).image_urls || [];
+      const images = Array.isArray(ch.images) ? ch.images : ch.image_urls || [];
 
       mapped.push({
-        slug: (ch).slug || (ch).chapterslug || `c-${Date.now()}`,
-        title: (ch).title || (ch).name || "",
-        chapterNumber:
-          parseInt((ch).chapterNumber || (ch).chaptername || "0", 10) || 0,
+        slug: ch.slug || ch.chapterslug || `c-${Date.now()}`,
+        title: ch.title || ch.name || "",
+        chapterNumber: parseInt(ch.chapterNumber || ch.chaptername || "0", 10) || 0,
         releaseDate: ch.updatedAt ? new Date(ch.updatedAt) : new Date(),
         comicId: comicRow.id,
         url: ch.url || null,
@@ -447,12 +425,10 @@ async function seedChapters() {
     // Insert chapter images metadata into chapterImage table
     for (const ch of chapters) {
       try {
-        const comicSlug = (ch).comicslug || (ch).comic || undefined;
+        const comicSlug = ch.comicslug || ch.comic || undefined;
         if (!comicSlug) continue;
 
-        const images = Array.isArray((ch).images)
-          ? (ch).images
-          : (ch).image_urls || [];
+        const images = Array.isArray(ch.images) ? ch.images : ch.image_urls || [];
 
         if (isDryRun) {
           // In dry-run we don't query DB; just ensure images would be saved and log the action
@@ -466,14 +442,14 @@ async function seedChapters() {
                 "comics",
                 "chapters",
                 comicSlug,
-                ch.slug || (ch).chapterslug || ""
+                ch.slug || ch.chapterslug || ""
               ),
               "/placeholder-comic.jpg",
               { dryRun: true }
             );
             seedLogger.info({
               msg: `Dry-run: would add chapterImage`,
-              chapterSlug: ch.slug || (ch).chapterslug,
+              chapterSlug: ch.slug || ch.chapterslug,
               image: saved,
               page: i,
             });
@@ -490,8 +466,7 @@ async function seedChapters() {
         const comicRow = comicRows && comicRows.length > 0 ? comicRows[0] : null;
         if (!comicRow) continue;
         // find chapter row by comicId and chapterNumber
-        const chapterNumber =
-          parseInt((ch).chapterNumber || (ch).chaptername || "0", 10) || 0;
+        const chapterNumber = parseInt(ch.chapterNumber || ch.chaptername || "0", 10) || 0;
         const chapterRows = await db
           .select()
           .from(schema.chapter)
@@ -513,7 +488,7 @@ async function seedChapters() {
               "comics",
               "chapters",
               comicSlug,
-              ch.slug || (ch).chapterslug || ""
+              ch.slug || ch.chapterslug || ""
             ),
             "/placeholder-comic.jpg",
             { dryRun: isDryRun }

@@ -19,8 +19,8 @@ async function readJsonFile<T = any>(filename: string): Promise<T[]> {
     const parsed = JSON.parse(raw);
     if (Array.isArray(parsed)) return parsed as T[];
     // if object with property items or data
-    if (Array.isArray((parsed).items)) return (parsed).items as T[];
-    if (Array.isArray((parsed).data)) return (parsed).data as T[];
+    if (Array.isArray(parsed.items)) return parsed.items as T[];
+    if (Array.isArray(parsed.data)) return parsed.data as T[];
     // fallback: wrap object
     return [parsed] as unknown as T[];
   } catch {

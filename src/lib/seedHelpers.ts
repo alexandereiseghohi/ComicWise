@@ -96,7 +96,7 @@ export async function loadJsonData<T>(filePath: string, validator: z.ZodSchema<T
   if (Array.isArray(parsed)) candidates = parsed;
   else if (parsed && typeof parsed === "object") {
     const keys = ["data", "items", "comics", "chapters", "users", "results"];
-    for (const k of keys) if (Array.isArray((parsed)[k])) candidates = (parsed)[k];
+    for (const k of keys) if (Array.isArray(parsed[k])) candidates = parsed[k];
     if (candidates.length === 0) {
       // pick largest array property
       let largest: any[] = [];
@@ -144,8 +144,7 @@ export async function loadJsonPattern<T>(pattern: string, validator: z.ZodSchema
       if (Array.isArray(parsed)) candidates = parsed;
       else if (parsed && typeof parsed === "object") {
         const keys = ["data", "items", "comics", "chapters", "users", "results"];
-        for (const k of keys)
-          if (Array.isArray((parsed)[k])) candidates = (parsed)[k];
+        for (const k of keys) if (Array.isArray(parsed[k])) candidates = parsed[k];
         if (candidates.length === 0) {
           let largest: any[] = [];
           for (const v of Object.values(parsed))
@@ -222,15 +221,15 @@ export async function seedTable(table: any, data: any[], options: SeedOptions = 
         const finalQuery =
           effectiveConflict && effectiveConflict.length > 0
             ? // @ts-ignore - dynamic onConflict build
-              (insertQuery).onConflictDoUpdate({
+              insertQuery.onConflictDoUpdate({
                 target: effectiveConflict,
-                set: Object.fromEntries(Object.keys(batch[0]).map(
-                  ( k) => [k, (insertQuery).excluded[k]]
-                )),
+                set: Object.fromEntries(
+                  Object.keys(batch[0]).map((k) => [k, insertQuery.excluded[k]])
+                ),
               })
             : insertQuery;
 
-        await (finalQuery).run();
+        await finalQuery.run();
         inserted += batch.length;
         seedLogger.info({
           msg: `Inserted ${Math.min(i + batchSize, data.length)}/${data.length} into ${table.name}`,

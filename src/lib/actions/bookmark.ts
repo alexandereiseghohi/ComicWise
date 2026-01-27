@@ -22,7 +22,9 @@ export async function addBookmark(comicId: number, status: BookmarkStatus = "Rea
     // Tests expect that the status argument is only forwarded to the
     // mutation when explicitly provided by the caller. Use arguments.length
     // to detect whether the caller passed the status param.
-    await ((arguments.length ?? 0) >= 2 ? addBookmarkMutation(session.user.id, comicId, undefined, status) : addBookmarkMutation(session.user.id, comicId, undefined));
+    await ((arguments.length ?? 0) >= 2
+      ? addBookmarkMutation(session.user.id, comicId, undefined, status)
+      : addBookmarkMutation(session.user.id, comicId, undefined));
 
     revalidatePath("/bookmarks");
     revalidatePath(`/comics/${comicId}`);

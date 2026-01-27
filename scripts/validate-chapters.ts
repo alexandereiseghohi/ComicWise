@@ -146,8 +146,7 @@ function loadJson(filePath: string) {
   if (Array.isArray(parsed)) return parsed.map(transformItem);
   if (parsed && typeof parsed === "object") {
     const keys = ["data", "items", "comics", "chapters", "users", "results"];
-    for (const k of keys)
-      if (Array.isArray((parsed)[k])) return (parsed)[k].map(transformItem);
+    for (const k of keys) if (Array.isArray(parsed[k])) return parsed[k].map(transformItem);
     // pick largest array property
     let largest: any[] = [];
     for (const v of Object.values(parsed))
@@ -169,8 +168,7 @@ function loadPattern(pattern: string) {
       else if (parsed && typeof parsed === "object") {
         const keys = ["data", "items", "comics", "chapters", "users", "results"];
         for (const k of keys)
-          if (Array.isArray((parsed)[k]))
-            out = out.concat((parsed)[k].map(transformItem));
+          if (Array.isArray(parsed[k])) out = out.concat(parsed[k].map(transformItem));
         if (out.length === 0) {
           let largest: any[] = [];
           for (const v of Object.values(parsed))

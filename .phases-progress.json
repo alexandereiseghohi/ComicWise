@@ -1,5 +1,6 @@
 {
-  "lastUpdated": "2026-01-22T23:30:46.850Z",
+  "version": "1.0.0",
+  "lastUpdated": "2026-01-27T10:15:23.455Z",
   "phases": {
     "1": {
       "status": "completed",
@@ -9,116 +10,57 @@
         "verify-mcp-config": "completed",
         "verify-extensions": "completed"
       },
-      "startedAt": "2026-01-22T23:08:57.572Z",
-      "completedAt": "2026-01-22T23:08:57.640Z"
+      "startedAt": "2026-01-27T10:15:04.111Z",
+      "completedAt": "2026-01-27T10:15:04.128Z"
     },
     "2": {
-      "status": "completed",
-      "score": 100,
+      "status": "in-progress",
+      "score": 0,
       "tasks": {
         "check-env-file": "completed",
         "validate-config-files": "completed",
-        "type-check": "completed",
+        "type-check": "failed",
         "validate-env-vars": "completed"
       },
-      "startedAt": "2026-01-22T23:08:57.668Z",
-      "completedAt": "2026-01-22T23:09:32.759Z"
+      "startedAt": "2026-01-27T10:15:04.140Z",
+      "errors": [
+        "Command failed: pnpm type-check"
+      ]
     },
     "3": {
-      "status": "completed",
-      "score": 100,
-      "tasks": {
-        "db-health-check": "completed",
-        "db-push-schema": "completed",
-        "db-seed-dry-run": "completed",
-        "db-seed": "completed",
-        "verify-seed-data": "completed"
-      },
-      "startedAt": "2026-01-22T23:09:32.761Z",
-      "completedAt": "2026-01-22T23:13:34.848Z"
+      "status": "pending",
+      "score": 0,
+      "tasks": {}
     },
     "4": {
-      "status": "completed",
-      "score": 100,
-      "tasks": {
-        "verify-layouts": "completed",
-        "verify-comic-pages": "completed",
-        "verify-chapter-reader": "completed",
-        "verify-user-profile": "completed",
-        "run-lint": "completed",
-        "verify-bookmarks": "completed"
-      },
-      "startedAt": "2026-01-22T23:13:34.853Z",
-      "errors": [
-        "Missing layout components: src/components/layouts, src/app/(main)/layout.tsx",
-        "Missing comic pages: src/app/(main)/comics/page.tsx, src/app/(main)/comics/[slug]/page.tsx",
-        "Missing chapter reader: src/app/(main)/comics/[slug]/chapter/[chapterNumber]/page.tsx",
-        "Command failed: pnpm lint"
-      ],
-      "completedAt": "2026-01-22T23:16:00.957Z"
+      "status": "pending",
+      "score": 0,
+      "tasks": {}
     },
     "5": {
-      "status": "failed",
-      "score": 80,
-      "tasks": {
-        "validate-scripts": "completed",
-        "run-linter": "failed",
-        "check-imports": "completed",
-        "format-code": "completed",
-        "cleanup-project": "completed"
-      },
-      "startedAt": "2026-01-22T23:16:00.960Z",
-      "errors": [
-        "Command failed: pnpm lint",
-        "Command failed: pnpm lint",
-        "Command failed: pnpm lint",
-        "Command failed: pnpm lint"
-      ]
+      "status": "pending",
+      "score": 0,
+      "tasks": {}
     },
     "6": {
-      "status": "failed",
-      "score": 80,
-      "tasks": {
-        "validate-workflows": "completed",
-        "validate-docker": "failed",
-        "test-docker-build": "completed",
-        "validate-env-templates": "completed",
-        "check-github-actions": "completed"
-      },
-      "startedAt": "2026-01-22T23:24:42.092Z",
-      "errors": [
-        "Missing Docker files: Dockerfile",
-        "Missing Docker files: Dockerfile"
-      ]
+      "status": "pending",
+      "score": 0,
+      "tasks": {}
     },
     "7": {
-      "status": "in-progress",
+      "status": "pending",
       "score": 0,
-      "tasks": {
-        "check-readme": "completed",
-        "check-docs-dir": "completed",
-        "run-linter": "failed",
-        "fix-formatting": "completed",
-        "type-check": "failed"
-      },
-      "startedAt": "2026-01-22T23:24:42.991Z",
-      "errors": ["Command failed: pnpm lint", "Command failed: pnpm type-check"]
+      "tasks": {}
     },
     "8": {
-      "status": "in-progress",
+      "status": "pending",
       "score": 0,
-      "tasks": {},
-      "startedAt": "2026-01-22T23:07:30.935Z"
+      "tasks": {}
     },
     "9": {
-      "status": "skipped",
-      "score": 100,
-      "tasks": {
-        "placeholder-task-1": "completed"
-      },
-      "startedAt": "2026-01-22T23:07:48.661Z",
-      "completedAt": "2026-01-22T23:07:48.708Z"
+      "status": "pending",
+      "score": 0,
+      "tasks": {}
     }
-  },
-  "version": "1.0.0"
+  }
 }
