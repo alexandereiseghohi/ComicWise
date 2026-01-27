@@ -189,10 +189,33 @@ then. Create or Modify,Validate,Faster and run #file:scripts/cleanup_files.ts to
 Delete all duplicate or unused zod schemas in #file:src, #file:scripts
 prioritize newly created, all duplicate or unused components,functions, types,
 interfaces, classes, empty folders, blank files in #file:src, #file:scripts
-prioritize newly created, all files that contains .backup in ./ files prioritize
-newly created then. Create or Modify, Validate,Faster and run
-#file:scripts/cleanup_packages.ts to Uninstall all packages not being used in
-#file:src, #file:scripts, #file:package.json, #file:eslint.config.ts,
-#file:.prettierrc.ts, #file:postcss.config.mjs with pnpm then. Modify
-package.json to include all scripts in #file:src, #file:scripts Fix all
-type-check,lint and build warnings and errors in @workspace.
+prioritize newly created, all files that contains .backup in _.ts, _.tsx, _.mjs,
+src/\*\*/_.css, src/**/\*.ts, src/**/_.tsx , scripts/\*\*/_, scripts in
+#file:package.json #file:playwright.config.ts #file:vitest.config.ts
+#file:next.config.ts #file:nextSitemap.config.ts #file:proxy.ts
+#file:eslint.config.ts #file:.prettierrc.ts #file:postcss.config.mjs
+#file:drizzle.config.ts #file:sentry.client.config.ts
+#file:sentry.server.config.ts #file:appConfig.ts #file:redis.ts
+#file:sentry.edge.config.ts files prioritize newly created then. Create or
+Modify, Validate,Faster and run #file:scripts/cleanup_packages.ts to Uninstall
+all packages not being used in _.ts, _.tsx, _.mjs, src/\*\*/_.css, src/**/\*.ts,
+src/**/_.tsx , scripts/\*\*/_, scripts in #file:package.json
+#file:playwright.config.ts #file:vitest.config.ts #file:next.config.ts
+#file:nextSitemap.config.ts #file:proxy.ts #file:eslint.config.ts
+#file:.prettierrc.ts #file:postcss.config.mjs #file:drizzle.config.ts
+#file:sentry.client.config.ts #file:sentry.server.config.ts #file:appConfig.ts
+#file:redis.ts #file:sentry.edge.config.ts with pnpm then. Modify package.json
+to include all scripts in _.ts, _.tsx, _.mjs, src/\*\*/_.css, src/**/\*.ts,
+src/**/_.tsx , scripts/\*\*/_, scripts in #file:package.json
+#file:playwright.config.ts #file:vitest.config.ts #file:next.config.ts
+#file:nextSitemap.config.ts #file:proxy.ts #file:eslint.config.ts
+#file:.prettierrc.ts #file:postcss.config.mjs #file:drizzle.config.ts
+#file:sentry.client.config.ts #file:sentry.server.config.ts #file:appConfig.ts
+#file:redis.ts #file:sentry.edge.config.ts Fix all type-check,lint and build
+warnings and errors in _.ts, _.tsx, _.mjs, src/\*\*/_.css, src/**/\*.ts,
+src/**/_.tsx , scripts/\*\*/_, scripts in #file:package.json
+#file:playwright.config.ts #file:vitest.config.ts #file:next.config.ts
+#file:nextSitemap.config.ts #file:proxy.ts #file:eslint.config.ts
+#file:.prettierrc.ts #file:postcss.config.mjs #file:drizzle.config.ts
+#file:sentry.client.config.ts #file:sentry.server.config.ts #file:appConfig.ts
+#file:redis.ts #file:sentry.edge.config.ts .

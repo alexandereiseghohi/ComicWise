@@ -43,14 +43,30 @@ function gatherFiles() {
   const patterns = [
     "src/**/*.{ts,tsx,js,jsx,mjs,cjs,cts,mts}",
     "scripts/**/*.{ts,tsx,js,jsx,mjs,cjs}",
+    // also scan root-level TS/TSX/MJS files
+    "**/*.{ts,tsx,mjs}",
   ];
   const extras = ["package.json", "eslint.config.ts", ".prettierrc.ts", "postcss.config.mjs"];
+  // Additional project configuration files to include
+  const moreExtras = [
+    "playwright.config.ts",
+    "vitest.config.ts",
+    "next.config.ts",
+    "nextSitemap.config.ts",
+    "proxy.ts",
+    "drizzle.config.ts",
+    "sentry.client.config.ts",
+    "sentry.server.config.ts",
+    "sentry.edge.config.ts",
+    "appConfig.ts",
+    "redis.ts",
+  ];
   const files = new Set<string>();
   for (const pat of patterns) {
     const found = globSync(pat, { cwd: process.cwd(), absolute: true });
     for (const f of found) files.add(f);
   }
-  for (const e of extras) {
+  for (const e of extras.concat(moreExtras)) {
     const p = path.join(process.cwd(), e);
     if (fs.existsSync(p)) files.add(p);
   }

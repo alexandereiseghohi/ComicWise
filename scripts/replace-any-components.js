@@ -1,9 +1,9 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 const root = process.cwd();
-const dir = path.join(root, 'src', 'components');
-const apply = process.argv.includes('--apply');
+const dir = path.join(root, "src", "components");
+const apply = process.argv.includes("--apply");
 
 function walk(dir, files = []) {
   if (!fs.existsSync(dir)) return files;
@@ -11,7 +11,7 @@ function walk(dir, files = []) {
   for (const e of entries) {
     const full = path.join(dir, e.name);
     if (e.isDirectory()) {
-      if (['node_modules', '.git', 'dist', 'build'].includes(e.name)) continue;
+      if (["node_modules", ".git", "dist", "build"].includes(e.name)) continue;
       walk(full, files);
     } else if (e.isFile()) {
       if (/\.(ts|tsx|js|jsx|mjs|cjs)$/.test(e.name)) files.push(full);
@@ -25,7 +25,7 @@ const changedFiles = [];
 
 const files = walk(dir);
 for (const f of files) {
-  const src = fs.readFileSync(f, 'utf8');
+  const src = fs.readFileSync(f, "utf8");
   const regex1 = /(:\s*)any(\s*[,;\)\]>])/g;
   const regex2 = /(\s)as\s+any(\b)/g;
   const matches1 = (src.match(regex1) || []).length;
@@ -34,10 +34,10 @@ for (const f of files) {
   if (matches === 0) continue;
   totalMatches += matches;
   if (apply) {
-    let out = src.replace(regex1, '$1unknown$2');
-    out = out.replace(regex2, '$1as unknown$2');
+    let out = src.replace(regex1, "$1unknown$2");
+    out = out.replace(regex2, "$1as unknown$2");
     if (out !== src) {
-      fs.writeFileSync(f, out, 'utf8');
+      fs.writeFileSync(f, out, "utf8");
       changedFiles.push(f);
     }
   } else {
@@ -50,5 +50,5 @@ if (apply) {
   console.log(`Files modified: ${changedFiles.length}`);
   for (const cf of changedFiles) console.log(`  - ${cf}`);
 } else {
-  console.log('Dry-run complete. Re-run with --apply to modify files.');
+  console.log("Dry-run complete. Re-run with --apply to modify files.");
 }

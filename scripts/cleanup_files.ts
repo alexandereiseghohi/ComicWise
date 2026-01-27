@@ -20,10 +20,15 @@ function hashBuf(buf: Buffer) {
 async function main() {
   console.log("Scanning workspace for candidate files...");
 
+  // Only consider these extensions/patterns to keep scan fast and focused
+  const includedExt = [".ts", ".tsx", ".mjs", ".js", ".jsx", ".css", ".json", ".md"];
+
   const files: string[] = [];
   for await (const f of walk(ROOT)) {
     // ignore node_modules and .git and .next etc
     if (/node_modules|\.git|\.next|dist|out|coverage|build/i.test(f)) continue;
+    const ext = path.extname(f).toLowerCase();
+    if (!includedExt.includes(ext)) continue;
     files.push(f);
   }
 
@@ -31,6 +36,7 @@ async function main() {
   const backups: string[] = [];
   const emptyFiles: string[] = [];
   const newlyCreatedBackups: string[] = [];
+  const exportedFiles: string[] = [];
 
   for (const f of files) {
     const name = path.basename(f);
@@ -58,6 +64,25 @@ async function main() {
       }
       // detect newly created backup files (by name containing 'new' and 'backup')
       if (/new.*backup|backup.*new/i.test(f)) newlyCreatedBackups.push(f);
+      // detect files that export symbols (possible zod schemas, components, types)
+      try {
+        const txt = buf.toString();
+        try {
+          const txt = buf.toString();
+          if (
+            /\bexport\b/.test(txt) &&
+            /\binterface\b|\btype\b|\bclass\b|\bfunction\b|\bconst\b|\bexport default\b|z\.object\(|zod\b/.test(
+              txt
+            )
+          ) {
+            exportedFiles.push(f);
+          }
+        } catch (e) {
+          // ignore text parsing issues
+        }
+      } catch (e) {
+        // ignore text parsing issues
+      }
     } catch (err) {
       // ignore
     }
@@ -74,6 +99,45 @@ async function main() {
   console.log(`Found ${duplicates.length} groups of duplicate files`);
   console.log(`Found ${backups.length} backup-like files`);
   console.log(`Found ${emptyFiles.length} empty/blank files`);
+  console.log(
+    `Found ${exportedFiles.length} files that export symbols (candidate unused files will be checked)`
+  );
+
+  // Heuristic: find exported files that are not referenced elsewhere
+  const contentIndex: Record<string, string> = {};
+  for (const f of files) {
+    try {
+      contentIndex[f] = (await fs.readFile(f)).toString();
+    } catch (e) {
+      contentIndex[f] = "";
+    }
+  }
+
+  const candidatesUnusedExports: string[] = [];
+  for (const f of exportedFiles) {
+    const base = path.basename(f, path.extname(f));
+    let referenced = false;
+    for (const other of Object.keys(contentIndex)) {
+      if (other === f) continue;
+      const txt = contentIndex[other];
+      if (!txt) continue;
+      if (txt.includes(base)) {
+        referenced = true;
+        break;
+      }
+      const rel = path.relative(path.dirname(other), f).replace(/\\/g, "/");
+      const relNoExt = rel.replace(/\.(ts|tsx|js|jsx|mjs)$/, "");
+      if (txt.includes(relNoExt)) {
+        referenced = true;
+        break;
+      }
+    }
+    if (!referenced) candidatesUnusedExports.push(f);
+  }
+
+  console.log(
+    `Found ${candidatesUnusedExports.length} exported files that appear unreferenced (heuristic)`
+  );
 
   // Strategy: delete files that are backups or empty. For duplicates, keep the earliest modified file and delete the others.
 
@@ -88,6 +152,20 @@ async function main() {
     stats.sort((a, b) => a.s.mtimeMs - b.s.mtimeMs);
     const [, ...rest] = stats;
     for (const r of rest) toDelete.add(r.f);
+  }
+
+  // Add exported-but-unreferenced files that look like Zod schemas or validation/schema files
+  for (const u of candidatesUnusedExports) {
+    const lname = u.toLowerCase();
+    if (
+      lname.includes("schema") ||
+      lname.includes("zod") ||
+      lname.includes("validation") ||
+      /src[\\/]lib[\\/]validations/.test(lname) ||
+      /schemas?/.test(lname)
+    ) {
+      toDelete.add(u);
+    }
   }
 
   // Prioritize newly created files: if a file path contains 'new' or created within last 7 days, prefer deleting it
