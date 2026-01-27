@@ -133,7 +133,7 @@ const nextConfig: NextConfig = {
   // Security headers
   poweredByHeader: false,
   compress: true,
-  // cacheComponents: true, // Disabled - incompatible with dynamic route segments
+  cacheComponents: true, // Disabled - incompatible with dynamic route segments
 
   // Security headers
   headers: async () => [

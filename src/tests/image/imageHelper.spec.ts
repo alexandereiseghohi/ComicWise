@@ -1,4 +1,4 @@
-import { computeImageFilename, isAbsoluteUrl, normalizeImageUrl } from "@/lib/imageHelper";
+import { computeImageFilename, isAbsoluteUrl, normalizeImageUrl } from "@/lib/imageHelper.ts";
 import { describe, expect, it } from "vitest";
 
 describe("imageHelper basics", () => {

@@ -1,4 +1,4 @@
-import { computeImageFilename, ensureSavedImageForUrl } from "@/lib/imageHelper";
+import { computeImageFilename, ensureSavedImageForUrl } from "@/lib/imageHelper.ts";
 import fs from "fs-extra";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";

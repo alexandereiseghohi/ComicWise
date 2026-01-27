@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { describe, expect, it } from "vitest";
-import { seedData } from "../src/lib/seeder";
+import { seedData } from "../lib/seeder.ts";
 
 async function readCount(filename: string) {
   try {

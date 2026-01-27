@@ -1,4 +1,4 @@
-import { loadJsonData } from "@/lib/seedHelpers";
+import { loadJsonData } from "@/lib/seedHelpers.ts";
 import fs from "fs-extra";
 import path from "path";
 import { afterEach, describe, expect, it } from "vitest";
