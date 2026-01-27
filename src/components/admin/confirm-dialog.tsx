@@ -1,17 +1,17 @@
 import React from "react";
 
-type Props = {
+interface Props {
   title?: string;
   description?: string;
-  onConfirm?: () => void;
-  onCancel?: () => void;
+  onConfirm?(): void;
+  onCancel?(): void;
   open?: boolean;
-  onOpenChange?: (open: boolean) => void;
+  onOpenChange?(open: boolean): void;
   children?: React.ReactNode;
   confirmText?: string;
   cancelText?: string;
   variant?: string;
-};
+}
 
 export const ConfirmDialog: React.FC<Props> = ({
   title,

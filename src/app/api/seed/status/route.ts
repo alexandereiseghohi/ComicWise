@@ -8,7 +8,7 @@ export async function GET() {
     const raw = await fs.readFile(statusFile, "utf-8");
     const parsed = JSON.parse(raw);
     return NextResponse.json({ success: true, data: parsed });
-  } catch (err) {
+  } catch {
     return NextResponse.json({ success: false, error: "No status available" }, { status: 404 });
   }
 }

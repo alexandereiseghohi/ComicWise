@@ -1,4 +1,4 @@
-import { loadJsonData } from "@/lib/seedHelpers.ts";
+import { loadJsonData } from "@/lib/seedHelpers";
 import fs from "fs-extra";
 import path from "path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -9,7 +9,9 @@ const TMP = path.join(process.cwd(), "tmp-test-seed.json");
 afterEach(() => {
   try {
     fs.removeSync(TMP);
-  } catch (e) {}
+  } catch (e) {
+    // ignore cleanup errors in tests
+  }
 });
 
 describe("loadJsonData", () => {
@@ -20,10 +22,7 @@ describe("loadJsonData", () => {
     ];
     fs.writeFileSync(TMP, JSON.stringify(data), "utf-8");
     const schema = z.object({ id: z.number(), name: z.string() });
-    const res = (await loadJsonData(
-      TMP.replace(process.cwd() + path.sep, ""),
-      schema as any
-    )) as any[];
+    const res = await loadJsonData(TMP.replace(process.cwd() + path.sep, ""), schema as any);
     expect(res.length).toBe(2);
     expect(res[0].id).toBe(1);
   });

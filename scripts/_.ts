@@ -26,9 +26,9 @@ async function runCmd(cmd: string) {
     const r = await exec(cmd, { cwd: ROOT, maxBuffer: 20 * 1024 * 1024 });
     v(r.stdout);
     return r;
-  } catch (err: any) {
-    console.error(`Command failed: ${cmd}`, err.stderr ?? err.message ?? err);
-    throw err;
+  } catch (error: any) {
+    console.error(`Command failed: ${cmd}`, error.stderr ?? error.message ?? error);
+    throw error;
   }
 }
 
@@ -36,7 +36,7 @@ async function findFiles(dir: string, pattern: RegExp, results: string[] = []) {
   let entries: string[] = [];
   try {
     entries = await fs.readdir(dir);
-  } catch (err) {
+  } catch {
     return results;
   }
 
@@ -52,7 +52,7 @@ async function findFiles(dir: string, pattern: RegExp, results: string[] = []) {
       } else if (pattern.test(entry) || pattern.test(full)) {
         results.push(full);
       }
-    } catch (err) {
+    } catch {
       // ignore
     }
   }
@@ -122,10 +122,10 @@ async function findDuplicateZodSchemas() {
     const content = await fs.readFile(f, "utf-8");
     if (!content.includes("z.") && !content.includes("zod")) continue;
     // naive: compute hash of file content trimmed to z.object() blocks
-    const matches = Array.from(content.matchAll(/z\.object\([\s\S]*?\)\s*(?:;|,|\n)/g));
+    const matches = [...content.matchAll(/z\.object\([\S\s]*?\)\s*[\n,;]/g)];
     if (matches.length === 0) continue;
     for (const m of matches) {
-      const block = m[0].replace(/\s+/g, " ").trim();
+      const block = m[0].replaceAll(/\s+/g, " ").trim();
       const hash = crypto.createHash("sha1").update(block).digest("hex");
       const key = `${hash}`;
       const arr = schemaMap.get(key) ?? [];
@@ -154,7 +154,7 @@ async function findDuplicateZodSchemas() {
 
 async function removeDuplicateFilesByName() {
   log("\n🗂️  Looking for files with duplicate basenames...");
-  const allFiles = await findFiles(ROOT, /\.[tj]s$|\.tsx$|\.jsx$|\.md$|\.json$/i);
+  const allFiles = await findFiles(ROOT, /\.[jt]s$|\.tsx$|\.jsx$|\.md$|\.json$/i);
   const byName = new Map<string, string[]>();
   for (const f of allFiles) {
     const base = path.basename(f);
@@ -210,7 +210,7 @@ async function main() {
   log("\n✅ Maintenance run complete.");
 }
 
-main().catch((err) => {
-  console.error("Script failed:", err);
+main().catch((error) => {
+  console.error("Script failed:", error);
   process.exit(1);
 });

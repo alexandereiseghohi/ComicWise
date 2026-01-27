@@ -39,7 +39,7 @@ export class ImageKitProvider implements UploadProvider {
         const arrayBuffer = await (file as any).arrayBuffer();
         buffer = Buffer.from(arrayBuffer);
       } else if (Buffer.isBuffer(file)) {
-        buffer = file as Buffer;
+        buffer = file;
       } else {
         return {
           url: "",

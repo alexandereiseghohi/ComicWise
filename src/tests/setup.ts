@@ -1,11 +1,11 @@
 // Ensure tests run in a predictable environment
-(process.env as any)["NODE_ENV"] = process.env["NODE_ENV"] ?? "test";
-(process.env as any)["SKIP_ENV_VALIDATION"] = process.env["SKIP_ENV_VALIDATION"] ?? "true";
-(process.env as any)["CACHE_ADAPTER"] = process.env["CACHE_ADAPTER"] ?? "in-memory";
-
 import "@testing-library/jest-dom/vitest";
 import { cleanup } from "@testing-library/react";
 import { afterEach, vi } from "vitest";
+
+(process.env as any)["NODE_ENV"] = process.env["NODE_ENV"] ?? "test";
+(process.env as any)["SKIP_ENV_VALIDATION"] = process.env["SKIP_ENV_VALIDATION"] ?? "true";
+(process.env as any)["CACHE_ADAPTER"] = process.env["CACHE_ADAPTER"] ?? "in-memory";
 
 // Provide a lightweight mock for `next/server` used by next-auth within tests.
 // This avoids module resolution issues when running outside of Next's runtime.

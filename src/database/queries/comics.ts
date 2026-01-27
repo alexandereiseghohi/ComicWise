@@ -230,7 +230,7 @@ export async function getRecommendedComics(comicSlug: string, limit: number = 6)
     })
     .from(comic)
     .leftJoin(type, eq(comic.typeId, type.id))
-    .where(and(eq(comic.typeId, currentComic[0].typeId!), sql`${comic.slug} != ${comicSlug}`))
+    .where(and(eq(comic.typeId, currentComic[0].typeId), sql`${comic.slug} != ${comicSlug}`))
     .orderBy(desc(comic.rating))
     .limit(limit);
 

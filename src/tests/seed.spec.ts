@@ -1,5 +1,5 @@
-import { loadJsonData } from "@/lib/seedHelpers.ts";
-import { normalizeImagePath, userSchema } from "@/lib/validations/seed.ts";
+import { loadJsonData } from "@/lib/seedHelpers";
+import { normalizeImagePath, userSchema } from "@/lib/validations/seed";
 import fs from "fs";
 import { describe, expect, it } from "vitest";
 

@@ -35,7 +35,7 @@ for (const t of targets) {
   const files = walk(dir);
   for (const f of files) {
     const src = fs.readFileSync(f, "utf8");
-    const regex1 = /(:\s*)any(\s*[,;\)\]>])/g; // : any, capturing trailing punctuation
+    const regex1 = /(:\s*)any(\s*[),;>\]])/g; // : any, capturing trailing punctuation
     const regex2 = /(\s)as\s+any(\b)/g;
     const matches1 = (src.match(regex1) || []).length;
     const matches2 = (src.match(regex2) || []).length;
@@ -43,8 +43,8 @@ for (const t of targets) {
     if (matches === 0) continue;
     totalMatches += matches;
     if (apply) {
-      let out = src.replace(regex1, "$1unknown$2");
-      out = out.replace(regex2, "$1as unknown$2");
+      let out = src.replaceAll(regex1, "$1unknown$2");
+      out = out.replaceAll(regex2, "$1as unknown$2");
       if (out !== src) {
         fs.writeFileSync(f, out, "utf8");
         changedFiles.push(f);

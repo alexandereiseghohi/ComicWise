@@ -64,7 +64,7 @@ export function isValidImageUrl(url: string): boolean {
     if (/^https?:\/\//.test(lowerUrl)) {
       return imageExtensions.some((ext) => lowerUrl.endsWith(ext));
     }
-  } catch (e) {
+  } catch {
     // fall through
   }
 

@@ -71,7 +71,7 @@ class ArtistDal extends BaseDal<Artist, typeof artist.$inferInsert> {
         let query = db.select().from(artist);
 
         if (search) {
-          query = query.where(like(artist.name, `%${search}%`)) as typeof query;
+          query = query.where(like(artist.name, `%${search}%`));
         }
 
         return await query.orderBy(desc(artist.createdAt)).limit(limit).offset(offset);

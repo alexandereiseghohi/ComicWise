@@ -4,12 +4,12 @@ import React from "react";
 // They intentionally do not implement modal behavior — they only provide the
 // expected component shapes and props so the app can type-check and render.
 
-export type DialogProps = {
+export interface DialogProps {
   open?: boolean;
-  onOpenChange?: (open: boolean) => void;
+  onOpenChange?(open: boolean): void;
   children?: React.ReactNode;
   className?: string;
-};
+}
 
 export const Dialog: React.FC<DialogProps> = ({ children }) => <>{children}</>;
 export const DialogTrigger: React.FC<React.PropsWithChildren<{}>> = ({ children }) => (

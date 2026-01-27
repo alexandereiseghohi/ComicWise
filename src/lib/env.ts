@@ -12,6 +12,10 @@ export const env = createEnv({
     AUTH_TRUST_HOST: z.string().optional(),
 
     // OAuth Providers
+    // Canonical names for OAuth providers (use AUTH_GOOGLE_* for Google credentials).
+    // Legacy names (GOOGLE_CLIENT_*) are still accepted via runtime mapping below.
+    AUTH_GOOGLE_CLIENT_ID: z.string().optional(),
+    AUTH_GOOGLE_CLIENT_SECRET: z.string().optional(),
     GOOGLE_CLIENT_ID: z.string().optional(),
     GOOGLE_CLIENT_SECRET: z.string().optional(),
     GITHUB_CLIENT_ID: z.string().optional(),
@@ -122,6 +126,12 @@ export const env = createEnv({
     AUTH_TRUST_HOST: process.env["AUTH_TRUST_HOST"],
 
     // Server - OAuth
+    // Accept either the new canonical names (AUTH_GOOGLE_*) or legacy GOOGLE_* names.
+    // Priority: AUTH_GOOGLE_* -> GOOGLE_*
+    AUTH_GOOGLE_CLIENT_ID: process.env["AUTH_GOOGLE_CLIENT_ID"] ?? process.env["GOOGLE_CLIENT_ID"],
+    AUTH_GOOGLE_CLIENT_SECRET:
+      process.env["AUTH_GOOGLE_CLIENT_SECRET"] ?? process.env["GOOGLE_CLIENT_SECRET"],
+    // Legacy (kept for backwards-compat) - prefer using AUTH_GOOGLE_* above
     GOOGLE_CLIENT_ID: process.env["GOOGLE_CLIENT_ID"],
     GOOGLE_CLIENT_SECRET: process.env["GOOGLE_CLIENT_SECRET"],
     GITHUB_CLIENT_ID: process.env["GITHUB_CLIENT_ID"],

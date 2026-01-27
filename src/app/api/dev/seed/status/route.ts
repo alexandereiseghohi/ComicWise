@@ -9,7 +9,7 @@ export async function GET() {
     const raw = await fs.readFile(file, "utf-8");
     const json = JSON.parse(raw);
     return NextResponse.json(json);
-  } catch (err) {
-    return NextResponse.json({ error: String(err) }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json({ error: String(error) }, { status: 500 });
   }
 }

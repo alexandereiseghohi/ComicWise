@@ -26,11 +26,7 @@ let adapter: any = redisCache;
 
 // Switch to in-memory adapter in tests or when explicitly requested
 export function useCacheAdapter(adapterName: "redis" | "in-memory") {
-  if (adapterName === "in-memory") {
-    adapter = createMemoryAdapter();
-  } else {
-    adapter = redisCache;
-  }
+  adapter = adapterName === "in-memory" ? createMemoryAdapter() : redisCache;
 }
 
 // Auto-select in-memory for test environments

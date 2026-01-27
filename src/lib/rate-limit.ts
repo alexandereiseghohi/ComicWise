@@ -93,43 +93,42 @@ export const _checkRateLimit = _checkRateLimitImpl;
 // Export `checkRateLimit` in a way that makes it a real spy during tests
 // (Vitest injects a global `vi`) so tests that call `vi.fn().mockReturnValue()`
 // or use `toHaveBeenCalled()` will work.
-export let checkRateLimit: CheckRateLimitFn & {
-  mockReturnValue?: (val: any) => void;
-  mockReset?: () => void;
+export const checkRateLimit: CheckRateLimitFn & {
+  mockReturnValue?(val: any): void;
+  mockReset?(): void;
   __mock?: any;
-};
+} = (() => {
+  if (typeof globalThis !== "undefined" && (globalThis as any).vi) {
+    // In test environment use vi.fn so assertions like toHaveBeenCalled work
+    const vi = (globalThis as any).vi;
+    return vi.fn(async (key: string, options?: { limit?: number; window?: string }) => {
+      // If tests used vi.fn().mockReturnValue, Vitest will handle returning the mocked
+      // value automatically. If not mocked, fallback to the default implementation.
+      return _checkRateLimitImpl(key, options);
+    }) as unknown as CheckRateLimitFn & {
+      mockReturnValue?(val: any): void;
+      mockReset?(): void;
+      __mock?: any;
+    };
+  }
 
-if (typeof globalThis !== "undefined" && (globalThis as any).vi) {
-  // In test environment use vi.fn so assertions like toHaveBeenCalled work
-  const vi = (globalThis as any).vi as any;
-  checkRateLimit = vi.fn(async (key: string, options?: { limit?: number; window?: string }) => {
-    // If tests used vi.fn().mockReturnValue, Vitest will handle returning the mocked
-    // value automatically. If not mocked, fallback to the default implementation.
-    return _checkRateLimitImpl(key, options);
-  }) as unknown as CheckRateLimitFn & {
-    mockReturnValue?: (val: any) => void;
-    mockReset?: () => void;
-    __mock?: any;
-  };
-} else {
   // Non-test runtime: export the implementation and attach a simple mock API
-  checkRateLimit = _checkRateLimitImpl as CheckRateLimitFn & {
-    mockReturnValue?: (val: any) => void;
-    mockReset?: () => void;
+  const impl = _checkRateLimitImpl as CheckRateLimitFn & {
+    mockReturnValue?(val: any): void;
+    mockReset?(): void;
     __mock?: any;
   };
 
-  // Provide a mockReturnValue helper so tests or runtime callers can override
-  // the return value if needed (legacy support for code that sets this).
-  (checkRateLimit as any).mockReturnValue = (val: any) => {
-    (checkRateLimit as any).__mock = val;
+  impl.mockReturnValue = (val: any) => {
+    (impl as any).__mock = val;
   };
 
-  // Allow clearing mock override
-  (checkRateLimit as any).mockReset = () => {
-    delete (checkRateLimit as any).__mock;
+  impl.mockReset = () => {
+    delete (impl as any).__mock;
   };
-}
+
+  return impl;
+})();
 
 /**
  * Create a rate limit error response

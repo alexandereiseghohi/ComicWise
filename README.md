@@ -215,3 +215,36 @@ export SKIP_ENV_VALIDATION=true
 
 The test harness already sets these variables when running unit tests via
 Vitest.
+
+## 🔁 Canonical environment variable names & build-time requirements
+
+To avoid confusion and accidental misconfiguration, this project uses canonical
+environment variable names for authentication-related credentials and client
+build-time values:
+
+- Canonical Google OAuth names: `AUTH_GOOGLE_CLIENT_ID`,
+  `AUTH_GOOGLE_CLIENT_SECRET`.
+  - For backward compatibility the legacy `GOOGLE_CLIENT_ID` and
+    `GOOGLE_CLIENT_SECRET` are still accepted; they are treated as aliases.
+  - Prefer `AUTH_GOOGLE_*` when adding or documenting secrets to CI/secret
+    managers.
+
+- Build-time public variables: Any `NEXT_PUBLIC_*` variables referenced in
+  client code must be present during the build step (CI or local) because
+  Next.js inlines them at build time. Ensure `NEXT_PUBLIC_APP_URL` and
+  `NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY` (if used) are set in your CI/build job.
+
+Secrets policy
+
+- Never commit real secret values. Use `.env.example` or `.env.*.template` for
+  placeholders. Keep actual secrets in `.env.local` (gitignored) for local
+  development, and in your CI or cloud provider secret manager for builds and
+  production deployment.
+
+CI checklist (builds)
+
+1. Set required production secrets in the CI environment (e.g., `DATABASE_URL`,
+   `AUTH_SECRET`, `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_SENTRY_DSN` if using
+   Sentry).
+2. Verify `SKIP_ENV_VALIDATION` is not set in production CI — do not skip
+   validation unless intentionally testing fallbacks.

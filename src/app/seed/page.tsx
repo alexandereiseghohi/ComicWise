@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-type SeedEntityResult = {
+interface SeedEntityResult {
   total: number;
   created: number;
   updated: number;
@@ -10,9 +10,9 @@ type SeedEntityResult = {
   errors: number;
   imagesDownloaded?: number;
   imagesCached?: number;
-};
+}
 
-type SeedApiResponse = {
+interface SeedApiResponse {
   success: boolean;
   data?: {
     message?: string;
@@ -23,7 +23,7 @@ type SeedApiResponse = {
     };
   };
   error?: string;
-};
+}
 
 export default function SeedPage() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -40,8 +40,8 @@ export default function SeedPage() {
       });
       const json = (await res.json()) as SeedApiResponse;
       setResult(json);
-    } catch (err) {
-      setResult({ success: false, error: String(err) });
+    } catch (error) {
+      setResult({ success: false, error: String(error) });
     } finally {
       setLoading(false);
     }

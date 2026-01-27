@@ -35,8 +35,8 @@ async function writeProgress(step: string, detail: Record<string, any> = {}) {
     await fs.ensureDir(path.dirname(PROGRESS_FILE));
     const payload = { step, detail, updatedAt: new Date().toISOString() };
     await fs.writeFile(PROGRESS_FILE, JSON.stringify(payload, null, 2), "utf-8");
-  } catch (err) {
-    seedLogger.warn({ msg: "Failed writing progress", err });
+  } catch (error) {
+    seedLogger.warn({ msg: "Failed writing progress", err: error });
   }
 }
 
@@ -45,7 +45,7 @@ async function seedUsers() {
     const users = await loadJsonData("./users.json", userSchema);
     const mapped = await Promise.all(
       users.map(async (u) => {
-        const image = normalizeImagePath(u.image as any) as string | undefined;
+        const image = normalizeImagePath(u.image as any);
         const savedImage = await ensureSavedImageForUrl(
           image,
           path.join(process.cwd(), "public", "users"),
@@ -72,21 +72,21 @@ async function seedUsers() {
     });
     seedLogger.info({ msg: `Seeded users: ${mapped.length}`, dryRun: isDryRun });
     await writeProgress("users", { seeded: mapped.length });
-  } catch (err) {
-    seedLogger.error({ msg: "Error seeding users", err });
+  } catch (error) {
+    seedLogger.error({ msg: "Error seeding users", err: error });
   }
 }
 
 async function seedComics() {
   try {
     const comicsA = (await loadJsonData("./comics.json", comicSchema)) as any[];
-    const comicsB = (await loadJsonPattern("./comicsdata*.json", comicSchema as any)) as any[];
+    const comicsB = (await loadJsonPattern("./comicsdata*.json", comicSchema as any));
     const comics = comicsA.concat(comicsB);
     const mapped = await Promise.all(
       comics.map(async (c) => {
         const image = normalizeImagePath(
-          (c.cover || (c.images && c.images[0]) || undefined) as any
-        ) as string | undefined;
+          (c.cover || (c.images && c.images[0]) || undefined)
+        );
         const saved = await ensureSavedImageForUrl(
           image,
           path.join(process.cwd(), "public", "comics", "covers", c.slug),
@@ -98,7 +98,7 @@ async function seedComics() {
           description: c.description || null,
           coverImage: saved,
           url: c.url || null,
-          serialization: (c as any).serialization || null,
+          serialization: (c).serialization || null,
           createdAt: new Date(),
           updatedAt: new Date(),
         };
@@ -116,11 +116,11 @@ async function seedComics() {
     // For dry-run we avoid DB queries (db may be a placeholder). Instead just log intended actions.
     for (const c of comics) {
       try {
-        const images = Array.isArray((c as any).images)
-          ? (c as any).images
-          : (c as any).image_urls || [];
+        const images = Array.isArray((c).images)
+          ? (c).images
+          : (c).image_urls || [];
         for (let i = 0; i < images.length; i++) {
-          const img = normalizeImagePath(images[i] as any) as string | undefined;
+          const img = normalizeImagePath(images[i]);
           const saved = await ensureSavedImageForUrl(
             img,
             path.join(process.cwd(), "public", "comics", "covers", c.slug),
@@ -172,13 +172,13 @@ async function seedComics() {
             });
           }
         }
-      } catch (err) {
-        seedLogger.error({ msg: `Failed handling comic images for ${c.slug}`, err });
+      } catch (error) {
+        seedLogger.error({ msg: `Failed handling comic images for ${c.slug}`, err: error });
       }
     }
     await writeProgress("comics", { seeded: mapped.length });
-  } catch (err) {
-    seedLogger.error({ msg: "Error seeding comics", err });
+  } catch (error) {
+    seedLogger.error({ msg: "Error seeding comics", err: error });
   }
 }
 
@@ -188,7 +188,7 @@ async function seedChapters() {
     const chaptersB = (await loadJsonPattern(
       "./chaptersdata*.json",
       chapterSchema as any
-    )) as any[];
+    ));
     const chapters = chaptersA.concat(chaptersB);
     // Preload comics into maps to support fuzzy matching (slug, title)
     let allComics: any[] = [];
@@ -198,8 +198,8 @@ async function seedChapters() {
         const comicsA = await loadJsonData("./comics.json", comicSchema as any);
         const comicsB = await loadJsonPattern("./comicsdata*.json", comicSchema as any);
         allComics = comicsA.concat(comicsB);
-      } catch (e) {
-        seedLogger.warn({ msg: "Failed loading comics for dry-run mapping", err: e });
+      } catch (error) {
+        seedLogger.warn({ msg: "Failed loading comics for dry-run mapping", err: error });
         allComics = [];
       }
     } else {
@@ -216,21 +216,21 @@ async function seedChapters() {
       if (r.title) {
         titleMap.set(String(r.title).toLowerCase().trim(), r);
         const tnorm = String(r.title)
-          .replace(/[^a-z0-9]+/gi, "")
+          .replaceAll(/[^\da-z]+/gi, "")
           .toLowerCase()
           .trim();
         if (tnorm) titleMap.set(tnorm, r);
       }
-      if ((r as any).name)
+      if ((r).name)
         titleMap.set(
-          String((r as any).name)
+          String((r).name)
             .toLowerCase()
             .trim(),
           r
         );
-      if ((r as any).fullTitle)
+      if ((r).fullTitle)
         titleMap.set(
-          String((r as any).fullTitle)
+          String((r).fullTitle)
             .toLowerCase()
             .trim(),
           r
@@ -243,9 +243,9 @@ async function seedChapters() {
         .toLowerCase()
         .trim();
       t = t
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "")
-        .replace(/-+/g, "-");
+        .replaceAll(/[^\da-z]+/g, "-")
+        .replaceAll(/^-+|-+$/g, "")
+        .replaceAll(/-+/g, "-");
       return t || undefined;
     }
 
@@ -256,7 +256,7 @@ async function seedChapters() {
         const parts = u.pathname.split("/").filter(Boolean);
         const idx = parts.indexOf("series");
         if (idx >= 0 && parts.length > idx + 1) return parts[idx + 1];
-      } catch (e) {
+      } catch {
         // ignore
       }
       return undefined;
@@ -274,7 +274,7 @@ async function seedChapters() {
             return r;
           const t = r.title
             ? String(r.title)
-                .replace(/[^a-z0-9]+/gi, "")
+                .replaceAll(/[^\da-z]+/gi, "")
                 .toLowerCase()
             : undefined;
           if (t && (t === cand || t.includes(cand) || cand.includes(t))) return r;
@@ -282,7 +282,7 @@ async function seedChapters() {
       }
       const titleKey = String(rawIdentifier)
         .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "")
+        .replaceAll(/[^\da-z]+/g, "")
         .trim();
       if (titleMap.has(titleKey)) return titleMap.get(titleKey);
       const tkey2 = String(rawIdentifier).toLowerCase().trim();
@@ -300,7 +300,7 @@ async function seedChapters() {
     // Map chapters to DB structure: need comicId — attempt to find by slug/title/url
     const mapped = [] as any[];
     for (const ch of chapters) {
-      const rawIdentifier = (ch as any).comicslug || (ch as any).comic || undefined;
+      const rawIdentifier = (ch).comicslug || (ch).comic || undefined;
       let comicRow: any = null;
 
       if (rawIdentifier) {
@@ -329,7 +329,7 @@ async function seedChapters() {
         if (!comicRow) {
           const titleKey = String(rawIdentifier)
             .toLowerCase()
-            .replace(/[^a-z0-9]+/g, "")
+            .replaceAll(/[^\da-z]+/g, "")
             .trim();
           if (titleMap.has(titleKey)) comicRow = titleMap.get(titleKey);
           else {
@@ -341,7 +341,7 @@ async function seedChapters() {
 
       // fallback: try to extract from chapter URL
       if (!comicRow) {
-        const extracted = extractSlugFromUrl(ch.url as any);
+        const extracted = extractSlugFromUrl(ch.url);
         if (extracted) {
           if (slugMap.has(extracted)) comicRow = slugMap.get(extracted);
           else {
@@ -409,25 +409,25 @@ async function seedChapters() {
                 });
               }
             }
-          } catch (err) {
-            seedLogger.error({ msg: `Failed creating comic stub`, err });
+          } catch (error) {
+            seedLogger.error({ msg: `Failed creating comic stub`, err: error });
             continue;
           }
         } else {
           console.warn(
-            `Could not find comic for chapter slug/title: ${(rawIdentifier || ch.title) as any}`
+            `Could not find comic for chapter slug/title: ${(rawIdentifier || ch.title)}`
           );
           continue;
         }
       }
 
-      const images = Array.isArray(ch.images) ? ch.images : (ch as any).image_urls || [];
+      const images = Array.isArray(ch.images) ? ch.images : (ch).image_urls || [];
 
       mapped.push({
-        slug: (ch as any).slug || (ch as any).chapterslug || `c-${Date.now()}`,
-        title: (ch as any).title || (ch as any).name || "",
+        slug: (ch).slug || (ch).chapterslug || `c-${Date.now()}`,
+        title: (ch).title || (ch).name || "",
         chapterNumber:
-          parseInt((ch as any).chapterNumber || (ch as any).chaptername || "0", 10) || 0,
+          parseInt((ch).chapterNumber || (ch).chaptername || "0", 10) || 0,
         releaseDate: ch.updatedAt ? new Date(ch.updatedAt) : new Date(),
         comicId: comicRow.id,
         url: ch.url || null,
@@ -447,17 +447,17 @@ async function seedChapters() {
     // Insert chapter images metadata into chapterImage table
     for (const ch of chapters) {
       try {
-        const comicSlug = (ch as any).comicslug || (ch as any).comic || undefined;
+        const comicSlug = (ch).comicslug || (ch).comic || undefined;
         if (!comicSlug) continue;
 
-        const images = Array.isArray((ch as any).images)
-          ? (ch as any).images
-          : (ch as any).image_urls || [];
+        const images = Array.isArray((ch).images)
+          ? (ch).images
+          : (ch).image_urls || [];
 
         if (isDryRun) {
           // In dry-run we don't query DB; just ensure images would be saved and log the action
           for (let i = 0; i < images.length; i++) {
-            const img = normalizeImagePath(images[i] as any) as string | undefined;
+            const img = normalizeImagePath(images[i]);
             const saved = await ensureSavedImageForUrl(
               img,
               path.join(
@@ -466,14 +466,14 @@ async function seedChapters() {
                 "comics",
                 "chapters",
                 comicSlug,
-                ch.slug || (ch as any).chapterslug || ""
+                ch.slug || (ch).chapterslug || ""
               ),
               "/placeholder-comic.jpg",
               { dryRun: true }
             );
             seedLogger.info({
               msg: `Dry-run: would add chapterImage`,
-              chapterSlug: ch.slug || (ch as any).chapterslug,
+              chapterSlug: ch.slug || (ch).chapterslug,
               image: saved,
               page: i,
             });
@@ -491,7 +491,7 @@ async function seedChapters() {
         if (!comicRow) continue;
         // find chapter row by comicId and chapterNumber
         const chapterNumber =
-          parseInt((ch as any).chapterNumber || (ch as any).chaptername || "0", 10) || 0;
+          parseInt((ch).chapterNumber || (ch).chaptername || "0", 10) || 0;
         const chapterRows = await db
           .select()
           .from(schema.chapter)
@@ -504,7 +504,7 @@ async function seedChapters() {
         if (!chapterRow) continue;
 
         for (let i = 0; i < images.length; i++) {
-          const img = normalizeImagePath(images[i] as any) as string | undefined;
+          const img = normalizeImagePath(images[i]);
           const saved = await ensureSavedImageForUrl(
             img,
             path.join(
@@ -513,7 +513,7 @@ async function seedChapters() {
               "comics",
               "chapters",
               comicSlug,
-              ch.slug || (ch as any).chapterslug || ""
+              ch.slug || (ch).chapterslug || ""
             ),
             "/placeholder-comic.jpg",
             { dryRun: isDryRun }
@@ -546,15 +546,15 @@ async function seedChapters() {
             });
           }
         }
-      } catch (err) {
-        seedLogger.error({ msg: `Failed handling chapter images`, err });
+      } catch (error) {
+        seedLogger.error({ msg: `Failed handling chapter images`, err: error });
       }
     }
 
     seedLogger.info({ msg: `Seeded chapters: ${mapped.length}`, dryRun: isDryRun });
     await writeProgress("chapters", { seeded: mapped.length });
-  } catch (err) {
-    seedLogger.error({ msg: "Error seeding chapters", err });
+  } catch (error) {
+    seedLogger.error({ msg: "Error seeding chapters", err: error });
   }
 }
 
@@ -587,8 +587,8 @@ export async function main() {
           await db.delete(schema.user).run();
           seedLogger.info({ msg: "Cleared users" });
         }
-      } catch (err) {
-        seedLogger.error({ msg: "Error during clearing tables", err });
+      } catch (error) {
+        seedLogger.error({ msg: "Error during clearing tables", err: error });
       }
     }
   }
@@ -604,8 +604,8 @@ export async function main() {
 
 const isMain = process.argv[1] && process.argv[1].includes("seed-dynamic");
 if (isMain) {
-  main().catch((e) => {
-    console.error(e);
+  main().catch((error) => {
+    console.error(error);
     process.exit(1);
   });
 }

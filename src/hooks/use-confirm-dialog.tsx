@@ -1,14 +1,14 @@
 import { useCallback, useRef, useState } from "react";
 
-export type ConfirmOptions = {
+export interface ConfirmOptions {
   title?: string;
   description?: string;
   confirmText?: string;
   cancelText?: string;
-  onConfirm?: () => void;
-  onCancel?: () => void;
+  onConfirm?(): void;
+  onCancel?(): void;
   variant?: string;
-};
+}
 
 export function useConfirmDialog() {
   const [open, setOpen] = useState(false);

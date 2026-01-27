@@ -567,6 +567,7 @@ const eslintConfig: Linter.Config[] = [
       "**/.turbo/**",
       "src/styles/globals.css",
       "**/docs/**",
+      "**/scripts/**",
     ],
   },
 ];

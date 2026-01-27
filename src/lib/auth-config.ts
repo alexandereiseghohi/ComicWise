@@ -23,7 +23,7 @@ export const authOptions: NextAuthConfig = {
   // During unit tests we avoid initializing the real Drizzle adapter since the
   // database may be a test placeholder. Only create the adapter in non-test
   // environments.
-  adapter: process.env.NODE_ENV === "test" ? undefined : DrizzleAdapter(database as any),
+  adapter: process.env.NODE_ENV === "test" ? undefined : DrizzleAdapter(database),
   pages: {
     signIn: "/sign-in",
     error: "/sign-in",

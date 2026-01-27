@@ -26,7 +26,7 @@ export function ProfileEditForm({ user }: ProfileEditFormProps) {
     e.preventDefault();
 
     startTransition(async () => {
-      const result = await updateProfileActionOptimized(user.id!, formData);
+      const result = await updateProfileActionOptimized(user.id, formData);
 
       if (result.success) {
         toast.success(result.message ?? "Profile updated successfully");

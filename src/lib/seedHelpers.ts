@@ -96,12 +96,12 @@ export async function loadJsonData<T>(filePath: string, validator: z.ZodSchema<T
   if (Array.isArray(parsed)) candidates = parsed;
   else if (parsed && typeof parsed === "object") {
     const keys = ["data", "items", "comics", "chapters", "users", "results"];
-    for (const k of keys) if (Array.isArray((parsed as any)[k])) candidates = (parsed as any)[k];
+    for (const k of keys) if (Array.isArray((parsed)[k])) candidates = (parsed)[k];
     if (candidates.length === 0) {
       // pick largest array property
       let largest: any[] = [];
       for (const v of Object.values(parsed))
-        if (Array.isArray(v) && v.length > largest.length) largest = v as any[];
+        if (Array.isArray(v) && v.length > largest.length) largest = v;
       if (largest.length) candidates = largest;
     }
   }
@@ -111,17 +111,17 @@ export async function loadJsonData<T>(filePath: string, validator: z.ZodSchema<T
   const transformed = candidates.map(transformItem);
   const arraySchema = z.array(validator);
   try {
-    return arraySchema.parse(transformed) as T[];
-  } catch (err) {
+    return arraySchema.parse(transformed);
+  } catch (error) {
     seedLogger.warn({
       msg: `Validation failed for ${filePath}, attempting to salvage valid items`,
-      err,
+      err: error,
     });
     const out: T[] = [];
     for (let i = 0; i < transformed.length; i++) {
       const it = transformed[i];
       const res = validator.safeParse(it);
-      if (res.success) out.push(res.data as T);
+      if (res.success) out.push(res.data);
       else
         seedLogger.debug({
           msg: `Skipping invalid item at index ${i} in ${filePath}`,
@@ -145,11 +145,11 @@ export async function loadJsonPattern<T>(pattern: string, validator: z.ZodSchema
       else if (parsed && typeof parsed === "object") {
         const keys = ["data", "items", "comics", "chapters", "users", "results"];
         for (const k of keys)
-          if (Array.isArray((parsed as any)[k])) candidates = (parsed as any)[k];
+          if (Array.isArray((parsed)[k])) candidates = (parsed)[k];
         if (candidates.length === 0) {
           let largest: any[] = [];
           for (const v of Object.values(parsed))
-            if (Array.isArray(v) && v.length > largest.length) largest = v as any[];
+            if (Array.isArray(v) && v.length > largest.length) largest = v;
           if (largest.length) candidates = largest;
         }
       }
@@ -158,29 +158,29 @@ export async function loadJsonPattern<T>(pattern: string, validator: z.ZodSchema
       const transformed = candidates.map(transformItem);
       const arraySchema = z.array(validator);
       try {
-        const items = arraySchema.parse(transformed) as T[];
+        const items = arraySchema.parse(transformed);
         out = out.concat(items);
-      } catch (err) {
-        seedLogger.warn({ msg: `Validation failed for ${f}, salvaging valid items`, err });
+      } catch (error) {
+        seedLogger.warn({ msg: `Validation failed for ${f}, salvaging valid items`, err: error });
         for (let i = 0; i < transformed.length; i++) {
           const it = transformed[i];
           const res = validator.safeParse(it);
-          if (res.success) out.push(res.data as T);
+          if (res.success) out.push(res.data);
         }
       }
-    } catch (err) {
-      seedLogger.warn({ msg: `Failed to load ${f}`, err });
+    } catch (error) {
+      seedLogger.warn({ msg: `Failed to load ${f}`, err: error });
     }
   }
   return out;
 }
 
-type SeedOptions = {
+interface SeedOptions {
   truncate?: boolean;
   batchSize?: number;
   conflictKeys?: string[]; // column names for onConflict
   dryRun?: boolean;
-};
+}
 
 function inferConflictKeys(table: any): string[] {
   const name = table?.name?.toLowerCase?.() ?? "";
@@ -203,8 +203,8 @@ export async function seedTable(table: any, data: any[], options: SeedOptions = 
     try {
       if (!dryRun) await db.delete(table).run();
       seedLogger.info({ msg: `Truncated table ${table.name}` });
-    } catch (err) {
-      seedLogger.warn({ msg: `Failed to truncate ${table.name}`, err });
+    } catch (error) {
+      seedLogger.warn({ msg: `Failed to truncate ${table.name}`, err: error });
     }
   }
 
@@ -218,27 +218,26 @@ export async function seedTable(table: any, data: any[], options: SeedOptions = 
         seedLogger.info({ msg: `Dry-run: would insert ${batch.length} into ${table.name}` });
         inserted += batch.length;
       } else {
-        const insertQuery = db.insert(table).values(batch as any[]);
+        const insertQuery = db.insert(table).values(batch);
         const finalQuery =
           effectiveConflict && effectiveConflict.length > 0
             ? // @ts-ignore - dynamic onConflict build
-              (insertQuery as any).onConflictDoUpdate({
+              (insertQuery).onConflictDoUpdate({
                 target: effectiveConflict,
-                set: Object.keys(batch[0]).reduce(
-                  (acc, k) => ({ ...acc, [k]: (insertQuery as any).excluded[k] }),
-                  {}
-                ),
+                set: Object.fromEntries(Object.keys(batch[0]).map(
+                  ( k) => [k, (insertQuery).excluded[k]]
+                )),
               })
             : insertQuery;
 
-        await (finalQuery as any).run();
+        await (finalQuery).run();
         inserted += batch.length;
         seedLogger.info({
           msg: `Inserted ${Math.min(i + batchSize, data.length)}/${data.length} into ${table.name}`,
         });
       }
-    } catch (err) {
-      seedLogger.error({ msg: `Failed inserting batch into ${table.name}`, err });
+    } catch (error) {
+      seedLogger.error({ msg: `Failed inserting batch into ${table.name}`, err: error });
     }
   }
 

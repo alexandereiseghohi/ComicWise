@@ -1,17 +1,17 @@
 import fs from "fs/promises";
 import path from "path";
 import { describe, expect, it } from "vitest";
-import { seedData } from "../lib/seeder.ts";
+import { seedData } from "../lib/seeder";
 
 async function readCount(filename: string) {
   try {
     const raw = await fs.readFile(path.resolve(process.cwd(), filename), "utf-8");
     const parsed = JSON.parse(raw);
     if (Array.isArray(parsed)) return parsed.length;
-    if (Array.isArray((parsed as any).items)) return (parsed as any).items.length;
-    if (Array.isArray((parsed as any).data)) return (parsed as any).data.length;
+    if (Array.isArray(parsed.items)) return parsed.items.length;
+    if (Array.isArray(parsed.data)) return parsed.data.length;
     return 1;
-  } catch (err) {
+  } catch {
     return 0;
   }
 }

@@ -103,7 +103,7 @@ async function fetchComics(
  */
 function ComicsGallery() {
   const searchParams = useSearchParams();
-  const page = Number(searchParams.get("page")) ?? 1;
+  const page = Number(searchParams.get("page") ?? "1");
   const sort = searchParams.get("sort") ?? "newest";
   const genre = searchParams.get("genre");
   const status = searchParams.get("status");

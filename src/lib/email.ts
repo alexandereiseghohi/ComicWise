@@ -24,14 +24,13 @@ import type { SendEmailOptions } from "@/types";
 const _emailCfg = appConfig?.email ?? ({} as any);
 let transporter: any;
 
-if (_emailCfg && _emailCfg.host && _emailCfg.port != null) {
+if (_emailCfg && _emailCfg.host && _emailCfg.port !== undefined && _emailCfg.port !== null) {
   // Normalize email configuration shape from appConfig
   const portNumber = Number(_emailCfg.port) || 587;
   const secure =
     typeof (_emailCfg as any).secure === "boolean" ? (_emailCfg as any).secure : portNumber === 465;
-  const authUser = (_emailCfg.user as string) ?? ((_emailCfg as any).auth?.user as string) ?? "";
-  const authPass =
-    (_emailCfg.password as string) ?? ((_emailCfg as any).auth?.pass as string) ?? "";
+  const authUser = _emailCfg.user ?? ((_emailCfg as any).auth?.user as string) ?? "";
+  const authPass = _emailCfg.password ?? ((_emailCfg as any).auth?.pass as string) ?? "";
 
   // Build transport options guarded to match nodemailer expectations
   const transportOptions: any = {
@@ -44,7 +43,7 @@ if (_emailCfg && _emailCfg.host && _emailCfg.port != null) {
     transportOptions.auth = { user: authUser, pass: authPass };
   }
 
-  transporter = nodemailer.createTransport(transportOptions as any);
+  transporter = nodemailer.createTransport(transportOptions);
 
   // Verify transporter configuration in development only
   if ((_emailCfg.enabled ?? false) && isDevelopment && typeof transporter.verify === "function") {

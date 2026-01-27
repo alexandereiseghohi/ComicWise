@@ -21,14 +21,14 @@ async function main() {
   console.log("Scanning workspace for candidate files...");
 
   // Only consider these extensions/patterns to keep scan fast and focused
-  const includedExt = [".ts", ".tsx", ".mjs", ".js", ".jsx", ".css", ".json", ".md"];
+  const includedExt = new Set([".ts", ".tsx", ".mjs", ".js", ".jsx", ".css", ".json", ".md"]);
 
   const files: string[] = [];
   for await (const f of walk(ROOT)) {
     // ignore node_modules and .git and .next etc
     if (/node_modules|\.git|\.next|dist|out|coverage|build/i.test(f)) continue;
     const ext = path.extname(f).toLowerCase();
-    if (!includedExt.includes(ext)) continue;
+    if (!includedExt.has(ext)) continue;
     files.push(f);
   }
 
@@ -77,13 +77,13 @@ async function main() {
           ) {
             exportedFiles.push(f);
           }
-        } catch (e) {
+        } catch {
           // ignore text parsing issues
         }
-      } catch (e) {
+      } catch {
         // ignore text parsing issues
       }
-    } catch (err) {
+    } catch (e) {
       // ignore
     }
   }
@@ -125,7 +125,7 @@ async function main() {
         referenced = true;
         break;
       }
-      const rel = path.relative(path.dirname(other), f).replace(/\\/g, "/");
+      const rel = path.relative(path.dirname(other), f).replaceAll("\\", "/");
       const relNoExt = rel.replace(/\.(ts|tsx|js|jsx|mjs)$/, "");
       if (txt.includes(relNoExt)) {
         referenced = true;
@@ -161,7 +161,7 @@ async function main() {
       lname.includes("schema") ||
       lname.includes("zod") ||
       lname.includes("validation") ||
-      /src[\\/]lib[\\/]validations/.test(lname) ||
+      /src[/\\]lib[/\\]validations/.test(lname) ||
       /schemas?/.test(lname)
     ) {
       toDelete.add(u);
@@ -170,7 +170,7 @@ async function main() {
 
   // Prioritize newly created files: if a file path contains 'new' or created within last 7 days, prefer deleting it
   const now = Date.now();
-  for (const f of Array.from(toDelete)) {
+  for (const f of [...toDelete]) {
     try {
       const s = await fs.stat(f);
       const ageDays = (now - s.mtimeMs) / (1000 * 60 * 60 * 24);
@@ -178,7 +178,9 @@ async function main() {
         // keep (do not delete recent new files)
         toDelete.delete(f);
       }
-    } catch (e) {}
+    } catch (e) {
+      // ignore
+    }
   }
 
   if (toDelete.size === 0) {
@@ -200,8 +202,8 @@ async function main() {
     try {
       await fs.unlink(f);
       console.log("Deleted", path.relative(ROOT, f));
-    } catch (err: any) {
-      console.warn("Failed to delete", f, err?.message ?? err);
+    } catch (error: any) {
+      console.warn("Failed to delete", f, error?.message ?? error);
     }
   }
 
@@ -210,7 +212,7 @@ async function main() {
     try {
       const stat = await fs.stat(dir);
       if (!stat.isDirectory()) return;
-    } catch (e) {
+    } catch {
       return;
     }
     const entries = await fs.readdir(dir);
@@ -220,7 +222,9 @@ async function main() {
       try {
         await fs.rmdir(dir);
         console.log("Removed empty dir", path.relative(ROOT, dir));
-      } catch (e) {}
+      } catch (e) {
+        // ignore
+      }
       return;
     }
     for (const e of entries) await removeEmptyDirs(path.join(dir, e));
@@ -229,7 +233,7 @@ async function main() {
   await removeEmptyDirs(ROOT);
 }
 
-main().catch((err) => {
-  console.error(err);
+main().catch((error) => {
+  console.error(error);
   process.exit(1);
 });

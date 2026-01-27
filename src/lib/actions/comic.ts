@@ -35,7 +35,7 @@ export async function createComic(data: unknown) {
   const dataToCreate = {
     ...(data as any),
     publicationDate: (data as any).publicationDate ?? new Date(),
-  } as any;
+  };
   const comic = await createComicMutation(dataToCreate);
   revalidatePath("/comics");
   revalidatePath("/admin/comics");

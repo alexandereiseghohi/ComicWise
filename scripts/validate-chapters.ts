@@ -81,9 +81,9 @@ function normalizeToSlug(s: any) {
     .toLowerCase()
     .trim();
   t = t
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .replace(/-+/g, "-");
+    .replaceAll(/[^\da-z]+/g, "-")
+    .replaceAll(/^-+|-+$/g, "")
+    .replaceAll(/-+/g, "-");
   return t || undefined;
 }
 
@@ -94,7 +94,7 @@ function extractSlugFromUrl(url?: string) {
     const parts = u.pathname.split("/").filter(Boolean);
     const idx = parts.indexOf("series");
     if (idx >= 0 && parts.length > idx + 1) return parts[idx + 1];
-  } catch (e) {
+  } catch {
     // ignore
   }
   return undefined;
@@ -114,7 +114,7 @@ function findComicByHeuristics(rawIdentifier: any) {
         return c;
       const t = c.title
         ? String(c.title)
-            .replace(/[^a-z0-9]+/gi, "")
+            .replaceAll(/[^\da-z]+/gi, "")
             .toLowerCase()
         : undefined;
       if (t && (t === cand || t.includes(cand) || cand.includes(t))) return c;
@@ -123,7 +123,7 @@ function findComicByHeuristics(rawIdentifier: any) {
   // try title match
   const titleKey = String(rawIdentifier)
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "")
+    .replaceAll(/[^\da-z]+/g, "")
     .trim();
   if (titleMap.has(titleKey)) return titleMap.get(titleKey);
   const tkey2 = String(rawIdentifier).toLowerCase().trim();
@@ -147,11 +147,11 @@ function loadJson(filePath: string) {
   if (parsed && typeof parsed === "object") {
     const keys = ["data", "items", "comics", "chapters", "users", "results"];
     for (const k of keys)
-      if (Array.isArray((parsed as any)[k])) return (parsed as any)[k].map(transformItem);
+      if (Array.isArray((parsed)[k])) return (parsed)[k].map(transformItem);
     // pick largest array property
     let largest: any[] = [];
     for (const v of Object.values(parsed))
-      if (Array.isArray(v) && v.length > largest.length) largest = v as any[];
+      if (Array.isArray(v) && v.length > largest.length) largest = v;
     if (largest.length) return largest.map(transformItem);
     return [transformItem(parsed)];
   }
@@ -169,18 +169,18 @@ function loadPattern(pattern: string) {
       else if (parsed && typeof parsed === "object") {
         const keys = ["data", "items", "comics", "chapters", "users", "results"];
         for (const k of keys)
-          if (Array.isArray((parsed as any)[k]))
-            out = out.concat((parsed as any)[k].map(transformItem));
+          if (Array.isArray((parsed)[k]))
+            out = out.concat((parsed)[k].map(transformItem));
         if (out.length === 0) {
           let largest: any[] = [];
           for (const v of Object.values(parsed))
-            if (Array.isArray(v) && v.length > largest.length) largest = v as any[];
+            if (Array.isArray(v) && v.length > largest.length) largest = v;
           if (largest.length) out = out.concat(largest.map(transformItem));
           else out.push(transformItem(parsed));
         }
       }
-    } catch (e) {
-      console.warn(`Failed to load ${f}: ${e}`);
+    } catch (error) {
+      console.warn(`Failed to load ${f}: ${error}`);
     }
   }
   return out;
@@ -207,7 +207,7 @@ for (const c of comics) {
   if (c.title) {
     titleMap.set(String(c.title).toLowerCase().trim(), c);
     const tnorm = String(c.title)
-      .replace(/[^a-z0-9]+/gi, "")
+      .replaceAll(/[^\da-z]+/gi, "")
       .toLowerCase()
       .trim();
     if (tnorm) titleMap.set(tnorm, c);
@@ -249,7 +249,7 @@ for (let i = 0; i < chapters.length; i++) {
     if (!comicRow) {
       const titleKey = String(rawIdentifier)
         .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "")
+        .replaceAll(/[^\da-z]+/g, "")
         .trim();
       if (titleMap.has(titleKey)) comicRow = titleMap.get(titleKey);
       else {
@@ -260,7 +260,7 @@ for (let i = 0; i < chapters.length; i++) {
   }
 
   if (!comicRow) {
-    const extracted = extractSlugFromUrl(ch.url as any);
+    const extracted = extractSlugFromUrl(ch.url);
     if (extracted) {
       if (slugMap.has(extracted)) comicRow = slugMap.get(extracted);
       else {

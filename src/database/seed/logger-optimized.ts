@@ -52,12 +52,12 @@ export class SeedLogger {
           },
         });
       }
-    } catch (e) {
+    } catch (error) {
       // If transport initialization fails for any reason, fall back to a
       // plain pino instance to ensure the seeder doesn't crash on exit.
       // We intentionally swallow the error but print to console for debug.
-      // eslint-disable-next-line no-console
-      console.warn("SeedLogger: pino transport init failed, falling back to simple logger:", e);
+       
+      console.warn("SeedLogger: pino transport init failed, falling back to simple logger:", error);
       this.logger = pino({ level: process.env["LOG_LEVEL"] ?? "info" });
     }
   }

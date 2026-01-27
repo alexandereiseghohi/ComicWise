@@ -47,7 +47,7 @@ async function getClientIP(): Promise<string> {
     }
 
     return realIp ?? "unknown";
-  } catch (err) {
+  } catch {
     // headers() may throw when called outside of a request context (e.g., in unit tests)
     return "unknown";
   }
@@ -488,7 +488,7 @@ export async function signInAction(email: string, password: string): Promise<Aut
       if (!parsed.success) {
         return { success: false, error: "Invalid email or password" };
       }
-    } catch (e) {
+    } catch {
       // If validation import fails for any reason, continue to attempt sign in
     }
     // Rate limiting

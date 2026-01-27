@@ -73,66 +73,64 @@ involves working with images, ensure that image handling is efficient and does
 not lead to unnecessary downloads or storage usage. If any task is
 time-consuming, ensure that progress is logged and reported at regular intervals
 with clear, concise logs while running in the background. Read and understand
-#file:samp.txt, #file:Prompts.prompt.txt,#file:recommendations-list.md,
-#file:sample.txt, #file:_.txt, #file:_.md then modify
-#file:.github\prompts\setup.prompt.md to include all Prerequisites and Context
-for all Phase and include all content,tasks,recommendations from #file:samp.txt,
-#file:Prompts.prompt.txt,#file:recommendations-list.md, #file:sample.txt,
-#file:_.txt, #file:_.md, all tasks listed below as github copilot prompts using
-DRY and well documented comments for all
-functions,interfaces,types,modules,classes,components,routes using jsDoc log all
-created or updated files to file:.github\prompts\main.prompt.md and create a
-prompt at file:.github\prompts\run.prompt.md to make all inserts and edits
-described in file:.github\prompts\main.prompt.md Tasks: 1 - Modify
-#file:.vscode/mcp.json to include mcp servers for Next.js, TypeScript,
-PostgreSQL, Redis, Playwright, Context7, Github, All recommended mcp servers for
-this project,and AI development then create a script to install, configure,
-verify and start the mcp servers using VS Code Cli. 2 - Create or Modify and
-Validate #file:.vscode/extensions.json to include recommended extensions for
-Next.js, TypeScript, PostgreSQL, Redis, Playwright, Context7, Github, All
-recommended mcp servers for this project,and AI development then verify and
-install them using the VS Code Cli. 3 - Create or Modify and Validate
-#file:.vscode/launch.json to include configurations for This Project, debugging
-Next.js applications with TypeScript, PostgreSQL, Redis, and AI features. 4 -
-Create or Modify and Validate #file:.vscode/tasks.json to include tasks for
-building, testing, and deploying Next.js applications with TypeScript,
-PostgreSQL, Redis, and AI features. 5 - Create or Modify and Validate
-#file:.vscode/settings.json to include settings optimized for Next.js,
+**/\*.txt, **/\*.md, then modify #file:.github\prompts\setup.prompt.md to
+include all Templates, Configuration, Prerequisites and Context for all Phases
+and include all its content,todos,tasks,items,recommendations as github copilot
+prompts using DRY and well documented comments for all
+pages,services,actions,hooks,stores,functions,interfaces,types,modules,classes,components,routes
+using jsDoc log all created or updated files to
+file:.github\prompts\main.prompt.md and create a prompt at
+file:.github\prompts\run.prompt.md to make all inserts and edits described in
+file:.github\prompts\main.prompt.md Tasks: 1 - Modify #file:.vscode/mcp.json to
+include mcp servers for Next.js, TypeScript, PostgreSQL, Redis, Playwright,
+Context7, Github, All recommended mcp servers for this project,and AI
+development then create a script to install, configure, verify and start the mcp
+servers using VS Code Cli. 2 - Create or Modify and Validate
+#file:.vscode/extensions.json to include recommended extensions for Next.js,
 TypeScript, PostgreSQL, Redis, Playwright, Context7, Github, All recommended mcp
-servers for this project,and AI development ensure all settings are properly
-configured for both development and production environments, ensure all
-extensions are properly configured. 6 - Create or Modify and Validate
-#file:next.config.ts for optimization and Next.js best practices. 7 - Create or
-Modify and Validate #file:nextSitemap.config.ts for optimization and Next.js
-best practices. 8 - Create or Modify and Validate #file:package.json for
-optimization and Next.js best practices. 9 - Create or Modify and Validate
-#file:tsconfig.json for optimization and Next.js best practices. 10 - Create or
-Modify and Validate #file:.prettierrc.ts for optimization and Next.js best
-practices. 11 - Create or Modify and Validate #file:postcss.config.mjs for
-optimization and Next.js best practices. 12 - Create or Modify and Validate
-#file:eslint.config.ts for optimization and Next.js best practices. 13 - Create
-or Modify and Validate #file:.gitignore for optimization and Next.js best
-practices. 14 - Create or Modify and Validate #file:.dockerignore for
-optimization and Next.js best practices. 15 - Create or Modify and Validate
-#file:.prettierignore for optimization and Next.js best practices. 16 - Create
-or Modify and Validate and configuring any necessary environment variables at
-#file:.env.local, importing it at #file:src/lib/env.ts, Create or Modify and
-Validate #file:appConfig.ts (ensure all environment variables are properly set
-and configured for development and production environments update all usage of
-this file across @workspace,use #file:src/lib/env.ts for environment variables).
-17 - Read and understand #file:users.json, #file:comics.json,
-#file:comicsdata1.json, #file:comicsdata2.json, #file:chapters.json,
-#file:chaptersdata1.json, #file:chaptersdata2.json then modify seeding system
-routes and #file:src/database/seed/**/\* to be faster and dynamic, allow the
-creation of data from #file:users.json, #file:comics.json,
-#file:comicsdata1.json, #file:comicsdata2.json, #file:chapters.json,
-#file:chaptersdata1.json, #file:chaptersdata2.json, create and use all needed
-helpers at #file:src/database/seed/**/_.ts to ensure the inserted data is being
-created with a validated onConflictDoUpdate functions, valid zod schemas of the
-inserted data,ensure to use CUSTOM_PASSWORD environment variable as the users
-password with bcryptjs encryption , create functions to make sure no image is
-being downloaded twice by checking if the file does not exists in the file
-system or database, create functions to saves all comics images at
+servers for this project,and AI development then verify and install them using
+the VS Code Cli. 3 - Create or Modify and Validate #file:.vscode/launch.json to
+include configurations for This Project, debugging Next.js applications with
+TypeScript, PostgreSQL, Redis, and AI features. 4 - Create or Modify and
+Validate #file:.vscode/tasks.json to include tasks for building, testing, and
+deploying Next.js applications with TypeScript, PostgreSQL, Redis, and AI
+features. 5 - Create or Modify and Validate #file:.vscode/settings.json to
+include settings optimized for Next.js, TypeScript, PostgreSQL, Redis,
+Playwright, Context7, Github, All recommended mcp servers for this project,and
+AI development ensure all settings are properly configured for both development
+and production environments, ensure all extensions are properly configured. 6 -
+Create or Modify and Validate #file:next.config.ts for optimization and Next.js
+best practices. 7 - Create or Modify and Validate #file:nextSitemap.config.ts
+for optimization and Next.js best practices. 8 - Create or Modify and Validate
+#file:package.json for optimization and Next.js best practices. 9 - Create or
+Modify and Validate #file:tsconfig.json for optimization and Next.js best
+practices. 10 - Create or Modify and Validate #file:.prettierrc.ts for
+optimization and Next.js best practices. 11 - Create or Modify and Validate
+#file:postcss.config.mjs for optimization and Next.js best practices. 12 -
+Create or Modify and Validate #file:eslint.config.ts for optimization and
+Next.js best practices. 13 - Create or Modify and Validate #file:.gitignore for
+optimization and Next.js best practices. 14 - Create or Modify and Validate
+#file:.dockerignore for optimization and Next.js best practices. 15 - Create or
+Modify and Validate #file:.prettierignore for optimization and Next.js best
+practices. 16 - Create or Modify and Validate and configuring any necessary
+environment variables at #file:.env.local, importing it at #file:src/lib/env.ts,
+Create or Modify and Validate #file:appConfig.ts (ensure all environment
+variables are properly set and configured for development and production
+environments update all usage of this file across @workspace,use
+#file:src/lib/env.ts for environment variables). 17 - Read and understand
+#file:users.json, #file:comics.json, #file:comicsdata1.json,
+#file:comicsdata2.json, #file:chapters.json, #file:chaptersdata1.json,
+#file:chaptersdata2.json then modify seeding system routes and
+#file:src/database/seed/**/\* to be faster and dynamic, allow the creation of
+data from #file:users.json, #file:comics.json, #file:comicsdata1.json,
+#file:comicsdata2.json, #file:chapters.json, #file:chaptersdata1.json,
+#file:chaptersdata2.json, create and use all needed helpers at
+#file:src/database/seed/**/_.ts to ensure the inserted data is being created
+with a validated onConflictDoUpdate functions, valid zod schemas of the inserted
+data,ensure to use CUSTOM_PASSWORD environment variable as the users password
+with bcryptjs encryption , create functions to make sure no image is being
+downloaded twice by checking if the file does not exists in the file system or
+database, create functions to saves all comics images at
 #file:public/comics/covers/${comic.slug}/ use ./public/placeholder-comic.jpg as the default fallback image, create functions   to saves all  chapter images  at #file:public/comics/chapters/${comic.slug}/${chapter.slug}/
 , Use ./public/shadcn.jpg as the default fallback image for all user
 image,ensure it has a comprehensive logging with clear, concise logs for each
@@ -181,20 +179,20 @@ next-app@latest at .github/prompts newSetup.prompt.md
 Modify seeding system and image services to ensure if using relative image it
 must start with a leading slash "/" or be an absolute URL (http:// or https://)
 
-modify #file:.env to handle all my project environment variables then. modify
-#file:next.config.ts to enable cacheComponents then Implement cacheComponents
-and fix all incompatible with dynamic route segments then. Convert all any type
-occurrences to specific types from usage or Convert functionality to be Generic
-then. Create or Modify,Validate,Faster and run #file:scripts/cleanup*files.ts to
-Delete all duplicate or unused zod schemas in #file:src, #file:scripts
-prioritize newly created, all duplicate or unused components,functions, types,
-interfaces, classes, empty folders, blank files in #file:src, #file:scripts
-prioritize newly created, all files that contains .backup in *.ts, _.tsx, _.mjs,
-src/\*\*/_.css, src/**/\*.ts, src/**/_.tsx , scripts/\*\*/_, scripts in
-#file:package.json #file:playwright.config.ts #file:vitest.config.ts
-#file:next.config.ts #file:nextSitemap.config.ts #file:proxy.ts
-#file:eslint.config.ts #file:.prettierrc.ts #file:postcss.config.mjs
-#file:drizzle.config.ts #file:sentry.client.config.ts
+modify #file:.env to handle all my project environment variables reference
+#file:env.* then. modify #file:next.config.ts to enable cacheComponents then
+Implement cacheComponents and fix all incompatible with dynamic route segments
+then. Convert all any type occurrences to specific types from usage or Convert
+functionality to be Generic then. Create or Modify,Validate,Faster and run
+#file:scripts/cleanup*files.ts to Delete all duplicate or unused zod schemas in
+#file:src, #file:scripts prioritize newly created, all duplicate or unused
+components,functions, types, interfaces, classes, empty folders, blank files in
+#file:src, #file:scripts prioritize newly created, all files that contains
+.backup in \*.ts, _.tsx, _.mjs, src/\*\*/_.css, src/**/\*.ts, src/**/_.tsx ,
+scripts/\*\*/_, scripts in #file:package.json #file:playwright.config.ts
+#file:vitest.config.ts #file:next.config.ts #file:nextSitemap.config.ts
+#file:proxy.ts #file:eslint.config.ts #file:.prettierrc.ts
+#file:postcss.config.mjs #file:drizzle.config.ts #file:sentry.client.config.ts
 #file:sentry.server.config.ts #file:appConfig.ts #file:redis.ts
 #file:sentry.edge.config.ts files prioritize newly created then. Create or
 Modify, Validate,Faster and run #file:scripts/cleanup_packages.ts to Uninstall
@@ -205,8 +203,8 @@ src/**/_.tsx , scripts/\*\*/_, scripts in #file:package.json
 #file:.prettierrc.ts #file:postcss.config.mjs #file:drizzle.config.ts
 #file:sentry.client.config.ts #file:sentry.server.config.ts #file:appConfig.ts
 #file:redis.ts #file:sentry.edge.config.ts with pnpm then. Modify package.json
-to include all scripts in _.ts, _.tsx, _.mjs, src/\*\*/_.css, src/**/\*.ts,
-src/**/_.tsx , scripts/\*\*/_, scripts in #file:package.json
+to include all scripts from _.ts, _.tsx, _.mjs, src/\*\*/_.css, src/**/\*.ts,
+src/**/_.tsx , scripts/\*\*/_, at scripts in #file:package.json
 #file:playwright.config.ts #file:vitest.config.ts #file:next.config.ts
 #file:nextSitemap.config.ts #file:proxy.ts #file:eslint.config.ts
 #file:.prettierrc.ts #file:postcss.config.mjs #file:drizzle.config.ts

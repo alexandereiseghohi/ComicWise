@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 // Read flag early so it's available during build-time
-const ENABLE_CACHE_COMPONENTS = true
+const ENABLE_CACHE_COMPONENTS = true;
 
 const nextConfig: NextConfig = {
   // React Compiler for automatic optimization

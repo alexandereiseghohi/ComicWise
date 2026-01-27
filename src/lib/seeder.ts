@@ -1,16 +1,16 @@
 import fs from "fs/promises";
 import path from "path";
 
-export type SeedResult = {
+export interface SeedResult {
   source: string;
   inserted: number;
-};
+}
 
-export type SeederOptions = {
+export interface SeederOptions {
   // Optional programmatic DB client with insert(table, rows) signature
-  dbClient?: { insert?: (table: string, rows: any[]) => Promise<number> | number };
+  dbClient?: { insert?(table: string, rows: any[]): Promise<number> | number };
   outFile?: string; // when no dbClient provided, write results here
-};
+}
 
 async function readJsonFile<T = any>(filename: string): Promise<T[]> {
   const p = path.resolve(process.cwd(), filename);
@@ -19,11 +19,11 @@ async function readJsonFile<T = any>(filename: string): Promise<T[]> {
     const parsed = JSON.parse(raw);
     if (Array.isArray(parsed)) return parsed as T[];
     // if object with property items or data
-    if (Array.isArray((parsed as any).items)) return (parsed as any).items as T[];
-    if (Array.isArray((parsed as any).data)) return (parsed as any).data as T[];
+    if (Array.isArray((parsed).items)) return (parsed).items as T[];
+    if (Array.isArray((parsed).data)) return (parsed).data as T[];
     // fallback: wrap object
     return [parsed] as unknown as T[];
-  } catch (err) {
+  } catch {
     // file missing is allowed; return empty
     return [];
   }
@@ -53,7 +53,7 @@ export async function seedData(opts?: SeederOptions): Promise<{ results: SeedRes
         const res = await opts.dbClient.insert(s.name, s.rows);
         const inserted = typeof res === "number" ? res : s.rows.length;
         results.push({ source: s.name, inserted });
-      } catch (err) {
+      } catch {
         // On DB error, push zero and continue
         results.push({ source: s.name, inserted: 0 });
       }
@@ -67,7 +67,7 @@ export async function seedData(opts?: SeederOptions): Promise<{ results: SeedRes
     const outFile = opts?.outFile ?? path.resolve(process.cwd(), ".seeder-output.json");
     try {
       await fs.writeFile(outFile, JSON.stringify({ results }, null, 2), "utf-8");
-    } catch (err) {
+    } catch {
       // ignore write errors
     }
   }

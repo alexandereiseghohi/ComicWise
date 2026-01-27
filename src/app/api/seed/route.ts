@@ -108,7 +108,7 @@ export async function POST(request: Request) {
     async function writeStatus(status: unknown) {
       try {
         await fs.writeFile(statusFile, JSON.stringify(status, null, 2), "utf-8");
-      } catch (e) {
+      } catch {
         // ignore
       }
     }

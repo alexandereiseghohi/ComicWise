@@ -51,16 +51,17 @@ const IMAGE_CONCURRENCY = 5;
 
 /**
  * Make a URL-friendly slug from a string or fallback to a random id
+ * @param input
  */
 function makeSlug(input?: string): string {
   const base = (input ?? "").toString();
   if (!base) return Math.random().toString(36).slice(2, 9);
   return base
     .toLowerCase()
-    .replace(/[^\w\s-]/g, "")
+    .replaceAll(/[^\s\w-]/g, "")
     .trim()
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-");
+    .replaceAll(/\s+/g, "-")
+    .replaceAll(/-+/g, "-");
 }
 
 /**

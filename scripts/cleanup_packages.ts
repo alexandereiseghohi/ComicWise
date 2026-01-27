@@ -15,7 +15,7 @@ function readPkgJson(): {
 }
 
 function escapeRegex(s: string) {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return s.replaceAll(/[$()*+.?[\\\]^{|}]/g, "\\$&");
 }
 
 function scanFilesForUsage(files: string[], pkg: string) {
@@ -31,7 +31,7 @@ function scanFilesForUsage(files: string[], pkg: string) {
       if (rePkgToken.test(txt)) return true;
       // also check for usage like 'pkg/' imports
       if (txt.includes(pkg + "/")) return true;
-    } catch (e) {
+    } catch {
       // ignore unreadable files
     }
   }
@@ -66,13 +66,13 @@ function gatherFiles() {
     const found = globSync(pat, { cwd: process.cwd(), absolute: true });
     for (const f of found) files.add(f);
   }
-  for (const e of extras.concat(moreExtras)) {
+  for (const e of [...extras, ...moreExtras]) {
     const p = path.join(process.cwd(), e);
     if (fs.existsSync(p)) files.add(p);
   }
   // always include package.json as we may inspect scripts
   files.add(path.join(process.cwd(), "package.json"));
-  return Array.from(files);
+  return [...files];
 }
 
 async function main() {
@@ -135,14 +135,14 @@ async function main() {
     try {
       console.log(`pnpm remove ${p}`);
       execSync(`pnpm remove ${p}`, { stdio: "inherit" });
-    } catch (err: any) {
-      console.warn("Failed to remove", p, err?.message ?? err);
+    } catch (error: any) {
+      console.warn("Failed to remove", p, error?.message ?? error);
     }
   }
   console.log("Removal complete. You may want to run 'pnpm install' and re-run tests/type-check.");
 }
 
-main().catch((err) => {
-  console.error(err);
+main().catch((error) => {
+  console.error(error);
   process.exit(1);
 });

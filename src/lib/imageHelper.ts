@@ -5,6 +5,7 @@ import pLimit from "p-limit";
 import path from "path";
 import { pipeline } from "stream";
 import { promisify } from "util";
+
 const streamPipeline = promisify(pipeline);
 
 const DEFAULT_CONCURRENCY = parseInt(
@@ -12,7 +13,7 @@ const DEFAULT_CONCURRENCY = parseInt(
   10
 );
 const MAX_SIZE = parseInt(process.env["SEED_MAX_IMAGE_SIZE_BYTES"] || "5242880", 10);
-const allowedExt = [".jpg", ".jpeg", ".png", ".webp", ".avif"];
+const allowedExt = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif"]);
 
 const SAVE_IMAGES = (process.env["SEED_SAVE_IMAGES"] || "true").toLowerCase() !== "false";
 const DEFAULT_FETCH_TIMEOUT = parseInt(process.env["SEED_FETCH_TIMEOUT_MS"] || "10000", 10);
@@ -36,7 +37,7 @@ export function computeImageFilename(url: string) {
     const base = path.basename(parsed.pathname);
     const ext = path.extname(base).toLowerCase() || ".jpg";
     return { filename: `${hash}${ext}`, hash, ext };
-  } catch (err) {
+  } catch {
     const ext = path.extname(url).toLowerCase() || ".jpg";
     return { filename: `${hash}${ext}`, hash, ext };
   }
@@ -74,7 +75,7 @@ export async function ensureSavedImageForUrl(
     const parsed = new URL(url);
     const base = path.basename(parsed.pathname);
     const ext = path.extname(base).toLowerCase();
-    if (!allowedExt.includes(ext)) {
+    if (!allowedExt.has(ext)) {
       // prefer jpg extension if unknown
       return fallback;
     }
@@ -82,7 +83,7 @@ export async function ensureSavedImageForUrl(
     const filename = `${hash}${ext}`;
     const outPath = path.join(destDir, filename);
     const relPath =
-      "/" + path.relative(path.join(process.cwd(), "public"), outPath).replace(/\\/g, "/");
+      "/" + path.relative(path.join(process.cwd(), "public"), outPath).replaceAll('\\', "/");
 
     if (await fs.pathExists(outPath)) return relPath;
 
@@ -104,7 +105,8 @@ export async function ensureSavedImageForUrl(
         const signal = controller.signal;
         const timer = setTimeout(() => controller.abort(), timeout);
         try {
-          const res = await fetch(url, { signal });
+          const targetUrl = url as string;
+          const res = await fetch(targetUrl, { signal });
           clearTimeout(timer);
           if (!res.ok) {
             // don't retry on 404
@@ -128,11 +130,11 @@ export async function ensureSavedImageForUrl(
             return { ok: false, res } as any;
           }
           return { ok: true, res } as any;
-        } catch (err) {
+        } catch (error) {
           clearTimeout(timer);
-          lastErr = err;
+          lastErr = error;
           // abort errors or network glitches - retry
-          seedLogger.warn({ msg: `Fetch attempt failed`, url, attempt, err });
+          seedLogger.warn({ msg: `Fetch attempt failed`, url, attempt, err: error });
           await new Promise((r) => setTimeout(r, 200 * Math.pow(2, attempt)));
           continue;
         }
@@ -158,20 +160,20 @@ export async function ensureSavedImageForUrl(
     const destStream = fs.createWriteStream(outPath);
     await streamPipeline(res.body, destStream as any);
     return relPath;
-  } catch (err) {
+  } catch (error) {
     // If disk is full, set a module-level flag to avoid repeated attempts
     // err.code may be 'ENOSPC' on low-disk situations
     try {
-      const e: any = err;
+      const e: any = error;
       if (e && e.code === "ENOSPC") {
         (ensureSavedImageForUrl as any)._downloadsDisabled = true;
-        seedLogger.error({ msg: `Disk full: disabling further image downloads`, url, err });
+        seedLogger.error({ msg: `Disk full: disabling further image downloads`, url, err: error });
         return fallback;
       }
-    } catch (e2) {
+    } catch {
       // ignore
     }
-    seedLogger.error({ msg: `Failed to save image`, url, err });
+    seedLogger.error({ msg: `Failed to save image`, url, err: error });
     return fallback;
   }
 }

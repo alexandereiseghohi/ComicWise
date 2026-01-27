@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 import { readFileSync } from "fs";
 import { join } from "path";
-import { z } from "zod";
+import type { z } from "zod";
 import { chapterSchema, comicSchema } from "../src/lib/validations/seed";
 
 function extractStringFromPossible(val: any): string | undefined {
@@ -85,11 +85,11 @@ function loadAndCheck(filePath: string, schema: z.ZodSchema<any>, limit = 10) {
   if (Array.isArray(parsed)) candidates = parsed;
   else if (parsed && typeof parsed === "object") {
     const keys = ["data", "items", "comics", "chapters", "users", "results"];
-    for (const k of keys) if (Array.isArray((parsed as any)[k])) candidates = (parsed as any)[k];
+    for (const k of keys) if (Array.isArray((parsed)[k])) candidates = (parsed)[k];
     if (candidates.length === 0) {
       let largest: any[] = [];
       for (const v of Object.values(parsed))
-        if (Array.isArray(v) && v.length > largest.length) largest = v as any[];
+        if (Array.isArray(v) && v.length > largest.length) largest = v;
       if (largest.length) candidates = largest;
     }
   }
@@ -132,11 +132,11 @@ function collectComicSlugs(files: string[]) {
     if (Array.isArray(parsed)) candidates = parsed;
     else if (parsed && typeof parsed === "object") {
       const keys = ["data", "items", "comics", "chapters", "users", "results"];
-      for (const k of keys) if (Array.isArray((parsed as any)[k])) candidates = (parsed as any)[k];
+      for (const k of keys) if (Array.isArray((parsed)[k])) candidates = (parsed)[k];
       if (candidates.length === 0) {
         let largest: any[] = [];
         for (const v of Object.values(parsed))
-          if (Array.isArray(v) && v.length > largest.length) largest = v as any[];
+          if (Array.isArray(v) && v.length > largest.length) largest = v;
         if (largest.length) candidates = largest;
       }
     }
@@ -158,11 +158,11 @@ function findUnmatchedChapters(chaptersFile: string, comicSlugFiles: string[], l
   if (Array.isArray(parsed)) candidates = parsed;
   else if (parsed && typeof parsed === "object") {
     const keys = ["data", "items", "comics", "chapters", "users", "results"];
-    for (const k of keys) if (Array.isArray((parsed as any)[k])) candidates = (parsed as any)[k];
+    for (const k of keys) if (Array.isArray((parsed)[k])) candidates = (parsed)[k];
     if (candidates.length === 0) {
       let largest: any[] = [];
       for (const v of Object.values(parsed))
-        if (Array.isArray(v) && v.length > largest.length) largest = v as any[];
+        if (Array.isArray(v) && v.length > largest.length) largest = v;
       if (largest.length) candidates = largest;
     }
   }
@@ -170,7 +170,7 @@ function findUnmatchedChapters(chaptersFile: string, comicSlugFiles: string[], l
   const unmatched: any[] = [];
   for (let i = 0; i < candidates.length; i++) {
     const ch = transformItem(candidates[i]);
-    const rawComic = (ch as any).comicslug || (ch as any).comic || undefined;
+    const rawComic = (ch).comicslug || (ch).comic || undefined;
     const comicSlug = typeof rawComic === "object" ? extractStringFromPossible(rawComic) : rawComic;
     if (!comicSlug || !slugs.has(String(comicSlug))) {
       unmatched.push({ index: i, chapter: ch, resolvedComicSlug: comicSlug });
@@ -202,7 +202,7 @@ async function main() {
   }
 }
 
-main().catch((e) => {
-  console.error(e);
+main().catch((error) => {
+  console.error(error);
   process.exit(1);
 });

@@ -1,4 +1,4 @@
-import { computeImageFilename, ensureSavedImageForUrl } from "@/lib/imageHelper.ts";
+import { computeImageFilename, ensureSavedImageForUrl } from "@/lib/imageHelper";
 import fs from "fs-extra";
 import path from "path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -17,7 +17,7 @@ describe("imageHelper", () => {
   it("computeImageFilename generates consistent hash and ext", () => {
     const url = "https://example.com/image.jpg";
     const info = computeImageFilename(url);
-    expect(info.filename).toMatch(/^[0-9a-f]{64}\.jpg$/);
+    expect(info.filename).toMatch(/^[\da-f]{64}\.jpg$/);
   });
 
   it("ensureSavedImageForUrl dry-run returns path without downloading", async () => {

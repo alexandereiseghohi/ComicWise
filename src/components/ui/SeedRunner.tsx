@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-type EntityStats = {
+interface EntityStats {
   total?: number;
   created?: number;
   updated?: number;
@@ -9,14 +9,14 @@ type EntityStats = {
   errors?: number;
   imagesDownloaded?: number;
   imagesCached?: number;
-};
+}
 
-type SeedResult = {
+interface SeedResult {
   users?: EntityStats;
   comics?: EntityStats;
   chapters?: EntityStats;
   message?: string;
-};
+}
 
 export default function SeedRunner() {
   const [loading, setLoading] = useState(false);
@@ -46,7 +46,7 @@ export default function SeedRunner() {
               );
             }
           }
-        } catch (err) {
+        } catch {
           // ignore polling errors
         }
       }, 800);
@@ -58,8 +58,8 @@ export default function SeedRunner() {
       } else {
         setError(json?.error ?? json?.data?.error ?? "Unknown error");
       }
-    } catch (err: any) {
-      setError(String(err));
+    } catch (error_: any) {
+      setError(String(error_));
     } finally {
       setLoading(false);
     }

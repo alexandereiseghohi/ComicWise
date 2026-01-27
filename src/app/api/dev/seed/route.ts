@@ -11,8 +11,8 @@ export async function POST(req: Request) {
     // run seed in background but await completion so caller can see result
     await runSeed();
     return NextResponse.json({ ok: true });
-  } catch (err) {
-    console.error("Seed API error:", err);
-    return NextResponse.json({ error: String(err) }, { status: 500 });
+  } catch (error) {
+    console.error("Seed API error:", error);
+    return NextResponse.json({ error: String(error) }, { status: 500 });
   }
 }

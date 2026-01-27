@@ -71,7 +71,7 @@ class AuthorDal extends BaseDal<Author, typeof author.$inferInsert> {
         let query = db.select().from(author);
 
         if (search) {
-          query = query.where(like(author.name, `%${search}%`)) as typeof query;
+          query = query.where(like(author.name, `%${search}%`));
         }
 
         return await query.orderBy(desc(author.createdAt)).limit(limit).offset(offset);

@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
     const newComment = await createComment({
       content: validation.data.content,
       userId: session.user.id,
-      chapterId: chapterIdNum as number,
+      chapterId: chapterIdNum,
     });
 
     if (!newComment) {

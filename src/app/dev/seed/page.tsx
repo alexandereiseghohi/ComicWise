@@ -19,8 +19,8 @@ export default function DevSeedPage() {
       if (res.ok) setStatus("Seed started successfully");
       else setStatus({ error: json.error });
       setPolling(true);
-    } catch (err) {
-      setStatus({ error: String(err) });
+    } catch (error) {
+      setStatus({ error: String(error) });
     }
   }
 
@@ -32,8 +32,8 @@ export default function DevSeedPage() {
           const res = await fetch("/api/dev/seed/status");
           const json = await res.json();
           setStatus(json);
-        } catch (err) {
-          setStatus({ error: String(err) });
+        } catch (error) {
+          setStatus({ error: String(error) });
         }
       }, 1500);
     }

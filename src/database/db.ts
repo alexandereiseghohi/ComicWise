@@ -19,26 +19,18 @@ if (!safeEnv["DATABASE_URL"]) {
   console.warn("DATABASE_URL not set — database connections may fail in runtime.");
 }
 
-// Export placeholders which will be assigned depending on environment. We use
-// `let` so we can conditionally initialize them below without using illegal
-// top-level `export` inside blocks.
-export let sql: any;
-export let client: any;
-export let db: PostgresJsDatabase<typeof schema> | any;
-
-if (isTestRun) {
-  // Provide no-op placeholders for exports used across the codebase so that
-  // importing modules during tests doesn't trigger a real DB connection.
-  // Tests should mock database calls as needed.
-  sql = {};
-  client = {};
-  db = {} as any;
-} else {
-  // Using node-postgres replacement 'postgres' (postgres-js client)
-  sql = postgres(safeEnv["DATABASE_URL"] ?? "", {
+// Export immutable connections/clients. Use IIFEs to avoid mutable exported
+// bindings while preserving conditional initialization for test vs runtime.
+export const sql: any = (() => {
+  if (isTestRun) return {} as any;
+  return postgres(safeEnv["DATABASE_URL"] ?? "", {
     host: undefined,
     max: 10,
   });
+})();
+
+export const client: any = (() => {
+  if (isTestRun) return {} as any;
 
   // ═══════════════════════════════════════════════════
   // VALIDATION
@@ -62,19 +54,17 @@ if (isTestRun) {
     onnotice: isDevelopment ? undefined : () => {}, // Silence notices in production
   } as const;
 
-  // ═══════════════════════════════════════════════════
-  // CLIENT INITIALIZATION
-  // ═══════════════════════════════════════════════════
-
   // Create postgres client with optimized settings
-  client = postgres(safeEnv["DATABASE_URL"], connectionConfig);
+  return postgres(safeEnv["DATABASE_URL"], connectionConfig);
+})();
 
-  // Assign typed Drizzle instance
-  db = drizzle(client, {
+export const db: PostgresJsDatabase<typeof schema> | any = (() => {
+  if (isTestRun) return {} as any;
+  return drizzle(client, {
     schema,
     logger: isDevelopment, // Enable query logging in development
   }) as PostgresJsDatabase<typeof schema>;
-}
+})();
 
 // ═══════════════════════════════════════════════════
 // TYPE EXPORTS

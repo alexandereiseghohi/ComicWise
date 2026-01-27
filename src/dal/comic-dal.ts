@@ -92,19 +92,19 @@ class ComicDal extends BaseDal<Comic, typeof comic.$inferInsert> {
         let query = db.select().from(comic);
 
         if (conditions.length > 0) {
-          query = query.where(and(...conditions)) as typeof query;
+          query = query.where(and(...conditions));
         }
 
         switch (orderBy) {
           case "popular":
-            query = query.orderBy(desc(comic.views)) as typeof query;
+            query = query.orderBy(desc(comic.views));
             break;
           case "rating":
-            query = query.orderBy(desc(comic.rating)) as typeof query;
+            query = query.orderBy(desc(comic.rating));
             break;
           case "latest":
           default:
-            query = query.orderBy(desc(comic.createdAt)) as typeof query;
+            query = query.orderBy(desc(comic.createdAt));
             break;
         }
 

@@ -1,8 +1,8 @@
-export type Logger = {
-  info: (...args: any[]) => void;
-  warn: (...args: any[]) => void;
-  error: (...args: any[]) => void;
-};
+export interface Logger {
+  info(...args: any[]): void;
+  warn(...args: any[]): void;
+  error(...args: any[]): void;
+}
 
 export const createLogger = (prefix = "seeder"): Logger => ({
   info: (...args: any[]) => console.log(`[${prefix}]`, ...args),

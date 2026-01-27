@@ -9,9 +9,9 @@ function normalizeToSlug(s: any) {
     .toLowerCase()
     .trim();
   t = t
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .replace(/-+/g, "-");
+    .replaceAll(/[^\da-z]+/g, "-")
+    .replaceAll(/^-+|-+$/g, "")
+    .replaceAll(/-+/g, "-");
   return t || undefined;
 }
 
@@ -31,15 +31,15 @@ for (const f of comicsFiles) {
     else if (rawc && typeof rawc === "object") {
       const keys = ["data", "items", "comics", "results"];
       for (const k of keys)
-        if (Array.isArray((rawc as any)[k])) comics = comics.concat((rawc as any)[k]);
+        if (Array.isArray((rawc)[k])) comics = comics.concat((rawc)[k]);
       if (comics.length === 0) {
         let largest: any[] = [];
         for (const v of Object.values(rawc))
-          if (Array.isArray(v) && v.length > largest.length) largest = v as any[];
+          if (Array.isArray(v) && v.length > largest.length) largest = v;
         if (largest.length) comics = comics.concat(largest);
       }
     }
-  } catch (e) {
+  } catch {
     // ignore
   }
 }
@@ -61,7 +61,7 @@ for (const u of unmatched) {
     else if (t && key && t.includes(key)) suggestions[key].push(c.slug || c.title);
   }
   // unique
-  suggestions[key] = Array.from(new Set(suggestions[key]));
+  suggestions[key] = [...new Set(suggestions[key])];
 }
 
 const outPath = join(process.cwd(), ".cache", "suggested-comic-mappings.json");

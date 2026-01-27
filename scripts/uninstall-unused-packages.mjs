@@ -54,7 +54,7 @@ async function main() {
   }
 }
 
-main().catch((err) => {
-  console.error("Failed to run depcheck:", err);
+main().catch((error) => {
+  console.error("Failed to run depcheck:", error);
   process.exit(1);
 });

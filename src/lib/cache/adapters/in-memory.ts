@@ -58,11 +58,11 @@ export function createInMemoryAdapter() {
 
     // Best-effort stubs for pattern/sorted set APIs
     async keys(_pattern: string): Promise<string[]> {
-      return Array.from(store.keys());
+      return [...store.keys()];
     },
 
     async deletePattern(pattern: string): Promise<number> {
-      const keys = Array.from(store.keys()).filter((k) => k.includes(pattern.replace(/\*/g, "")));
+      const keys = [...store.keys()].filter((k) => k.includes(pattern.replaceAll('*', "")));
       for (const k of keys) store.delete(k);
       return keys.length;
     },
@@ -85,7 +85,7 @@ export function createInMemoryAdapter() {
 
     // debug helpers
     __dump() {
-      return Array.from(store.entries());
+      return [...store.entries()];
     },
   } as const;
 }

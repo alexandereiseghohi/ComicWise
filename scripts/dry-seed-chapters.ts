@@ -81,9 +81,9 @@ function normalizeToSlug(s: any) {
     .toLowerCase()
     .trim();
   t = t
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .replace(/-+/g, "-");
+    .replaceAll(/[^\da-z]+/g, "-")
+    .replaceAll(/^-+|-+$/g, "")
+    .replaceAll(/-+/g, "-");
   return t || undefined;
 }
 
@@ -111,7 +111,7 @@ function stripStopwords(s: string) {
     "pt",
   ]);
   return s
-    .split(/[^a-z0-9]+/i)
+    .split(/[^\da-z]+/i)
     .filter(Boolean)
     .map((t) => t.toLowerCase())
     .filter((t) => !stop.has(t))
@@ -119,14 +119,14 @@ function stripStopwords(s: string) {
 }
 
 function romanToNumber(r: string) {
-  if (!r) return NaN;
+  if (!r) return Number.NaN;
   const map: Record<string, number> = { I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000 };
-  let s = r.toUpperCase().trim();
-  if (!/^[IVXLCDM]+$/.test(s)) return NaN;
+  const s = r.toUpperCase().trim();
+  if (!/^[CDILMVX]+$/.test(s)) return Number.NaN;
   let total = 0;
   for (let i = 0; i < s.length; i++) {
-    const val = map[s[i]];
-    const next = map[s[i + 1]] || 0;
+    const val = map[s.charAt(i)] ?? 0;
+    const next = map[s.charAt(i + 1)] ?? 0;
     if (next > val) total -= val;
     else total += val;
   }
@@ -134,7 +134,7 @@ function romanToNumber(r: string) {
 }
 
 function replaceRomanNumerals(s: string) {
-  return s.replace(/\b(IV|V?I{0,3}|IX|X|XL|L|XC|C|CD|D|CM|M{1,4})\b/gi, (m) => {
+  return s.replaceAll(/\b(iv|v?i{0,3}|ix|x|xl|l|xc|c|cd|d|cm|m{1,4})\b/gi, (m) => {
     const n = romanToNumber(m);
     return isNaN(n) ? m : String(n);
   });
@@ -167,7 +167,7 @@ function extractSlugFromUrl(url?: string) {
     const parts = u.pathname.split("/").filter(Boolean);
     const idx = parts.indexOf("series");
     if (idx >= 0 && parts.length > idx + 1) return parts[idx + 1];
-  } catch (e) {
+  } catch {
     // ignore
   }
   return undefined;
@@ -180,11 +180,10 @@ function loadJson(filePath: string) {
   if (Array.isArray(parsed)) return parsed.map(transformItem);
   if (parsed && typeof parsed === "object") {
     const keys = ["data", "items", "comics", "chapters", "users", "results"];
-    for (const k of keys)
-      if (Array.isArray((parsed as any)[k])) return (parsed as any)[k].map(transformItem);
+    for (const k of keys) if (Array.isArray(parsed[k])) return parsed[k].map(transformItem);
     let largest: any[] = [];
     for (const v of Object.values(parsed))
-      if (Array.isArray(v) && v.length > largest.length) largest = v as any[];
+      if (Array.isArray(v) && v.length > largest.length) largest = v;
     if (largest.length) return largest.map(transformItem);
     return [transformItem(parsed)];
   }
@@ -202,18 +201,17 @@ function loadPattern(pattern: string) {
       else if (parsed && typeof parsed === "object") {
         const keys = ["data", "items", "comics", "chapters", "users", "results"];
         for (const k of keys)
-          if (Array.isArray((parsed as any)[k]))
-            out = out.concat((parsed as any)[k].map(transformItem));
+          if (Array.isArray(parsed[k])) out = out.concat(parsed[k].map(transformItem));
         if (out.length === 0) {
           let largest: any[] = [];
           for (const v of Object.values(parsed))
-            if (Array.isArray(v) && v.length > largest.length) largest = v as any[];
+            if (Array.isArray(v) && v.length > largest.length) largest = v;
           if (largest.length) out = out.concat(largest.map(transformItem));
           else out.push(transformItem(parsed));
         }
       }
-    } catch (e) {
-      console.warn(`Failed to load ${f}: ${e}`);
+    } catch (error) {
+      console.warn(`Failed to load ${f}: ${error}`);
     }
   }
   return out;
@@ -237,7 +235,7 @@ for (const c of comics) {
   if (c.title) {
     titleMap.set(String(c.title).toLowerCase().trim(), c);
     const tnorm = String(c.title)
-      .replace(/[^a-z0-9]+/gi, "")
+      .replaceAll(/[^\da-z]+/gi, "")
       .toLowerCase()
       .trim();
     if (tnorm) titleMap.set(tnorm, c);
@@ -249,7 +247,8 @@ const unmatched: any[] = [];
 for (let i = 0; i < chapters.length; i++) {
   const ch = chapters[i];
   const rawIdentifier = ch.comicslug || ch.comic || ch.comictitle || undefined;
-  const rawIdentifierStr = rawIdentifier != null ? String(rawIdentifier) : undefined;
+  const rawIdentifierStr =
+    rawIdentifier !== null && rawIdentifier !== undefined ? String(rawIdentifier) : undefined;
   let comicRow: any = null;
 
   if (rawIdentifier) {
@@ -269,7 +268,7 @@ for (let i = 0; i < chapters.length; i++) {
     if (!comicRow) {
       const titleKey = String(rawIdentifierStr || "")
         .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "")
+        .replaceAll(/[^\da-z]+/g, "")
         .trim();
       if (titleMap.has(titleKey)) comicRow = titleMap.get(titleKey);
       else {
@@ -282,7 +281,7 @@ for (let i = 0; i < chapters.length; i++) {
   }
 
   if (!comicRow) {
-    const extracted = extractSlugFromUrl(ch.url as any);
+    const extracted = extractSlugFromUrl(ch.url);
     if (extracted) {
       if (slugMap.has(extracted)) comicRow = slugMap.get(extracted);
       else {
@@ -304,7 +303,7 @@ for (let i = 0; i < chapters.length; i++) {
         }
         const t = c.title
           ? String(c.title)
-              .replace(/[^a-z0-9]+/gi, "")
+              .replaceAll(/[^\da-z]+/gi, "")
               .toLowerCase()
           : undefined;
         if (t && (t === cand || t.includes(cand) || cand.includes(t))) {
@@ -328,7 +327,7 @@ for (let i = 0; i < chapters.length; i++) {
         const t = c.title
           ? String(c.title)
               .toLowerCase()
-              .replace(/[^a-z0-9]+/gi, "")
+              .replaceAll(/[^\da-z]+/gi, "")
           : undefined;
         const scomp = s || (t ? normalizeToSlug(t) : undefined) || "";
         const dist = levenshtein(candNorm, scomp);
@@ -350,7 +349,7 @@ for (let i = 0; i < chapters.length; i++) {
     continue;
   }
 
-  const chapterNumber = parseInt(ch.chapterNumber || ch.chaptername || "0", 10) || 0;
+  const chapterNumber = Number.parseInt(ch.chapterNumber || ch.chaptername || "0", 10) || 0;
   mapped.push({
     slug: ch.chapterslug || ch.slug || `c-${Date.now()}`,
     title: ch.title || ch.chaptername || ch.name || "",
@@ -376,8 +375,8 @@ try {
     "utf-8"
   );
   console.log("Wrote .cache/dry-seed-chapters.json");
-} catch (e) {
-  console.warn(`Failed to write dry-seed output: ${e}`);
+} catch (error) {
+  console.warn(`Failed to write dry-seed output: ${error}`);
 }
 
 console.log("Sample mapped entries:");

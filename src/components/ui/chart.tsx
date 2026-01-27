@@ -127,7 +127,7 @@ function ChartTooltipContent(props: any) {
     color,
     nameKey,
     labelKey,
-  } = props as any;
+  } = props;
   const { config } = useChart();
 
   const tooltipLabel = React.useMemo(() => {
@@ -173,7 +173,7 @@ function ChartTooltipContent(props: any) {
       {!nestLabel ? tooltipLabel : null}
       <div className="grid gap-1.5">
         {payload
-          .filter((item: any) => (item as any).type !== "none")
+          .filter((item: any) => (item).type !== "none")
           .map((item: any, index: number) => {
             const key = `${(nameKey || item.name || item.dataKey) ?? "value"}`;
             const itemConfig = getPayloadConfigFromPayload(config, item, key);
@@ -256,7 +256,7 @@ function ChartTooltipContent(props: any) {
 const ChartLegend = RechartsPrimitive.Legend;
 
 function ChartLegendContent(props: any) {
-  const { className, hideIcon = false, payload, verticalAlign = "bottom", nameKey } = props as any;
+  const { className, hideIcon = false, payload, verticalAlign = "bottom", nameKey } = props;
   const { config } = useChart();
 
   if (!payload?.length) {
@@ -272,7 +272,7 @@ function ChartLegendContent(props: any) {
       )}
     >
       {payload
-        .filter((item: any) => (item as any).type !== "none")
+        .filter((item: any) => (item).type !== "none")
         .map((item: any) => {
           const key = `${(nameKey || item.dataKey) ?? "value"}`;
           const itemConfig = getPayloadConfigFromPayload(config, item, key);
