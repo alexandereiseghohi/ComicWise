@@ -65,8 +65,8 @@ const nextConfig: NextConfig = {
   // External packages for server-side
   serverExternalPackages: ["postgres", "libsql/client", "bcryptjs", "sharp", "nodemailer"],
 
-  // Cache React Server Components
-  // cacheComponents: true,
+  // Cache React Server Components (opt-in via NEXT_ENABLE_CACHE_COMPONENTS=1)
+  cacheComponents: process.env['NEXT_ENABLE_CACHE_COMPONENTS'] === '1',
   // Image optimization
   images: {
     remotePatterns: [

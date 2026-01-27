@@ -50,6 +50,20 @@ const COMIC_COVERS_DIR = "./public/comics/covers";
 const IMAGE_CONCURRENCY = 5;
 
 /**
+ * Make a URL-friendly slug from a string or fallback to a random id
+ */
+function makeSlug(input?: string): string {
+  const base = (input ?? "").toString();
+  if (!base) return Math.random().toString(36).slice(2, 9);
+  return base
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+}
+
+/**
  * Load and validate comics from JSON file
  * @param filePath
  */
@@ -273,19 +287,22 @@ async function seedComic(comicData: ComicSeedData): Promise<{
     const authorId = await getOrCreateAuthor(authorName);
     const artistId = await getOrCreateArtist(artistName);
 
+    // Ensure we have a concrete slug for filesystem and DB operations
+    const comicSlug = makeSlug(comicData.slug ?? comicData.title);
+
     // Download images
-    const imageResults = await downloadComicImages(comicData, comicData.slug);
+    const imageResults = await downloadComicImages(comicData, comicSlug);
 
     // Check if comic exists
     const existing = await db
       .select({ id: comic.id })
       .from(comic)
-      .where(eq(comic.slug, comicData.slug))
+      .where(eq(comic.slug, comicSlug))
       .limit(1);
 
     const comicRecord = {
       title: comicData.title,
-      slug: comicData.slug,
+      slug: comicSlug,
       description: comicData.description ?? "",
       coverImage: imageResults.paths[0] || FALLBACK_COMIC_IMAGE,
       publicationDate: new Date(),
@@ -299,7 +316,7 @@ async function seedComic(comicData: ComicSeedData): Promise<{
 
     if (existing.length > 0 && existing[0]) {
       // Update existing comic
-      await db.update(comic).set(comicRecord).where(eq(comic.slug, comicData.slug));
+      await db.update(comic).set(comicRecord).where(eq(comic.slug, comicSlug));
 
       comicId = existing[0].id;
       logger.debug(`🔄 Updated comic: ${comicData.title}`);
@@ -319,7 +336,7 @@ async function seedComic(comicData: ComicSeedData): Promise<{
         const existingBySlug = await db
           .select({ id: comic.id })
           .from(comic)
-          .where(eq(comic.slug, comicData.slug))
+          .where(eq(comic.slug, comicSlug))
           .limit(1);
 
         if (existingBySlug.length > 0 && existingBySlug[0]) {
