@@ -87,7 +87,24 @@ export async function saveReadingProgress(data: SaveProgressData): Promise<Simpl
       });
     }
 
-    revalidatePath("/comics/[id]", "page");
+    // Revalidate the comic page by slug if available (route uses slug). Fall back to the comics index.
+    try {
+      const comicRow = await db
+        .select({ slug: comic.slug })
+        .from(comic)
+        .where(eq(comic.id, data.comicId))
+        .limit(1);
+
+      const slug = (comicRow[0] as any)?.slug;
+      if (slug) {
+        revalidatePath(`/comics/${slug}`);
+      } else {
+        revalidatePath("/comics");
+      }
+    } catch (e) {
+      // If DB lookup fails, still revalidate the index to ensure progress is visible somewhere
+      revalidatePath("/comics");
+    }
     return { success: true };
   } catch (error) {
     console.error("Failed to save reading progress:", error);

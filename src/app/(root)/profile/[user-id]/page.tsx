@@ -50,7 +50,7 @@ interface UserProfile {
 
 interface ProfilePageProps {
   params: {
-    userId: string;
+    "user-id": string;
   };
 }
 
@@ -73,7 +73,7 @@ async function fetchUserProfile(userId: string): Promise<UserProfile> {
  * @param root0.params
  */
 export default function ProfilePage({ params }: ProfilePageProps) {
-  const { userId } = params;
+  const userId = params["user-id"];
   const { data: session } = useSession();
 
   const {

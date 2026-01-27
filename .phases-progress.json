@@ -1,5 +1,4 @@
 {
-  "version": "1.0.0",
   "lastUpdated": "2026-01-27T10:15:23.455Z",
   "phases": {
     "1": {
@@ -23,9 +22,7 @@
         "validate-env-vars": "completed"
       },
       "startedAt": "2026-01-27T10:15:04.140Z",
-      "errors": [
-        "Command failed: pnpm type-check"
-      ]
+      "errors": ["Command failed: pnpm type-check"]
     },
     "3": {
       "status": "pending",
@@ -62,5 +59,6 @@
       "score": 0,
       "tasks": {}
     }
-  }
+  },
+  "version": "1.0.0"
 }

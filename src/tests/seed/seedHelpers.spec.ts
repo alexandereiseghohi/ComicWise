@@ -24,6 +24,6 @@ describe("loadJsonData", () => {
     const schema = z.object({ id: z.number(), name: z.string() });
     const res = await loadJsonData(TMP.replace(process.cwd() + path.sep, ""), schema as any);
     expect(res.length).toBe(2);
-    expect(res[0].id).toBe(1);
+    expect((res as any)[0].id).toBe(1);
   });
 });

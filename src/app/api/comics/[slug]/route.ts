@@ -4,7 +4,7 @@
 
 import { deleteComic, updateComic } from "@/database/mutations/comics";
 import { getComicBySlug } from "@/database/queries/admin-comics";
-import { comicIdSchema, comicSlugSchema, updateComicSchema } from "@/lib/validations";
+import { comicSlugSchema, updateComicSchema } from "@/lib/validations";
 import { auth } from "auth";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
@@ -69,11 +69,11 @@ export async function PATCH(
     const { slug } = await params;
     const body = await request.json();
 
-    const slugValidation = comicIdSchema.safeParse({ id: slug });
-
+    // Validate slug (we expect a slug string here)
+    const slugValidation = comicSlugSchema.safeParse({ slug });
     if (!slugValidation.success) {
       return NextResponse.json(
-        { error: "Invalid comic ID", details: slugValidation.error.issues },
+        { error: "Invalid comic slug", details: slugValidation.error.issues },
         { status: 400 }
       );
     }
@@ -87,7 +87,13 @@ export async function PATCH(
       );
     }
 
-    const updatedComic = await updateComic(slugValidation.data.id, {
+    // Resolve comic id from slug then update
+    const existing = await getComicBySlug(slugValidation.data.slug);
+    if (!existing) {
+      return NextResponse.json({ error: "Comic not found" }, { status: 404 });
+    }
+
+    const updatedComic = await updateComic(existing.id, {
       title: validation.data.title,
       description: validation.data.description,
       coverImage: validation.data.coverImage,
@@ -137,16 +143,20 @@ export async function DELETE(
 
     const { slug } = await params;
 
-    const validation = comicIdSchema.safeParse({ id: slug });
-
-    if (!validation.success) {
+    const slugValidation = comicSlugSchema.safeParse({ slug });
+    if (!slugValidation.success) {
       return NextResponse.json(
-        { error: "Invalid comic ID", details: validation.error.issues },
+        { error: "Invalid comic slug", details: slugValidation.error.issues },
         { status: 400 }
       );
     }
 
-    const deletedComic = await deleteComic(validation.data.id);
+    const existing = await getComicBySlug(slugValidation.data.slug);
+    if (!existing) {
+      return NextResponse.json({ error: "Comic not found" }, { status: 404 });
+    }
+
+    const deletedComic = await deleteComic(existing.id);
 
     if (!deletedComic) {
       return NextResponse.json({ error: "Comic not found" }, { status: 404 });

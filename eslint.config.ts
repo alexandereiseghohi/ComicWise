@@ -492,8 +492,9 @@ const eslintConfig: Linter.Config[] = [
   },
   // Temporary: relax a set of rules across src/ to complete CI/lint validation quickly.
   // These are intentionally permissive and should be revisited to re-enable gradual fixes.
+  // Exclude the App Router (`src/app/**`) so we can re-enable stricter accessibility rules there first.
   {
-    files: ["src/**"],
+    files: ["src/**", "!src/app/**"],
     rules: {
       "typescript-eslint/prefer-nullish-coalescing": "off",
       "typescript-eslint/no-non-null-assertion": "off",
@@ -583,8 +584,7 @@ const eslintConfig: Linter.Config[] = [
       "public/**",
       "tools/**",
       "translations/**",
-      // Optionally ignore app routes if you prefer runtime checks instead of lint
-      "src/app/**",
+      // App routes are linted separately (re-enabled)
       // Data access and middleware layers (noisy rules) - ignore to finish CI lint pass
       "src/dal/**",
       "src/middleware/**",
@@ -592,5 +592,3 @@ const eslintConfig: Linter.Config[] = [
     ],
   },
 ];
-
-export default eslintConfig;

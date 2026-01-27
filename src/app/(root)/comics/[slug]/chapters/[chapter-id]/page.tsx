@@ -53,7 +53,7 @@ interface ChapterDetail {
 interface ChapterReaderProps {
   params: {
     slug: string;
-    chapterId: string;
+    "chapter-id": string;
   };
 }
 
@@ -77,7 +77,8 @@ async function fetchChapterDetail(slug: string, chapterId: string): Promise<Chap
  * @param root0.params
  */
 export default function ChapterReaderPage({ params }: ChapterReaderProps) {
-  const { slug, chapterId } = params;
+  const { slug } = params;
+  const chapterId = params["chapter-id"];
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
