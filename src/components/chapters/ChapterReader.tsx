@@ -7,6 +7,14 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
+/**
+ * ChapterReader Component
+ * Main chapter reading interface
+ * @component
+ */
+
+("use client");
+
 import { normalizeImagePath } from "@/lib/image-path";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -14,7 +22,7 @@ import { useEffect, useState } from "react";
 /**
  * Props for ChapterReader component
  */
-interface ChapterReaderProps {
+export interface ChapterReaderProps {
   /**
    * Array of page images
    */
@@ -36,13 +44,8 @@ interface ChapterReaderProps {
 /**
  * ChapterReader Component
  * Displays chapter pages with zoom and navigation
- * @param root0
- * @param root0.pages
- * @param root0.initialPage
- * @param root0.onPageChange
- * @param root0.isLoading
  */
-export function ChapterReader({
+export default function ChapterReader({
   pages,
   initialPage = 0,
   onPageChange,

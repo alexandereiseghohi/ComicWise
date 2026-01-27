@@ -589,7 +589,7 @@ export async function registerUser(formData: FormData) {
 // Request password reset
 export async function requestPasswordReset(formData: FormData) {
   const email = formData.get("email") as string;
-  
+
   const existingUser = await db.query.user.findFirst({
     where: (users, { eq }) => eq(users.email, email),
   });
@@ -1032,7 +1032,7 @@ export async function updateReadingProgress(comicId: number, chapterId: number) 
 
   await db
     .update(bookmark)
-    .set({ 
+    .set({
       lastReadChapterId: chapterId,
       updatedAt: new Date(),
     })
@@ -1467,7 +1467,7 @@ export function parseFilterParams(searchParams: URLSearchParams) {
 // Build query string from params
 export function buildQueryString(params: Record<string, any>) {
   const searchParams = new URLSearchParams()
-  
+
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined && value !== '') {
       if (Array.isArray(value)) {
@@ -1477,7 +1477,7 @@ export function buildQueryString(params: Record<string, any>) {
       }
     }
   })
-  
+
   return searchParams.toString()
 }
 ```
@@ -1530,11 +1530,11 @@ const ratelimit = new Ratelimit({
 
 export async function rateLimit(identifier: string) {
   const { success, limit, reset, remaining } = await ratelimit.limit(identifier)
-  
+
   if (!success) {
     throw new Error("Rate limit exceeded")
   }
-  
+
   return { limit, reset, remaining }
 }
 ```
@@ -1836,7 +1836,7 @@ const { bookmarks, addBookmark } = useBookmarkStore()
 
 ```typescript
 <div className="
-  grid 
+  grid
   grid-cols-1        /* mobile */
   md:grid-cols-2     /* tablet */
   lg:grid-cols-3     /* desktop */
@@ -2003,4 +2003,3 @@ pnpm test:watch
 **Project:** ComicWise v1.0.0
 **Framework:** Next.js 16 with App Router
 
-   

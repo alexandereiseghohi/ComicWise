@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable @typescript-eslint/no-require-imports */
 /**
  * Pre-commit hook setup script
  * Run this to initialize Husky git hooks for development

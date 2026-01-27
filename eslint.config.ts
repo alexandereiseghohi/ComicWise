@@ -4,6 +4,8 @@ import js from "@eslint/js";
 import json from "@eslint/json";
 import markdown from "@eslint/markdown";
 import eslintNextPlugin from "@next/eslint-plugin-next";
+import * as tsPlugin from "@typescript-eslint/eslint-plugin";
+import * as tsParser from "@typescript-eslint/parser";
 import type { Linter } from "eslint";
 import prettierConfig from "eslint-config-prettier";
 import pluginBetterTailwindcss from "eslint-plugin-better-tailwindcss";
@@ -21,7 +23,6 @@ import unicorn from "eslint-plugin-unicorn";
 import unused from "eslint-plugin-unused-imports";
 import zod from "eslint-plugin-zod";
 import globals from "globals";
-import tseslint from "typescript-eslint";
 
 const eslintRules = {
   "no-unused-vars": "off",
@@ -342,8 +343,16 @@ const eslintSettings = {
 };
 
 const eslintConfig: Linter.Config[] = [
+  // Register TypeScript ESLint plugin and parser globally so rule definitions
+  // are available when ESLint evaluates generated files and various scopes.
+  {
+    plugins: { "@typescript-eslint": tsPlugin as any },
+    languageOptions: {
+      parser: tsParser as any,
+      parserOptions: { project: ["./tsconfig.json"] },
+    },
+  },
   js.configs.recommended,
-  ...tseslint.configs.recommended,
   // Test files: enable test globals (jest / vitest) to avoid no-undef errors in tests
   {
     files: ["**/*.test.*", "**/*.spec.*", "src/tests/**", "src/**/tests/**"],
@@ -367,7 +376,7 @@ const eslintConfig: Linter.Config[] = [
     files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
     plugins: {
       "@next/next": eslintNextPlugin,
-      "typescript-eslint": tseslint.plugin,
+      "@typescript-eslint": tsPlugin,
       zod: zod as any,
       "react-hooks": pluginReactHooks as any,
       "jsx-a11y": jsxA11y,
@@ -385,7 +394,7 @@ const eslintConfig: Linter.Config[] = [
       prettier,
     } as any,
     languageOptions: {
-      parser: tseslint.parser,
+      parser: tsParser,
       parserOptions: {
         ecmaVersion: "latest",
         sourceType: "module",
@@ -410,7 +419,7 @@ const eslintConfig: Linter.Config[] = [
     },
     rules: {
       ...js.configs.recommended.rules,
-      ...tseslint.configs.recommended?.[0]?.rules,
+      ...((tsPlugin.configs as any)?.recommended?.rules ?? {}),
       ...eslintNextPlugin.configs.recommended.rules,
       ...pluginReactHooks.configs.recommended.rules,
       ...pluginBetterTailwindcss.configs["recommended-warn"]?.rules,
@@ -569,26 +578,6 @@ const eslintConfig: Linter.Config[] = [
       "src/styles/globals.css",
       "**/docs/**",
       "**/scripts/**",
-      // Exclude large generated or third-party UI components and seeders to reduce noisy warnings
-      "src/components/**",
-      "src/database/**",
-      "src/lib/**",
-      "src/services/**",
-      "src/stores/**",
-      "src/hooks/**",
-      "src/tests/**",
-      // Common tooling, scripts and generated artifacts
-      "eng/**",
-      "bin/**",
-      "skills/**",
-      "public/**",
-      "tools/**",
-      "translations/**",
-      // App routes are linted separately (re-enabled)
-      // Data access and middleware layers (noisy rules) - ignore to finish CI lint pass
-      "src/dal/**",
-      "src/middleware/**",
-      "eslint.config.ts",
     ],
   },
 ];

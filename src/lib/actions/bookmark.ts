@@ -11,7 +11,7 @@ import { revalidatePath } from "next/cache";
 
 export type BookmarkStatus = "Reading" | "PlanToRead" | "Completed" | "Dropped" | "OnHold";
 
-export async function addBookmark(comicId: number, status: BookmarkStatus = "Reading") {
+export async function addBookmark(comicId: number, ...rest: BookmarkStatus[]) {
   const session = await auth();
 
   if (!session?.user?.id) {
@@ -19,12 +19,15 @@ export async function addBookmark(comicId: number, status: BookmarkStatus = "Rea
   }
 
   try {
-    // Tests expect that the status argument is only forwarded to the
-    // mutation when explicitly provided by the caller. Use arguments.length
-    // to detect whether the caller passed the status param.
-    await ((arguments.length ?? 0) >= 2
-      ? addBookmarkMutation(session.user.id, comicId, undefined, status)
-      : addBookmarkMutation(session.user.id, comicId, undefined));
+    // Detect whether caller passed an explicit status by checking rest length.
+    const statusProvided = rest.length > 0;
+    const status = statusProvided ? rest[0] : undefined;
+
+    if (statusProvided) {
+      await addBookmarkMutation(session.user.id, comicId, undefined, status);
+    } else {
+      await addBookmarkMutation(session.user.id, comicId, undefined);
+    }
 
     revalidatePath("/bookmarks");
     revalidatePath(`/comics/${comicId}`);

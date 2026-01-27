@@ -73,10 +73,12 @@ involves working with images, ensure that image handling is efficient and does
 not lead to unnecessary downloads or storage usage. If any task is
 time-consuming, ensure that progress is logged and reported at regular intervals
 with clear, concise logs while running in the background. Read and understand
-**/\*.txt, **/\*.md, then modify #file:.github\prompts\setup.prompt.md to
-include all Templates, Configuration, Prerequisites and Context for all Phases
-and include all its content,todos,tasks,items,recommendations as github copilot
-prompts using DRY and well documented comments for all
+**/\*.txt, **/\*.md, #file:samp1.md, #file:generate.txt, #file:setup*v2.txt,
+#file:tasks.txt then create or modify if exists an optimized
+#file:.github\prompts\setupnew.prompt.md to include all Templates,
+Configuration, Prerequisites and Context for all Phases and include all its
+content,todos,tasks,items,recommendations as github copilot prompts using DRY
+and well documented comments for all
 pages,services,actions,hooks,stores,functions,interfaces,types,modules,classes,components,routes
 using jsDoc log all created or updated files to
 file:.github\prompts\main.prompt.md and create a prompt at
@@ -125,9 +127,9 @@ environments update all usage of this file across @workspace,use
 data from #file:users.json, #file:comics.json, #file:comicsdata1.json,
 #file:comicsdata2.json, #file:chapters.json, #file:chaptersdata1.json,
 #file:chaptersdata2.json, create and use all needed helpers at
-#file:src/database/seed/**/_.ts to ensure the inserted data is being created
+#file:src/database/seed/**/*.ts to ensure the inserted data is being created
 with a validated onConflictDoUpdate functions, valid zod schemas of the inserted
-data,ensure to use CUSTOM_PASSWORD environment variable as the users password
+data,ensure to use CUSTOM*PASSWORD environment variable as the users password
 with bcryptjs encryption , create functions to make sure no image is being
 downloaded twice by checking if the file does not exists in the file system or
 database, create functions to saves all comics images at
@@ -137,7 +139,7 @@ image,ensure it has a comprehensive logging with clear, concise logs for each
 operation performed during the seeding process, create functions to ensure all
 images are being downloaded and saved with its original name and file name
 extensions use all newly created functions and update all usages across the
-project reference #file:src/database/seed/\*\*/_.ts as example. 18 - Create or
+project reference #file:src/database/seed/\*\*/*.ts as example. 18 - Create or
 Modify and Validate all root pages at src/app/(root)/ use 3D Cards, carousels,
 accordion components. 19 - Create or Modify and Validate all auth pages at
 src/app/(auth)/ create a generic form and any additional form components,actions

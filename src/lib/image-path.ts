@@ -15,8 +15,14 @@ export function normalizeImagePath(input?: string | null): string | undefined {
   // Normalize backslashes to forward slashes
   let normalized = s.replaceAll(/\\+/g, "/");
 
-  // If path includes a leading "public/", strip it so it becomes "/..."
-  if (normalized.startsWith("public/")) {
+  // Remove leading ./ segments (e.g. ./public/...), which can produce
+  // paths like "/./public/..." after adding a leading slash.
+  normalized = normalized.replace(/^\.\/+/g, "");
+
+  // If path includes a leading "/public/" or "public/", strip it so it becomes "/..."
+  if (normalized.startsWith("/public/")) {
+    normalized = normalized.replace(/^\/public/, "");
+  } else if (normalized.startsWith("public/")) {
     normalized = normalized.slice("public".length);
   }
 
