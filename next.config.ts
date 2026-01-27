@@ -1,5 +1,19 @@
 import type { NextConfig } from "next";
 
+// Read flag early so it's available during build-time
+const ENABLE_CACHE_COMPONENTS = process.env["NEXT_ENABLE_CACHE_COMPONENTS"] === "1";
+if (ENABLE_CACHE_COMPONENTS) {
+  // Build-time notice: enabling experimental cacheComponents can break pages
+  // that rely on per-request data (auth/session) or revalidation APIs.
+  // Audit dynamic route segments before enabling in production.
+  // See: https://nextjs.org/docs/advanced-features/react-18#server-components
+  // and project README for guidance.
+  // eslint-disable-next-line no-console
+  console.warn(
+    "NEXT_ENABLE_CACHE_COMPONENTS=1 - experimental.cacheComponents is enabled. Ensure dynamic routes are audited."
+  );
+}
+
 const nextConfig: NextConfig = {
   // React Compiler for automatic optimization
   reactCompiler: true,
@@ -66,7 +80,10 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["postgres", "libsql/client", "bcryptjs", "sharp", "nodemailer"],
 
   // Cache React Server Components (opt-in via NEXT_ENABLE_CACHE_COMPONENTS=1)
-  cacheComponents: process.env['NEXT_ENABLE_CACHE_COMPONENTS'] === '1',
+  // Enable only after auditing dynamic route segments and pages that read
+  // per-request data (cookies, headers, session). Use per-page
+  // `export const dynamic = 'force-dynamic'` where necessary.
+  cacheComponents: ENABLE_CACHE_COMPONENTS,
   // Image optimization
   images: {
     remotePatterns: [

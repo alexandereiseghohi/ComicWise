@@ -27,67 +27,85 @@
   ],
   "tasks": [
     {
-      "label": "npm install",
+      "label": "pnpm: install",
       "type": "shell",
-      "command": "npm ci",
+      "command": "pnpm install",
       "problemMatcher": [],
       "group": "build",
-      "detail": "Installs all npm dependencies."
+      "detail": "Installs all pnpm dependencies."
     },
     {
-      "label": "generate-readme",
+      "label": "dev",
       "type": "shell",
-      "command": "npm run build",
-      "problemMatcher": [],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "detail": "Generates the README.md file using npm build run-script.",
-      "dependsOn": "npm install"
-    },
-    {
-      "label": "validate-collections",
-      "type": "shell",
-      "command": "npm run collection:validate",
+      "command": "pnpm dev",
       "problemMatcher": [],
       "group": "build",
-      "detail": "Validates all collection manifest files.",
-      "dependsOn": "npm install"
+      "detail": "Run development server (pnpm dev)",
+      "isBackground": true
     },
     {
-      "label": "create-collection",
+      "label": "build",
       "type": "shell",
-      "command": "npm run collection:create",
-      "args": ["--id", "${input:collectionId}", "--tags", "${input:tags}"],
+      "command": "pnpm build",
+      "problemMatcher": ["$tsc"],
+      "group": "build",
+      "detail": "Build the Next.js app"
+    },
+    {
+      "label": "type-check",
+      "type": "shell",
+      "command": "pnpm type-check",
+      "problemMatcher": ["$tsc"],
+      "group": "none",
+      "detail": "Run TypeScript type checking"
+    },
+    {
+      "label": "lint",
+      "type": "shell",
+      "command": "pnpm lint",
+      "problemMatcher": ["$eslint-stylish"],
+      "group": "none",
+      "detail": "Run ESLint"
+    },
+    {
+      "label": "lint:fix",
+      "type": "shell",
+      "command": "pnpm lint:fix",
       "problemMatcher": [],
       "group": "none",
-      "detail": "Creates a new collection manifest template.",
-      "dependsOn": "npm install"
+      "detail": "Run ESLint --fix"
     },
     {
-      "label": "create-skill",
+      "label": "test:unit",
       "type": "shell",
-      "command": "npm run skill:create",
-      "args": [
-        "--name",
-        "${input:skillName}",
-        "--description",
-        "${input:skillDescription}"
-      ],
+      "command": "pnpm test:unit",
+      "problemMatcher": [],
+      "group": "test",
+      "detail": "Run unit tests (vitest)"
+    },
+    {
+      "label": "test:e2e",
+      "type": "shell",
+      "command": "pnpm test",
+      "problemMatcher": [],
+      "group": "test",
+      "detail": "Run Playwright tests"
+    },
+    {
+      "label": "db:push",
+      "type": "shell",
+      "command": "pnpm db:push",
       "problemMatcher": [],
       "group": "none",
-      "detail": "Creates a new skill template.",
-      "dependsOn": "npm install"
+      "detail": "Push DB schema (drizzle-kit)"
     },
     {
-      "label": "validate-skills",
+      "label": "db:seed",
       "type": "shell",
-      "command": "npm run skill:validate",
+      "command": "pnpm db:seed",
       "problemMatcher": [],
-      "group": "build",
-      "detail": "Validates all skill manifest files.",
-      "dependsOn": "npm install"
+      "group": "none",
+      "detail": "Run database seed"
     }
   ],
   "version": "2.0.0"

@@ -45,7 +45,7 @@ async function main() {
         continue;
       }
       const buf = await fs.readFile(f);
-      const h = hashBuf(buf);
+      const h = hashBuf(buf as Buffer);
       byHash[h] ??= [];
       byHash[h].push(f);
 

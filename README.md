@@ -55,9 +55,10 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 📖 Documentation
 
-- [Setup Guide](./docs/SETUP.md)
-- [API Documentation](./docs/API.md)
-- [Contributing Guide](./docs/CONTRIBUTING.md)
+## Seeding
+
+See `docs/SEEDING.md` for instructions on the dynamic seeding system, CLI flags,
+and required environment variables.
 
 ## 🛠️ Tech Stack
 

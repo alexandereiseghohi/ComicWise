@@ -11,45 +11,44 @@ const isDevelopment = env.NODE_ENV === "development";
 const isProduction = env.NODE_ENV === "production";
 const logLevel = isDevelopment ? "debug" : "info";
 
-export const logger = pino({
+// Avoid initializing the pino transport (which uses thread-stream/pino-pretty)
+// in dry-run/test-like modes where SKIP_ENV_VALIDATION is set. The threaded
+// transport can cause writeSync "overwritten" errors on process exit in
+// certain CI or restricted environments.
+const shouldUseTransport =
+  isDevelopment &&
+  process.env["SKIP_ENV_VALIDATION"] !== "true" &&
+  process.env["SEED_DISABLE_PINO_TRANSPORT"] !== "1";
+
+const baseOptions: pino.LoggerOptions = {
   level: logLevel,
   formatters: {
-    level: (label) => {
-      return { level: label.toUpperCase() };
-    },
+    level: (label) => ({ level: label.toUpperCase() }),
   },
   timestamp: pino.stdTimeFunctions.isoTime,
-  ...(isDevelopment && {
-    transport: {
-      target: "pino-pretty",
-      options: {
-        colorize: true,
-        translateTime: "HH:MM:ss Z",
-        ignore: "pid,hostname",
-        singleLine: false,
-        levelFirst: true,
-      },
-    },
-  }),
-  ...(isProduction && {
-    formatters: {
-      level: (label) => {
-        return { level: label.toUpperCase() };
-      },
-      bindings: (bindings) => {
-        return {
-          pid: bindings["pid"],
-          host: bindings["hostname"],
-          node_version: process.version,
-        };
-      },
-    },
-  }),
   base: {
     env: env.NODE_ENV,
     pid: process.pid,
   },
-});
+};
+
+export const logger = pino(
+  shouldUseTransport
+    ? {
+        ...baseOptions,
+        transport: {
+          target: "pino-pretty",
+          options: {
+            colorize: true,
+            translateTime: "HH:MM:ss Z",
+            ignore: "pid,hostname",
+            singleLine: false,
+            levelFirst: true,
+          },
+        },
+      }
+    : baseOptions
+);
 
 // ═══════════════════════════════════════════════════
 // CHILD LOGGERS FOR DIFFERENT CONTEXTS

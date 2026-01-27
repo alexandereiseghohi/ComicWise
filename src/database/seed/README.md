@@ -1,3 +1,24 @@
+# Dynamic Seed Runner
+
+This runner loads JSON seed files, validates with zod and inserts into the
+database using Drizzle.
+
+Env vars:
+
+- `CUSTOM_PASSWORD` - plaintext password used for seeded users (required for
+  user seeding)
+- `SEED_API_KEY` - secret to protect `/api/dev/seed` route
+- `SEED_DOWNLOAD_CONCURRENCY` - number of concurrent image downloads (default 5)
+- `SEED_MAX_IMAGE_SIZE_BYTES` - max allowed image size (default 5242880)
+
+Run locally (uses tsx):
+
+```
+pnpm run seed:dynamic
+```
+
+Dry-run not implemented here; use existing `db:seed` variants if needed.
+
 # Database Seeding System
 
 This directory contains the optimized database seeding system for ComicWise.

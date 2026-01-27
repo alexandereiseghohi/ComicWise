@@ -1,0 +1,68 @@
+{
+  "compounds": [
+    {
+      "name": "Debug Full Stack (Next + Browser)",
+      "configurations": ["Next: Dev (inspect)", "Chrome: Launch"]
+    }
+  ],
+  "configurations": [
+    {
+      "name": "Next: Dev (inspect)",
+      "type": "pwa-node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["dev"],
+      "env": {
+        "NODE_ENV": "development",
+        "NODE_OPTIONS": "--inspect=9229"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "port": 9229,
+      "timeout": 30000,
+      "preLaunchTask": "pnpm: install"
+    },
+    {
+      "name": "Attach to Node",
+      "type": "pwa-node",
+      "request": "attach",
+      "port": 9229,
+      "address": "localhost",
+      "restart": false,
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": null
+    },
+    {
+      "name": "Chrome: Launch",
+      "type": "pwa-chrome",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "dev",
+      "userDataDir": "${workspaceFolder}/.vscode/chrome-user-data"
+    },
+    {
+      "name": "Playwright: Run Tests (headed)",
+      "type": "pwa-node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["test:debug"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "preLaunchTask": "pnpm: install"
+    },
+    {
+      "name": "Vitest: Run Unit Tests",
+      "type": "pwa-node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["test:unit:watch"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    }
+  ],
+  "version": "0.2.0"
+}

@@ -28,17 +28,38 @@ export class SeedLogger {
   private startTime = Date.now();
 
   constructor() {
-    this.logger = pino({
-      level: process.env["LOG_LEVEL"] ?? "info",
-      transport: {
-        target: "pino-pretty",
-        options: {
-          colorize: true,
-          ignore: "pid,hostname",
-          singleLine: false,
-        },
-      },
-    });
+    // In constrained environments (dry-run / CI / test) the pino transport
+    // can surface thread-stream write errors on process exit. Allow falling
+    // back to a plain pino logger (no threaded transport) when the
+    // SKIP_ENV_VALIDATION or SEED_DISABLE_PINO_TRANSPORT env vars are set.
+    try {
+      if (
+        process.env["SKIP_ENV_VALIDATION"] === "true" ||
+        process.env["SEED_DISABLE_PINO_TRANSPORT"] === "1"
+      ) {
+        // simple non-transport logger to avoid thread-stream issues in dry-run
+        this.logger = pino({ level: process.env["LOG_LEVEL"] ?? "info" });
+      } else {
+        this.logger = pino({
+          level: process.env["LOG_LEVEL"] ?? "info",
+          transport: {
+            target: "pino-pretty",
+            options: {
+              colorize: true,
+              ignore: "pid,hostname",
+              singleLine: false,
+            },
+          },
+        });
+      }
+    } catch (e) {
+      // If transport initialization fails for any reason, fall back to a
+      // plain pino instance to ensure the seeder doesn't crash on exit.
+      // We intentionally swallow the error but print to console for debug.
+      // eslint-disable-next-line no-console
+      console.warn("SeedLogger: pino transport init failed, falling back to simple logger:", e);
+      this.logger = pino({ level: process.env["LOG_LEVEL"] ?? "info" });
+    }
   }
 
   setVerbose(verbose: boolean): void {

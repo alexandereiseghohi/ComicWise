@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="pnpm: db:seed" type="nodejs" factoryName="Node.js" temporary="false">
+    <method v="2">
+      <option name="COMMAND_LINE" value="pnpm db:seed" />
+    </method>
+    <env />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+  </configuration>
+</component>

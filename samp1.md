@@ -9,8 +9,8 @@ framework: Next.js 16
 
 🚀 ComicWise - Complete Project Setup & Scaffolding Guide Comprehensive setup
 guide for ComicWise - a modern web comic platform built with Next.js 16,
-PostgreSQL, Redis, and AI-powered features. Read And understand /_.ts,
-#file:/.tsx, #file:\*\*/.mjs, #file:/_.json , #file:/.mts, #file:**/.json
+PostgreSQL, Redis, and AI-powered features. Read And understand #file:_.ts,
+#file:_.tsx, #file:\*.mjs, #file:/\_.json , #file:/.mts, #file:**/.json
 #file:/\*.md, #file:/.txt, #file:**/.yml, #file:/\*.ps1, #file:/.sh,
 #file:\*\*//Dockerfile, #file:src, #file:scripts files to get context on how the
 project is structured and works, After fully understanding @workspace the
@@ -181,20 +181,18 @@ next-app@latest at .github/prompts newSetup.prompt.md
 Modify seeding system and image services to ensure if using relative image it
 must start with a leading slash "/" or be an absolute URL (http:// or https://)
 
-Delete src/types/_ and create an optimized src/types/_ for all @workspace
-interfaces,types,modules,classes,zod schemas used by @workspace use drf
-practices update all usages around @workspace then @workspace /explain and
-implement all your suggestions, recommendations for the project seeding system,
-setup page,routes,components,test to consume and run @workspace seeding system
-then Run the tests and fix all errors then Rerun tests then delete all failed
-tests and recreate then without errors then Rerun test until all tests are green
-then. modify #file:next.config.ts to enable cacheComponents then Implement cacheComponents and fix all incompatible with dynamic route
-segments then. Convert all any type occurrences to specific types from usage or
-Convert functionality to be Generic then. Create or Modify,Validate,Faster and run
-#file:scripts/cleanup_files.ts to Delete all duplicate or unused zod schemas,
-all duplicate or unused components,functions, types, interfaces, classes, empty
-folders, blank files, all files that contains .backup prioritize newly created
-files then. Create or Modify, Validate,Faster and run #file:scripts/cleanup_packages.ts
-to Uninstall all unused packages with pnpm then. Modify package.json to include
-all scripts in @workspace Fix all type-check,lint and build warnings and errors
-in @workspace.
+modify #file:.env to handle all my project environment variables then. modify
+#file:next.config.ts to enable cacheComponents then Implement cacheComponents
+and fix all incompatible with dynamic route segments then. Convert all any type
+occurrences to specific types from usage or Convert functionality to be Generic
+then. Create or Modify,Validate,Faster and run #file:scripts/cleanup_files.ts to
+Delete all duplicate or unused zod schemas in #file:src, #file:scripts
+prioritize newly created, all duplicate or unused components,functions, types,
+interfaces, classes, empty folders, blank files in #file:src, #file:scripts
+prioritize newly created, all files that contains .backup in ./ files prioritize
+newly created then. Create or Modify, Validate,Faster and run
+#file:scripts/cleanup_packages.ts to Uninstall all packages not being used in
+#file:src, #file:scripts, #file:package.json, #file:eslint.config.ts,
+#file:.prettierrc.ts, #file:postcss.config.mjs with pnpm then. Modify
+package.json to include all scripts in #file:src, #file:scripts Fix all
+type-check,lint and build warnings and errors in @workspace.

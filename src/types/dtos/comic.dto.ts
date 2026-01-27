@@ -1,4 +1,4 @@
-export type ComicDTOStatus = 'draft' | 'published' | 'archived';
+export type ComicDTOStatus = "draft" | "published" | "archived";
 
 export interface ComicCreateDTO {
   title: string;

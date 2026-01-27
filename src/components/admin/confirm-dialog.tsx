@@ -13,7 +13,17 @@ type Props = {
   variant?: string;
 };
 
-export const ConfirmDialog: React.FC<Props> = ({ title, description, onConfirm, onCancel, children, open, onOpenChange, confirmText, cancelText }) => {
+export const ConfirmDialog: React.FC<Props> = ({
+  title,
+  description,
+  onConfirm,
+  onCancel,
+  children,
+  open,
+  onOpenChange,
+  confirmText,
+  cancelText,
+}) => {
   return (
     <div>
       {children}
